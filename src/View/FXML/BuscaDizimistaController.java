@@ -296,6 +296,11 @@ public class BuscaDizimistaController implements Initializable {
                 checkBoxCasamento.setSelected(false);
                 casamentoGrupo.setVisible(false);
             }
+        }else{
+            id.setText("");
+            textFieldsEditables.forEach((t) -> {
+                t.setText("");
+            });
         }
     }
 
