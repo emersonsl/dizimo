@@ -33,6 +33,12 @@ public abstract class Data {
         dataStr.append(dataFormat[2]).append("/").append(dataFormat[1]).append("/").append(dataFormat[0]);
         return dataStr.toString();
     }
+    public static String getDataStr(Date data){
+        StringBuilder dataStr = new StringBuilder();
+        String [] dataFormat = data.toString().split("-");
+        dataStr.append(dataFormat[2]).append("/").append(dataFormat[1]).append("/").append(dataFormat[0]);
+        return dataStr.toString();
+    }
     public static boolean isValid(String data){
         String regex = "((3[0-1])|([1-2]?[0-9]|(0?[1-9])))/((1[0-2])|(0?[1-9]))/((1[0-9][0-9][0-9])|(2[0-1][0-9][0-9]))";
         return data.matches(regex);

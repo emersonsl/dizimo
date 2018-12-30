@@ -143,6 +143,62 @@ public class DizimistaDAO {
          }
         return null;
     }
-     
     
+    public static void atualizar(Dizimista dizimista){
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = c.prepareStatement("UPDATE dizimista SET nome = ?, data_nascimento = ?, telefone = ?, email = ?, rua = ?, numero = ?, bairro = ?"
+                    + ",complemento = ?, grupo_movimento_pastoral = ?, data_inscricao = ? WHERE id_dizimista = ?");
+            
+            stmt.setString(1, dizimista.getNome());
+            stmt.setDate(2, dizimista.getDataNascimento());
+            stmt.setString(3, dizimista.getTelefone());
+            stmt.setString(4, dizimista.getEmail());
+            stmt.setString(5, dizimista.getEndereco().getRua());
+            stmt.setString(6, dizimista.getEndereco().getNumero());
+            stmt.setString(7, dizimista.getEndereco().getBairro());
+            stmt.setString(8, dizimista.getEndereco().getComplemento());
+            stmt.setString(9, dizimista.getGrupoMovimentoPastoral());
+            stmt.setDate(10, dizimista.getDataInscricao());
+            stmt.setInt(11, dizimista.getId());
+               
+            Conjuge conjuge = dizimista.getConjuge();
+            if(conjuge!=null){
+                ConjugeDAO.atualizar(conjuge);
+            }
+            
+            stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            Conexao.closeConnection(c, stmt);
+        }
+    }
+    public static void apagar(int id){
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            Dizimista d = recuperar(id);
+            Conjuge con = d.getConjuge();
+            
+            if(con!=null){
+                ConjugeDAO.apagar(con.getId());
+            }
+            
+            stmt = c.prepareStatement("DELETE FROM dizimista WHERE id_dizimista = ?");
+            
+            stmt.setInt(1, id);
+            
+            stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            Conexao.closeConnection(c, stmt);
+        }
+    }
 }

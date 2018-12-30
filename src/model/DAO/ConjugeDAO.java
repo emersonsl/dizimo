@@ -63,4 +63,43 @@ public class ConjugeDAO {
              Conexao.closeConnection(c, stmt);
          }
     }
+
+    static void atualizar(Conjuge conjuge) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = c.prepareStatement("UPDATE conjuge SET nome = ?, data_nascimento = ?, data_casamento = ? WHERE id_conjuge = ?");
+            
+            stmt.setString(1, conjuge.getNome());
+            stmt.setDate(2, conjuge.getDataNascimento());
+            stmt.setDate(3, conjuge.getDataCasamento());
+            stmt.setInt(4, conjuge.getId());
+            
+            stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            Conexao.closeConnection(c, stmt);
+        }
+    }
+    
+    public static void apagar(int id){
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = c.prepareStatement("DELETE FROM conjuge WHERE id_conjuge = ?");
+            
+            stmt.setInt(1, id);
+            
+            stmt.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            Conexao.closeConnection(c, stmt);
+        }
+    }
 }

@@ -31,8 +31,8 @@ public class ControllerDizimista {
         return instance;
     }
     
-    public void criar(Integer id, String nome, String email, String telefone, Endereco endereco, Date dataNascimento, String grupoMovimentoPastoral, Conjuge conjuge, Date dataIncricao){
-        Dizimista d = new Dizimista(id, nome, email, telefone, endereco, dataNascimento, grupoMovimentoPastoral, dataIncricao, conjuge);
+    public void criar(Integer id, String nome, String email, String telefone, Endereco endereco, Date dataNascimento, String grupoMovimentoPastoral, Conjuge conjuge, Date dataInscricao){
+        Dizimista d = new Dizimista(id, nome, email, telefone, endereco, dataNascimento, grupoMovimentoPastoral, dataInscricao, conjuge);
         DizimistaDAO.salvar(d);
     }
     
@@ -46,5 +46,14 @@ public class ControllerDizimista {
     
     public Dizimista recuperar(int id){
         return DizimistaDAO.recuperar(id);
+    }
+
+    public void atualizar(Integer id, String nome, String email, String telefone, Endereco endereco, Date dataNascimento, String grupoMovimentoPastoral, Conjuge conjuge, Date dataInscricao) {
+        Dizimista d = new Dizimista(id, nome, email, telefone, endereco, dataNascimento, grupoMovimentoPastoral, dataInscricao, conjuge);
+        DizimistaDAO.atualizar(d);
+    }
+    
+    public void apagar(int id){
+        DizimistaDAO.apagar(id);
     }
 }

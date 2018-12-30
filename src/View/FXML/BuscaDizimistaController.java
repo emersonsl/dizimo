@@ -5,16 +5,28 @@
  */
 package View.FXML;
 
+import Controller.ControllerDizimista;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.net.URL;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javax.swing.JOptionPane;
 import model.bean.Conjuge;
+import model.bean.Dizimista;
 import model.bean.Endereco;
 import util.Data;
 
@@ -23,7 +35,26 @@ import util.Data;
  *
  * @author Emerson
  */
-public class CadastroDizimistaController implements Initializable {
+public class BuscaDizimistaController implements Initializable {
+
+    @FXML
+    private TableView<Dizimista> tableViewDizimistas;
+    @FXML
+    private TableColumn<Dizimista, Integer> tbNum;
+    @FXML
+    private TableColumn<Dizimista, String> tbNome;
+    @FXML
+    private TextField totalDizimistas;
+    @FXML
+    private Button editarSalvar;
+    @FXML
+    private Group grupoTextField;
+    @FXML
+    private AnchorPane painelTabela;
+    @FXML
+    private TextField barraBusca;
+    @FXML
+    private Button buttonApagar;
 
     @FXML
     private Group casamentoGrupo;
@@ -65,16 +96,43 @@ public class CadastroDizimistaController implements Initializable {
     @FXML
     private TextField dataCas;
 
+    List<TextField> textFieldsEditables;
+
+    ControllerDizimista controller = Controller.ControllerDizimista.getInstance();
+    private List<Dizimista> dizimistas;
+    private ObservableList<Dizimista> obDizimistas;
+
     /**
      * Initializes the controller class.
-     *
-     * @param url
-     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        casamentoGrupo.setVisible(false);
+        carregarTodos();
+        addTextFieldsEditables();
+        tableViewDizimistas.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> selecionarItemTabelaDizimistar(newValue));
+    }
+
+    private void addTextFieldsEditables() {
+        textFieldsEditables = new ArrayList<>();
+        textFieldsEditables.add(nome);
+        textFieldsEditables.add(email);
+        textFieldsEditables.add(grupos);
+        textFieldsEditables.add(telefone);
+        textFieldsEditables.add(dataNas);
+        textFieldsEditables.add(dataInsc);
+        textFieldsEditables.add(dataCas);
+        textFieldsEditables.add(dataNasCon);
+        textFieldsEditables.add(nomeCon);
+        textFieldsEditables.add(rua);
+        textFieldsEditables.add(numero);
+        textFieldsEditables.add(bairro);
+        textFieldsEditables.add(complemento);
+    }
+
+    private void setTextFieldsEditables(boolean b) {
+        textFieldsEditables.forEach((t) -> {
+            t.setEditable(b);
+        });
     }
 
     public void grupoVisivel() {
@@ -197,36 +255,87 @@ public class CadastroDizimistaController implements Initializable {
         }
         return true;
     }
-    private boolean verificarTelefone(){
+
+    private boolean verificarTelefone() {
         String regex = "\\(\\d{2}\\) (\\d{4}|\\d{5})\\-\\d{4}";
         return telefone.getText().matches(regex);
     }
 
-    public void salvar() {
+    public void carregarTodos() {
+        tbNum.setCellValueFactory(new PropertyValueFactory<>("id"));
+        tbNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+
+        dizimistas = controller.recuperar();
+
+        obDizimistas = FXCollections.observableArrayList(dizimistas);
+        tableViewDizimistas.setItems(obDizimistas);
+        totalDizimistas.setText(dizimistas.size() + " dizimistas cadastrados");
+    }
+
+    private void selecionarItemTabelaDizimistar(Dizimista d) {
+        if (d != null) {
+            id.setText(d.getId().toString());
+            nome.setText(d.getNome());
+            dataNas.setText(Data.getDataStr(d.getDataNascimento()));
+            telefone.setText(d.getTelefone());
+            email.setText(d.getEmail());
+            dataInsc.setText(Data.getDataStr(d.getDataInscricao()));
+            grupos.setText(d.getGrupoMovimentoPastoral());
+            rua.setText(d.getEndereco().getRua());
+            numero.setText(d.getEndereco().getNumero());
+            bairro.setText(d.getEndereco().getBairro());
+            complemento.setText(d.getEndereco().getComplemento());
+            Conjuge con = d.getConjuge();
+            if (con != null) {
+                casamentoGrupo.setVisible(true);
+                checkBoxCasamento.setSelected(true);
+                nomeCon.setText(con.getNome());
+                dataNasCon.setText(Data.getDataStr(con.getDataNascimento()));
+                dataCas.setText(Data.getDataStr(con.getDataCasamento()));
+            } else {
+                checkBoxCasamento.setSelected(false);
+                casamentoGrupo.setVisible(false);
+            }
+        }
+    }
+
+    public void editarSalvar() {
+        if (tableViewDizimistas.getSelectionModel().getSelectedItem() != null) {
+            if (editarSalvar.getText().equals("Editar")) {
+                editarSalvar.setText("Salvar");
+                checkBoxCasamento.setVisible(true);
+                setTextFieldsEditables(true);
+                painelTabela.setDisable(true);
+                id.setDisable(true);
+                buttonApagar.setVisible(false);
+            } else {
+                if (salvar()) {
+                    voltar();
+                }
+            }
+        }
+    }
+
+    public boolean salvar() {
 
         if (!verificarDatas()) {
             JOptionPane.showMessageDialog(null, "Data(s) incorretas");
-            return;
+            return false;
         }
-        if(!telefone.getText().equals("") && !verificarTelefone()){
+        if (!telefone.getText().equals("") && !verificarTelefone()) {
             JOptionPane.showMessageDialog(null, "Telefone incorreto");
-            return;
+            return false;
         }
-        if(nome.getText().equals("")){
+        if (nome.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Nome não preenchido");
-            return;
+            return false;
         }
-        
-        
-        Integer idC = null;
+
+        Integer idC = Integer.parseInt(id.getText());
         String nomeC, emailC, telefoneC, grupoMovimentoPastoralC;
         Endereco enderecoC;
         Date dataNascimentoC, dataNasConC, dataCasC, dataInscC;
         Conjuge conjugeC = null;
-
-        if (!checkBoxId.isSelected()||!id.getText().equals("")) {
-            idC = Integer.parseInt(id.getText());
-        }
 
         if (checkBoxCasamento.isSelected()) {
             dataNasConC = Data.criar(dataNasCon.getText());
@@ -242,11 +351,41 @@ public class CadastroDizimistaController implements Initializable {
         enderecoC = new Endereco(rua.getText().toUpperCase(), bairro.getText().toUpperCase(), numero.getText(), complemento.getText().toUpperCase());
 
         dataNascimentoC = Data.criar(dataNas.getText());
-        dataInscC = Data.criar(this.dataInsc.getText());
+        dataInscC = Data.criar(dataInsc.getText());
 
-        Controller.ControllerDizimista.getInstance().criar(idC, nomeC, emailC, telefoneC, enderecoC, dataNascimentoC, grupoMovimentoPastoralC, conjugeC, dataInscC);
-        JOptionPane.showMessageDialog(null, "Dizimista cadastrado(a) com sucesso");
-
+        controller.atualizar(idC, nomeC, emailC, telefoneC, enderecoC, dataNascimentoC, grupoMovimentoPastoralC, conjugeC, dataInscC);
+        JOptionPane.showMessageDialog(null, "Dizimista atualizado(a) com sucesso");
+        return true;
     }
 
+    public void voltar() {
+        if (editarSalvar.getText().equals("Salvar")) {
+            editarSalvar.setText("Editar");
+            checkBoxCasamento.setVisible(false);
+            setTextFieldsEditables(false);
+            painelTabela.setDisable(false);
+            id.setDisable(false);
+            buttonApagar.setVisible(true);
+        }
+    }
+
+    public void procurar() {
+        if (!barraBusca.getText().equals("")) {
+            dizimistas = controller.recuperar(barraBusca.getText());
+
+            obDizimistas = FXCollections.observableArrayList(dizimistas);
+            tableViewDizimistas.setItems(obDizimistas);
+            totalDizimistas.setText(dizimistas.size() + " dizimistas encontrados");
+        } else {
+            carregarTodos();
+        }
+    }
+
+    public void apagar() {
+        if (tableViewDizimistas.getSelectionModel().getSelectedItem() != null && JOptionPane.showConfirmDialog(null, "tem certeza que deseja apagar") == 0) {
+            controller.apagar(Integer.parseInt(id.getText()));
+            JOptionPane.showMessageDialog(null, "Dizimista apagado com sucesso");
+            carregarTodos();
+        }
+    }
 }
