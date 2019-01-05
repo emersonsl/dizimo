@@ -10,12 +10,15 @@ public class Plantao {
 	private Time hora;
 	private Date data;
 	private List <Contribuicao> contribuicoes;
+        private Plantonista lancador;
+        private Presidente celebrante;
+        
 	
 	/**
 	 * Construct of class
 	 */
 	public Plantao() {
-		setContribuicoes(new ArrayList<Contribuicao>());
+            setContribuicoes(new ArrayList<>());
 	}
 	/**
 	 * @return the id

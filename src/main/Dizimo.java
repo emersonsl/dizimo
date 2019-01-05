@@ -11,6 +11,7 @@ import java.sql.Date;
 import java.util.List;
 import model.DAO.ConjugeDAO;
 import model.DAO.DizimistaDAO;
+import model.bean.Contribuicao;
 import model.bean.Dizimista;
 import model.bean.Endereco;
 import util.Data;
@@ -37,9 +38,7 @@ public class Dizimo {
         List<Dizimista> ds = DizimistaDAO.recuperar("Eneas");
         Dizimista d = ds.get(1);
         System.out.println("id con: "+d.getConjuge());*/
-        String regex = "\\(\\d{2}\\) (\\d{4}|\\d{5})\\-\\d{4}";
-        boolean b = "(75) 99100-0024".matches(regex);
-        System.out.println("B: "+b);
+        
     }
     
 }

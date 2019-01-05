@@ -20,7 +20,7 @@ public class JavaFX extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/FXML/BuscaDizimista.FXML"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/FXML/Contribuicao.FXML"));
         
         Scene scene = new Scene(root);
         

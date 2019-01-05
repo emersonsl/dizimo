@@ -10,7 +10,16 @@ public class Contribuicao {
 	private Dizimista dizimista;
 	private Plantonista plantonista;
 	private Plantao plantao;
-	
+
+        public Contribuicao(Double valor, int mes, Year ano, Dizimista dizimista, Plantonista plantonista, Plantao plantao) {
+            this.valor = valor;
+            this.mes = mes;
+            this.ano = ano;
+            this.dizimista = dizimista;
+            this.plantonista = plantonista;
+            this.plantao = plantao;
+        }
+
 	/**
 	 * @return the id
 	 */
