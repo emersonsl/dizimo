@@ -23,22 +23,17 @@ public class ConjugeDAO {
         
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         
         try {
-            stmt = c.prepareStatement("INSERT INTO conjuge(nome,data_nascimento,data_casamento)VALUES(?,?,?)");
+            stmt = c.prepareStatement("INSERT INTO conjuge(dizimista_id_dizimista,nome,data_nascimento,data_casamento)VALUES(?,?,?)");
             
-            stmt.setString(1, conjuge.getNome());
-            stmt.setDate(2, conjuge.getDataNascimento());
-            stmt.setDate(3, conjuge.getDataCasamento());
+            stmt.setInt(1, conjuge.getId());
+            stmt.setString(2, conjuge.getNome());
+            stmt.setDate(3, conjuge.getDataNascimento());
+            stmt.setDate(4, conjuge.getDataCasamento());
             
             stmt.executeUpdate();
             
-            //recuperando ID
-            rs = stmt.executeQuery("SELECT LAST_INSERT_ID()");
-            if(rs.next()){
-                conjuge.setId(rs.getInt(1));
-            }
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
@@ -56,7 +51,7 @@ public class ConjugeDAO {
              stmt.setInt(1, id);
              rs = stmt.executeQuery();
              rs.next();
-             return new Conjuge(rs.getInt("id_conjuge"), rs.getString("nome"), rs.getDate("data_nascimento"), rs.getDate("data_casamento"));
+             return new Conjuge(rs.getInt("dizimista_id_dizimista"), rs.getString("nome"), rs.getDate("data_nascimento"), rs.getDate("data_casamento"));
          } catch (SQLException ex) {
              return null;
          }finally{
@@ -69,7 +64,7 @@ public class ConjugeDAO {
         PreparedStatement stmt = null;
         
         try {
-            stmt = c.prepareStatement("UPDATE conjuge SET nome = ?, data_nascimento = ?, data_casamento = ? WHERE id_conjuge = ?");
+            stmt = c.prepareStatement("UPDATE conjuge SET nome = ?, data_nascimento = ?, data_casamento = ? WHERE dizimista_id_dizimista = ?");
             
             stmt.setString(1, conjuge.getNome());
             stmt.setDate(2, conjuge.getDataNascimento());
@@ -90,7 +85,7 @@ public class ConjugeDAO {
         PreparedStatement stmt = null;
         
         try {
-            stmt = c.prepareStatement("DELETE FROM conjuge WHERE id_conjuge = ?");
+            stmt = c.prepareStatement("DELETE FROM conjuge WHERE dizimista_id_dizimista = ?");
             
             stmt.setInt(1, id);
             

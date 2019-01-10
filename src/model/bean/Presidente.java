@@ -1,10 +1,26 @@
 package model.bean;
 
+import util.Denominacao;
+
 public class Presidente {
 	private int id;
 	private String nome;
-	private int denominacao;
-	
+        private Denominacao denominacao;
+
+        public Presidente() {
+        }
+        
+        public Presidente(String nome, Denominacao denominacao) {
+            this.nome = nome;
+            this.denominacao = denominacao;
+        }
+
+        public Presidente(int id, String nome, Denominacao denominacao) {
+            this.id = id;
+            this.nome = nome;
+            this.denominacao = denominacao;
+        }
+        
 	/**
 	 * @return the id
 	 */
@@ -32,13 +48,13 @@ public class Presidente {
 	/**
 	 * @return the denominacao
 	 */
-	public int getDenominacao() {
+	public Denominacao getDenominacao() {
 		return denominacao;
 	}
 	/**
 	 * @param denominacao the denominacao to set
 	 */
-	public void setDenominacao(int denominacao) {
+	public void setDenominacao(Denominacao denominacao) {
 		this.denominacao = denominacao;
 	}
 }
