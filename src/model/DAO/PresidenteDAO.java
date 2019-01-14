@@ -49,7 +49,7 @@ public class PresidenteDAO {
 
         try {
 
-            stmt = c.prepareStatement("Select * From presidente");
+            stmt = c.prepareStatement("Select * From presidente order by nome");
             rs = stmt.executeQuery();
 
             List<Presidente> presidentes = new ArrayList<>();
@@ -73,7 +73,7 @@ public class PresidenteDAO {
 
         try {
 
-            stmt = c.prepareStatement("Select * From presidente where nome like ?");
+            stmt = c.prepareStatement("Select * From presidente where nome like ? order by nome");
             stmt.setString(1, "%" + nomeSobrenome + "%");
             rs = stmt.executeQuery();
 

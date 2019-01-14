@@ -22,6 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import model.DAO.PresidenteDAO;
 import model.bean.Presidente;
 import util.Denominacao;
+import view.Alertas;
 
 /**
  * FXML Controller class
@@ -31,7 +32,7 @@ import util.Denominacao;
 public class PresidenteController implements Initializable {
 
     @FXML
-    private TableView <Presidente> tableViewPresidentes;
+    private TableView<Presidente> tableViewPresidentes;
     @FXML
     private TableColumn<Presidente, String> tbNome;
     @FXML
@@ -39,16 +40,22 @@ public class PresidenteController implements Initializable {
     @FXML
     private TextField tfNome;
     @FXML
+    private TextField barraBusca;
+    @FXML
     private ComboBox<Denominacao> cbDenominacao;
     @FXML
-    private AnchorPane apDireito;
-    @FXML
     private Button btCadastrarSalvar;
-    
-    
+    @FXML
+    private Button btEditarCancelar;
+    @FXML
+    private Button btApagar;
+    @FXML
+    private AnchorPane apEsquerdo;
+
     private List<Presidente> presidentes;
-    private ObservableList <Presidente> obPresidentes;
+    private ObservableList<Presidente> obPresidentes;
     boolean cadastrar;
+
     /**
      * Initializes the controller class.
      */
@@ -56,65 +63,117 @@ public class PresidenteController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         carregarTodos();
         tableViewPresidentes.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> selecionarItemTabelaDizimistar(newValue));
-    }    
-    
+    }
+
     public void carregarTodos() {
         tbNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         tbDenominacao.setCellValueFactory(new PropertyValueFactory<>("denominacao"));
-        
+
         presidentes = PresidenteDAO.recuperar();
 
-        
         obPresidentes = FXCollections.observableArrayList(presidentes);
         tableViewPresidentes.setItems(obPresidentes);
-        apDireito.setVisible(false);
     }
 
     private void selecionarItemTabelaDizimistar(Presidente p) {
         if (p != null) {
-            apDireito.setVisible(true);
             tfNome.setText(p.getNome());
             cbDenominacao.setValue(p.getDenominacao());
-            
-        }else{
-            apDireito.setVisible(false);
+        } else {
+            tfNome.setText("");
+            cbDenominacao.getItems().clear();
         }
     }
-    
-    public void cadastrarSalvar(){
-        if(btCadastrarSalvar.getText().equals("Cadastrar")){
-            tfNome.setEditable(true);
-            cbDenominacao.setEditable(true);
-            tfNome.setText("");
-            cbDenominacao.setValue(Denominacao.PE);
+
+    public void cadastrarSalvar() {
+        if (btCadastrarSalvar.getText().equals("Cadastrar")) {
             cbDenominacao.getItems().clear();
-            apDireito.setVisible(true);
-
+            tfNome.setText("");
             cbDenominacao.getItems().addAll(Denominacao.PE, Denominacao.DIAC, Denominacao.MINIS);
-            btCadastrarSalvar.setText("Salvar");
+            cbDenominacao.setValue(Denominacao.PE);
             cadastrar = true;
-        }else{
-            Presidente presidente;
+            selectMode(2);
+        } else {
+            if (cadastrar) {
+                Presidente presidente;
+                String nome = tfNome.getText();
+                if (!Alertas.validarNome(nome)) {
+                    return;
+                }
 
-            String nome = tfNome.getText();
-            if(nome.equals("")){
-                System.out.print("erro");
-                return;
+                Denominacao denominacao = cbDenominacao.getValue();
+
+                presidente = new Presidente(nome.toUpperCase(), denominacao);
+                PresidenteDAO.salvar(presidente);
+                Alertas.cadastradoSucesso("Presidente");
+
+                cbDenominacao.getItems().clear();
+                cadastrar = false;
+            } else {
+                Presidente presidente = tableViewPresidentes.getSelectionModel().getSelectedItem();
+                String nome = tfNome.getText();
+                if (!Alertas.validarNome(nome)) {
+                    return;
+                }
+                presidente.setDenominacao(cbDenominacao.getValue());
+                presidente.setNome(nome.toUpperCase());
+                PresidenteDAO.atualizar(presidente);
+                Alertas.atualizadoSucesso("Presidente");
             }
-
-            Denominacao denominacao = cbDenominacao.getValue();
-            if(denominacao==null){
-                System.out.print("erro");
-                return;
-            }
-
-            presidente = new Presidente(nome, denominacao);
-            btCadastrarSalvar.setText("Cadastrar");
-            tfNome.setVisible(false);
-            cbDenominacao.setVisible(false);
-            cadastrar = false;
+            selectMode(1);
         }
-        
+
+    }
+
+    public void editarCancelar() {
+        Presidente presidente = tableViewPresidentes.getSelectionModel().getSelectedItem();
+        if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(presidente, "Presidente")) {
+            cbDenominacao.getItems().addAll(Denominacao.PE, Denominacao.DIAC, Denominacao.MINIS);
+            selectMode(2);
+        } else {
+            selectMode(1);
+        }
+    }
+
+    public void apagar() {
+        Presidente presidente = tableViewPresidentes.getSelectionModel().getSelectedItem();
+        if (Alertas.validarSelecaoEntidade(presidente, "Presidente")) {
+            if (Alertas.confirmarApagar("Presidente")) {
+                PresidenteDAO.apagar(presidente.getId());
+                Alertas.apagadoSucesso("Presidente");
+                carregarTodos();
+            }
+        }
+    }
+
+    public void procurar() {
+        if (!barraBusca.getText().equals("")) {
+            presidentes = PresidenteDAO.recuperar(barraBusca.getText());
+            obPresidentes = FXCollections.observableArrayList(presidentes);
+            tableViewPresidentes.setItems(obPresidentes);
+        } else {
+            carregarTodos();
+        }
+    }
+
+    private void selectMode(int mode) {
+        if (mode == 1) {
+            apEsquerdo.setDisable(false);
+            btCadastrarSalvar.setText("Cadastrar");
+            btEditarCancelar.setText("Editar");
+            btApagar.setVisible(true);
+            tfNome.setEditable(false);
+            tfNome.setText("");
+            cbDenominacao.getItems().clear();
+            carregarTodos();
+        } else if (mode == 2) {
+            apEsquerdo.setDisable(true);
+            tfNome.setEditable(true);
+            btCadastrarSalvar.setText("Salvar");
+            btEditarCancelar.setText("Cancelar");
+            btApagar.setVisible(false);
+            tfNome.setEditable(true);
+        }
     }
 
 }
