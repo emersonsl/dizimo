@@ -62,7 +62,7 @@ public class PresidenteController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         carregarTodos();
-        tableViewPresidentes.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> selecionarItemTabelaDizimistar(newValue));
+        tableViewPresidentes.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> selecionarItemTabelaPresidente(newValue));
     }
 
     public void carregarTodos() {
@@ -75,7 +75,7 @@ public class PresidenteController implements Initializable {
         tableViewPresidentes.setItems(obPresidentes);
     }
 
-    private void selecionarItemTabelaDizimistar(Presidente p) {
+    private void selecionarItemTabelaPresidente(Presidente p) {
         if (p != null) {
             tfNome.setText(p.getNome());
             cbDenominacao.setValue(p.getDenominacao());

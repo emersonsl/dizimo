@@ -4,6 +4,7 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -15,11 +16,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="578.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.FXML.BuscaDizimistaController">
+<AnchorPane id="AnchorPane" prefHeight="578.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DizimistaController">
    <children>
       <SplitPane dividerPositions="0.39598997493734334" layoutX="165.0" layoutY="136.0" prefHeight="578.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane fx:id="painelTabela" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="160.0">
+          <AnchorPane fx:id="apEsquerdo" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="160.0">
                <children>
                   <SplitPane dividerPositions="0.08, 0.93" layoutY="10.0" orientation="VERTICAL" prefHeight="576.0" prefWidth="313.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <items>
@@ -34,7 +35,7 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <TextField fx:id="barraBusca" prefHeight="25.0" prefWidth="217.0" promptText="Digite o nome do dizimista" />
+                                    <TextField fx:id="barraBusca" onAction="#procurar" prefHeight="25.0" prefWidth="217.0" promptText="Digite o nome do dizimista" />
                                     <Button fx:id="procurar" mnemonicParsing="false" onAction="#procurar" text="Procurar" GridPane.columnIndex="1" />
                                  </children>
                                  <padding>
@@ -111,34 +112,32 @@
                               <Label layoutX="62.0" layoutY="254.0" text="Número" />
                               <Label layoutX="29.0" layoutY="291.0" text="Complemento" />
                               <TextField fx:id="id" editable="false" layoutX="139.0" layoutY="34.0" prefHeight="25.0" prefWidth="44.0" promptText="6001" />
-                              <Group fx:id="grupoTextField" layoutX="108.0" layoutY="63.0">
+                              <CheckBox fx:id="ckId" layoutX="192.0" layoutY="37.0" mnemonicParsing="false" onAction="#setIdAuto" text="Automático" visible="false" />
+                              <TextField fx:id="nome" editable="false" layoutX="138.0" layoutY="63.0" prefHeight="25.0" prefWidth="308.0" promptText="Digite o nome do dizimista" />
+                              <DatePicker fx:id="dtNasc" editable="false" layoutX="139.0" layoutY="92.0" prefHeight="25.0" prefWidth="104.0" promptText="01/01/1990" />
+                              <TextField fx:id="telefone" editable="false" layoutX="341.0" layoutY="92.0" onKeyReleased="#autoCompletarTelefone" prefHeight="25.0" prefWidth="104.0" promptText="(75) 99999-9999" />
+                              <TextField fx:id="email" editable="false" layoutX="138.0" layoutY="121.0" prefHeight="25.0" prefWidth="308.0" promptText="calabria@saojoao.com.br" />
+                              <DatePicker fx:id="dtInsc" editable="false" layoutX="138.0" layoutY="149.0" prefHeight="25.0" prefWidth="104.0" promptText="01/01/1990" />
+                              <CheckBox fx:id="ckDataInsc" layoutX="254.0" layoutY="152.0" mnemonicParsing="false" onAction="#setDataInscAuto" text="Hoje" visible="false" />
+                              <TextField fx:id="grupos" editable="false" layoutX="138.0" layoutY="179.0" prefHeight="25.0" prefWidth="308.0" promptText="Dízimo, Liturgia, Legião de maria" />
+                              <TextField fx:id="rua" editable="false" layoutX="108.0" layoutY="225.0" prefHeight="25.0" prefWidth="338.0" promptText="Rua Guimarães" />
+                              <TextField fx:id="numero" editable="false" layoutX="109.0" layoutY="254.0" prefHeight="25.0" prefWidth="51.0" promptText="99999" />
+                              <TextField fx:id="bairro" editable="false" layoutX="214.0" layoutY="256.0" prefHeight="25.0" prefWidth="231.0" promptText="Parque Ipê" />
+                              <TextField fx:id="complemento" editable="false" layoutX="108.0" layoutY="286.0" prefHeight="25.0" prefWidth="338.0" promptText="Prox. à comunidade São João Calabria" />
+                              <CheckBox fx:id="ckCasaReli" layoutX="128.0" layoutY="340.0" mnemonicParsing="false" onAction="#grupoConjVisivel" text="Casado(a) no Religioso" visible="false" />
+                              <Group fx:id="gpConj" layoutX="25.0" layoutY="340.0">
                                  <children>
-                                    <TextField fx:id="nome" editable="false" layoutX="30.0" prefHeight="25.0" prefWidth="308.0" promptText="Digite o nome do dizimista" />
-                                    <TextField fx:id="dataNas" editable="false" layoutX="30.0" layoutY="28.0" onKeyReleased="#autoCompletarDataNas" prefHeight="25.0" prefWidth="81.0" promptText="29/12/2018" />
-                                    <TextField fx:id="telefone" editable="false" layoutX="233.0" layoutY="29.0" onKeyReleased="#autoCompletarTelefone" prefHeight="25.0" prefWidth="104.0" promptText="(75) 99999-9999" />
-                                    <TextField fx:id="email" editable="false" layoutX="30.0" layoutY="58.0" prefHeight="25.0" prefWidth="308.0" promptText="calabria@saojoao.com.br" />
-                                    <TextField fx:id="dataInsc" editable="false" layoutX="30.0" layoutY="87.0" onKeyReleased="#autoCompletarDataInsc" prefHeight="25.0" prefWidth="81.0" promptText="29/12/2018" />
-                                    <TextField fx:id="grupos" editable="false" layoutX="30.0" layoutY="116.0" prefHeight="25.0" prefWidth="308.0" promptText="Dízimo, Liturgia, Legião de maria" />
-                                    <TextField fx:id="rua" editable="false" layoutY="162.0" prefHeight="25.0" prefWidth="338.0" promptText="Rua Guimarães" />
-                                    <TextField fx:id="numero" editable="false" layoutX="1.0" layoutY="191.0" prefHeight="25.0" prefWidth="51.0" promptText="99999" />
-                                    <TextField fx:id="bairro" editable="false" layoutX="106.0" layoutY="193.0" prefHeight="25.0" prefWidth="231.0" promptText="Parque Ipê" />
-                                    <TextField fx:id="complemento" editable="false" layoutY="223.0" prefHeight="25.0" prefWidth="338.0" promptText="Prox. à comunidade São João Calabria" />
-                                 </children>
-                              </Group>
-                              <CheckBox fx:id="checkBoxCasamento" layoutX="128.0" layoutY="340.0" mnemonicParsing="false" onAction="#grupoVisivel" text="Casado no Religioso" visible="false" />
-                              <Group fx:id="casamentoGrupo" layoutX="29.0" layoutY="339.0">
-                                 <children>
-                                    <Label text="Dados Esposo(a)">
+                                    <Label fx:id="lbDadoConj" text="Dados Esposo(a)">
                                        <font>
                                           <Font name="System Bold Italic" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="59.0" layoutY="31.0" text="Nome" />
-                                    <Label layoutX="19.0" layoutY="66.0" text="Data de Nasc." />
-                                    <Label layoutX="22.0" layoutY="101.0" text="Data de Casa." />
-                                    <TextField fx:id="nomeCon" editable="false" layoutX="97.0" layoutY="27.0" prefHeight="25.0" prefWidth="308.0" promptText="Digite o nome do Esposo(a) do dizimista" />
-                                    <TextField fx:id="dataNasCon" editable="false" layoutX="98.0" layoutY="61.0" onKeyReleased="#autoCompletarDataNasCon" prefHeight="25.0" prefWidth="82.0" promptText="01/01/1990" />
-                                    <TextField fx:id="dataCas" editable="false" layoutX="99.0" layoutY="94.0" onKeyReleased="#autoCompletarDataCas" prefHeight="25.0" prefWidth="81.0" promptText="01/01/1990" />
+                                    <Label fx:id="lbNomeConj" layoutX="63.0" layoutY="30.0" text="Nome" />
+                                    <Label fx:id="lbDataNascConj" layoutX="23.0" layoutY="65.0" text="Data de Nasc." />
+                                    <Label fx:id="lbDataCasa" layoutX="26.0" layoutY="100.0" text="Data de Casa." />
+                                    <TextField fx:id="nomeConj" editable="false" layoutX="101.0" layoutY="26.0" prefHeight="25.0" prefWidth="308.0" promptText="Digite o nome do Esposo(a) do dizimista" />
+                                    <DatePicker fx:id="dtNascConj" editable="false" layoutX="102.0" layoutY="61.0" prefHeight="25.0" prefWidth="104.0" promptText="01/01/1990" />
+                                    <DatePicker fx:id="dtCasa" editable="false" layoutX="102.0" layoutY="94.0" prefHeight="25.0" prefWidth="104.0" promptText="01/01/1990" />
                                  </children>
                               </Group>
                            </children>
@@ -150,22 +149,24 @@
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                  </columnConstraints>
                                  <rowConstraints>
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Button fx:id="editarSalvar" mnemonicParsing="false" onAction="#editarSalvar" text="Cadastrar">
+                                    <Button fx:id="btCadastrarSalvar" mnemonicParsing="false" onAction="#cadastrarSalvar" text="Cadastrar">
                                        <font>
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Button>
-                                    <Button mnemonicParsing="false" onAction="#voltar" text="Editar" GridPane.columnIndex="1">
+                                    <Button fx:id="btEditarCancelar" mnemonicParsing="false" onAction="#editarCancelar" text="Editar" GridPane.columnIndex="1">
                                        <font>
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Button>
-                                    <Button fx:id="buttonApagar" mnemonicParsing="false" onAction="#apagar" text="Apagar" textFill="RED" GridPane.columnIndex="2" />
+                                    <Button fx:id="btVerCont" mnemonicParsing="false" onAction="#verContribuicoes" text="Ver contribuições" GridPane.columnIndex="2" />
+                                    <Button fx:id="btApagar" mnemonicParsing="false" onAction="#apagar" text="Apagar" textFill="RED" GridPane.columnIndex="3" />
                                  </children>
                               </GridPane>
                            </children>

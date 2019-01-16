@@ -6,8 +6,20 @@ public class Plantonista {
     private int id;
     private String nome;
     private String senha;
-    private boolean isCoordenador;
+    private boolean coordenador;
 
+    public Plantonista(String nome, boolean coordenador) {
+        this.nome = nome;
+        this.coordenador = coordenador;
+    }
+
+    public Plantonista(int id, String nome, String senha, boolean isCoordenador) {
+        this.id = id;
+        this.nome = nome;
+        this.senha = senha;
+        this.coordenador = isCoordenador;
+    }
+    
     public int getId() {
         return id;
     }
@@ -38,12 +50,16 @@ public class Plantonista {
         this.senha = senha;
     }
 
-    public boolean isIsCoordenador() {
-        return isCoordenador;
+    public boolean isCoordenador() {
+        return coordenador;
     }
 
-    public void setIsCoordenador(boolean isCoordenador) {
-        this.isCoordenador = isCoordenador;
+    public void setCoordenador(boolean isCoordenador) {
+        this.coordenador = isCoordenador;
+    }
+    
+    public String getCoordenador(){
+        return coordenador? "Sim": "Não";
     }
 
 }

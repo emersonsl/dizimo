@@ -25,7 +25,7 @@ public class ConjugeDAO {
         PreparedStatement stmt = null;
         
         try {
-            stmt = c.prepareStatement("INSERT INTO conjuge(dizimista_id_dizimista,nome,data_nascimento,data_casamento)VALUES(?,?,?)");
+            stmt = c.prepareStatement("INSERT INTO conjuge(dizimista_id_dizimista,nome,data_nascimento,data_casamento)VALUES(?,?,?,?)");
             
             stmt.setInt(1, conjuge.getId());
             stmt.setString(2, conjuge.getNome());
@@ -47,7 +47,7 @@ public class ConjugeDAO {
         ResultSet rs = null;
 
          try {
-             stmt = c.prepareStatement("SELECT * FROM conjuge WHERE id_conjuge=?");
+             stmt = c.prepareStatement("SELECT * FROM conjuge WHERE dizimista_id_dizimista=?");
              stmt.setInt(1, id);
              rs = stmt.executeQuery();
              rs.next();
