@@ -107,11 +107,14 @@ public abstract class Alertas {
         if (id == null || !id.matches("6\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Número do carnê invalido");
-            if (DizimistaDAO.recuperar(Integer.parseInt(id)) != null) {
-                alert.setContentText("Número do dizimista invalido, já está sendo usado, tente outro número");
-            } else {
-                alert.setContentText("Número do dizimista invalido, verifique se o valor está entre 6001 e 6999");
-            }
+            alert.setContentText("Número do dizimista invalido, verifique se o valor está entre 6001 e 6999");
+            alert.show();
+            return false;
+        }
+        if (DizimistaDAO.recuperar(Integer.parseInt(id)) != null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Número do carnê invalido");
+            alert.setContentText("Número do dizimista já está sendo usado, tente outro número");
             alert.show();
             return false;
         }

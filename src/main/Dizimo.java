@@ -17,7 +17,7 @@ public class Dizimo {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String s = "8000";
+        String s = "";
         System.out.println(s.matches("6\\d"));
     }
     

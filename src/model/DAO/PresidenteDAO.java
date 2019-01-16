@@ -59,11 +59,10 @@ public class PresidenteDAO {
             }
             return presidentes;
         } catch (SQLException ex) {
-            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             Conexao.closeConnection(c, stmt);
         }
-        return null;
     }
 
     public static List<Presidente> recuperar(String nomeSobrenome) {
@@ -84,11 +83,10 @@ public class PresidenteDAO {
             }
             return presidentes;
         } catch (SQLException ex) {
-            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             Conexao.closeConnection(c, stmt);
         }
-        return null;
     }
 
     public static void atualizar(Presidente presidente) {

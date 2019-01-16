@@ -175,9 +175,11 @@ public class DizimistaController implements Initializable {
                 break;
             case 2:
                 //cadastrar
+                clear();
                 ckId.setVisible(true);
                 ckDataInsc.setVisible(true);
                 ckCasaReli.setVisible(true);
+                ckCasaReli.setSelected(false);
                 setEditables(true);
                 gpConj.setVisible(false);
                 btCadastrarSalvar.setText("Salvar");

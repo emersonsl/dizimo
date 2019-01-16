@@ -88,11 +88,10 @@ public class DizimistaDAO {
             }
             return dizimistas;
         } catch (SQLException ex) {
-            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             Conexao.closeConnection(c, stmt);
         }
-        return null;
     }
 
     public static List<Dizimista> recuperar(String nomeSobrenome) {
@@ -119,11 +118,10 @@ public class DizimistaDAO {
             }
             return dizimistas;
         } catch (SQLException ex) {
-            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             Conexao.closeConnection(c, stmt);
         }
-        return null;
     }
 
     public static Dizimista recuperar(int id) {
@@ -145,11 +143,10 @@ public class DizimistaDAO {
                     rs.getString("bairro"), rs.getString("numero"), rs.getString("complemento"));
             return d;
         } catch (SQLException ex) {
-            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             Conexao.closeConnection(c, stmt);
         }
-        return null;
     }
 
     public static void atualizar(Dizimista dizimista) {
