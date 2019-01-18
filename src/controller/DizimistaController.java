@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
@@ -277,7 +278,10 @@ public class DizimistaController implements Initializable {
     }
 
     public void verContribuicoes() {
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Funcionalidade não implementada");
+        alert.setContentText("Essa funcionalidade ainda não foi implementada, logo em breve estará disponivel");
+        alert.show();
     }
 
     public void apagar() {
@@ -344,8 +348,8 @@ public class DizimistaController implements Initializable {
             c.setId(d.getId());
             ConjugeDAO.salvar(c);
             d.setConjuge(c);
-        }else if (d.getConjuge() != null) {
-            Conjuge c= d.getConjuge();
+        } else if (d.getConjuge() != null) {
+            Conjuge c = d.getConjuge();
             if (ckCasaReli.isSelected()) {
                 c.setNome(nomeConj.getText());
                 c.setDataNascimento(Date.valueOf(dtNascConj.getValue()));
@@ -361,7 +365,7 @@ public class DizimistaController implements Initializable {
     }
 
     private boolean validarCampos() {
-        if (!ckId.isSelected() && !Alertas.validarIdDizimista(id.getText())) {
+        if (cadastrar &&!ckId.isSelected() && !Alertas.validarIdDizimista(id.getText())) {
             return false;
         }
 

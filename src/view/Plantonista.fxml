@@ -88,7 +88,7 @@
                                       </rowConstraints>
                                        <children>
                                           <Label text="Nome" />
-                                          <TextField fx:id="tfNome" promptText="Digite o nome do Plantonista" GridPane.columnIndex="1" />
+                                          <TextField fx:id="tfNome" editable="false" promptText="Digite o nome do Plantonista" GridPane.columnIndex="1" />
                                           <CheckBox fx:id="ckCoordenador" mnemonicParsing="false" text="Coordenador" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                        </children>
                                        <padding>

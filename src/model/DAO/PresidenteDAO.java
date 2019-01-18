@@ -64,6 +64,29 @@ public class PresidenteDAO {
             Conexao.closeConnection(c, stmt);
         }
     }
+    
+    public static Presidente recuperar(int id) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            stmt = c.prepareStatement("Select * From presidente where id_presidente = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                Presidente p = new Presidente(rs.getInt("id_presidente"), rs.getString("nome"), Denominacao.valueOf(rs.getString("denominacao")));
+                return p;
+            }
+            return null;
+        } catch (SQLException ex) {
+            return null;
+        } finally {
+            Conexao.closeConnection(c, stmt);
+        }
+    }
 
     public static List<Presidente> recuperar(String nomeSobrenome) {
         Connection c = Conexao.getConnection();

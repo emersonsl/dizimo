@@ -46,6 +46,10 @@ public class Dizimista {
         this.complemento = complemento;
     }
 
+    public Dizimista() {
+    }
+    
+
     public Integer getId() {
         return id;
     }
@@ -140,6 +144,11 @@ public class Dizimista {
 
     public void setComplemento(String complemento) {
         this.complemento = complemento;
+    }
+    
+    @Override
+    public String toString(){
+        return id+" - "+nome;
     }
 
 }

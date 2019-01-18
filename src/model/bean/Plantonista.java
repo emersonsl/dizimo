@@ -61,5 +61,10 @@ public class Plantonista {
     public String getCoordenador(){
         return coordenador? "Sim": "Não";
     }
+    
+    @Override
+    public String toString(){
+        return nome;
+    }
 
 }

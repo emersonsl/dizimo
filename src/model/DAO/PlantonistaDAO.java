@@ -21,7 +21,7 @@ import model.bean.Plantonista;
  * @author Emerson
  */
 public class PlantonistaDAO {
-    
+
     public static void salvar(Plantonista plantonista) {
 
         Connection c = Conexao.getConnection();
@@ -41,8 +41,8 @@ public class PlantonistaDAO {
             Conexao.closeConnection(c, stmt);
         }
     }
-    
-     public static List<Plantonista> recuperar() {
+
+    public static List<Plantonista> recuperar() {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -59,14 +59,36 @@ public class PlantonistaDAO {
             }
             return plantonistas;
         } catch (SQLException ex) {
-            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
             Conexao.closeConnection(c, stmt);
         }
-        return null;
     }
-     
-     public static List<Plantonista> recuperar(String nomeSobrenome) {
+    
+    public static Plantonista recuperar(int id) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            stmt = c.prepareStatement("Select * From plantonista where id_plantonista = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                Plantonista p = new Plantonista(rs.getInt("id_plantonista"), rs.getString("nome"), rs.getString("senha"), rs.getBoolean("coordenador"));
+                return p;
+            }
+            return null;
+        } catch (SQLException ex) {
+            return null;
+        } finally {
+            Conexao.closeConnection(c, stmt);
+        }
+    }
+
+    public static List<Plantonista> recuperar(String nomeSobrenome) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -90,7 +112,7 @@ public class PlantonistaDAO {
         }
     }
 
-     public static void atualizar(Plantonista plantonista) {
+    public static void atualizar(Plantonista plantonista) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
 
@@ -100,7 +122,7 @@ public class PlantonistaDAO {
             stmt.setString(1, plantonista.getNome());
             stmt.setBoolean(2, plantonista.isCoordenador());
             stmt.setString(3, plantonista.getSenha());
-            
+
             stmt.setInt(4, plantonista.getId());
 
             stmt.executeUpdate();
@@ -111,8 +133,8 @@ public class PlantonistaDAO {
             Conexao.closeConnection(c, stmt);
         }
     }
-     
-     public static void apagar(int id) {
+
+    public static void apagar(int id) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
 
@@ -130,5 +152,4 @@ public class PlantonistaDAO {
         }
     }
 
-    
 }
