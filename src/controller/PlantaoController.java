@@ -8,6 +8,7 @@ package controller;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -30,6 +31,7 @@ import model.DAO.PresidenteDAO;
 import model.bean.Plantao;
 import model.bean.Plantonista;
 import model.bean.Presidente;
+import view.Alertas;
 
 /**
  * FXML Controller class
@@ -38,6 +40,8 @@ import model.bean.Presidente;
  */
 public class PlantaoController implements Initializable {
     
+    @FXML
+    private DatePicker barraBusca;
     @FXML
     private DatePicker dtData;
     @FXML
@@ -162,6 +166,7 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
                 btApagar.setVisible(true);
                 apEsquerdo.setDisable(false);
                 clear();
+                carregarTodos();
                 break;
             case 2:
                 //cadastrar
@@ -172,6 +177,8 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
                 btVerCont.setVisible(false);
                 btApagar.setVisible(false);
                 apEsquerdo.setDisable(true);
+                tfHorario.setEditable(true);
+                dtData.setEditable(true);
                 break;
             case 3:
                 //editar
@@ -181,6 +188,8 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
                 btVerCont.setVisible(false);
                 btApagar.setVisible(false);
                 apEsquerdo.setDisable(true);
+                tfHorario.setEditable(true);
+                dtData.setEditable(true);
                 break;
             default:
                 break;
@@ -191,12 +200,19 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
         if (btCadastrarSalvar.getText().equals("Cadastrar")) {
             selectMode(2);
             cadastrar = true;
+        }else{
+            if(cadastrar){
+                salvar();
+            }else{
+                atualizar();
+            }
         }
 
     }
 
     public void editarCancelar() {
-        if (btEditarCancelar.getText().equals("Editar")) {
+        Plantao plantao = tableViewPlantoes.getSelectionModel().getSelectedItem();
+        if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(plantao, "Plantão")) {
             selectMode(3);
             cadastrar = false;
         } else {
@@ -210,6 +226,14 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
     }
 
     public void apagar() {
+        Plantao plantao = tableViewPlantoes.getSelectionModel().getSelectedItem();
+        if (Alertas.validarSelecaoEntidade(plantao, "Plantão")) {
+            if (Alertas.confirmarApagar("Plantão")) {
+                PlantaoDAO.apagar(plantao.getId());
+                Alertas.apagadoSucesso("Plantão");
+                carregarTodos();
+            }
+        }
 
     }
 
@@ -220,4 +244,64 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
         cbPresidente.getItems().clear();
     }
 
+    private void salvar() {
+        if(!validarCampos()){
+            return;
+        }
+        
+        Time hora = Time.valueOf(tfHorario.getText().concat(":00"));
+        Plantao p = new Plantao(hora, Date.valueOf(dtData.getValue()), cbLancador.getValue(), cbPresidente.getValue());
+        PlantaoDAO.salvar(p);
+        Alertas.cadastradoSucesso("Plantão");
+        selectMode(1);
+    }
+
+    private void atualizar() {
+        if(!validarCampos()){
+            return;
+        }
+        
+        Time hora = Time.valueOf(tfHorario.getText().concat(":00"));
+        Plantao p = tableViewPlantoes.getSelectionModel().getSelectedItem();
+        p.setData(Date.valueOf(dtData.getValue()));
+        p.setHora(hora);
+        p.setLancador(cbLancador.getValue());
+        p.setPresidente(cbPresidente.getValue());
+        
+        PlantaoDAO.atualizar(p);
+        Alertas.atualizadoSucesso("Plantão");
+        selectMode(1);
+    }
+
+    private boolean validarCampos() {
+        if(!Alertas.validarData(dtData.getValue(), "Plantão")){
+            return false;
+        }
+        
+        if(!Alertas.validarHora(tfHorario.getText())){
+            return false;
+        }
+        
+        if(!Alertas.validarSelecaoEntidade(cbPresidente.getValue(), "Presidente")){
+            return false;
+        }
+        
+        if(!Alertas.validarSelecaoEntidade(cbLancador.getValue(), "Lançador")){
+            return false;
+        }
+        
+        return true;
+    }
+
+    public void procurar() {
+        if (barraBusca.getValue()!=null) {
+            plantoes = PlantaoDAO.recuperar(Date.valueOf(barraBusca.getValue()));
+            obPlantoes = FXCollections.observableArrayList(plantoes);
+            tableViewPlantoes.setItems(obPlantoes);
+        } else {
+            carregarTodos();
+        }
+    }
+
+    
 }

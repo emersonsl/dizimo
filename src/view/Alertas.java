@@ -142,4 +142,15 @@ public abstract class Alertas {
         }
         return true;
     }
+
+    public static boolean validarHora(String hora) {
+        if (hora == null || !hora.matches("\\d{2}:\\d{2}")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Hora invalida");
+            alert.setContentText("Horário invalido, verifique se está preenchido corretamente Ex.: 00:00");
+            alert.show();
+            return false;
+        }
+        return true;
+    }
 }

@@ -17,6 +17,13 @@ public class Plantao {
     public Plantao() {
     }
 
+    public Plantao(Time hora, Date data, Plantonista lancador, Presidente presidente) {
+        this.hora = hora;
+        this.data = data;
+        this.lancador = lancador;
+        this.presidente = presidente;
+    }
+
     public Plantao(Integer id, Time hora, Date data, Plantonista lancador, Presidente presidente) {
         this.id = id;
         this.hora = hora;
