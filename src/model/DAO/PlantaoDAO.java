@@ -24,10 +24,11 @@ import model.bean.Presidente;
  * @author Emerson
  */
 public class PlantaoDAO {
-    
+
     public static void salvar(Plantao plantao) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
+        ResultSet rs = null;
 
         try {
             stmt = c.prepareStatement("INSERT INTO plantao(hora, data, plantonista_id_plantonista, presidente_id_presidente) VALUES (?,?,?,?)");
@@ -38,13 +39,15 @@ public class PlantaoDAO {
             stmt.setInt(4, plantao.getPresidente().getId());
             stmt.executeUpdate();
 
+            rs = stmt.executeQuery("SELECT LAST_INSERT_ID()");
+            plantao.setId(rs.getInt(1));
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             Conexao.closeConnection(c, stmt);
         }
     }
-    
+
     public static List<Plantao> recuperar() {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
@@ -59,8 +62,8 @@ public class PlantaoDAO {
             while (rs.next()) {
                 Plantonista plantonista = PlantonistaDAO.recuperar(rs.getInt("plantonista_id_plantonista"));
                 Presidente presidente = PresidenteDAO.recuperar(rs.getInt("presidente_id_presidente"));
-                Plantao p = new Plantao(rs.getInt("id_plantao"), rs.getTime("hora"), rs.getDate("Data"),plantonista , presidente);
-                
+                Plantao p = new Plantao(rs.getInt("id_plantao"), rs.getTime("hora"), rs.getDate("Data"), plantonista, presidente);
+
                 plantoes.add(p);
             }
             return plantoes;
@@ -70,7 +73,32 @@ public class PlantaoDAO {
             Conexao.closeConnection(c, stmt);
         }
     }
-    
+
+    public static Plantao recuperar(int id) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            stmt = c.prepareStatement("Select * From plantao where id_plantao = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Plantonista plantonista = PlantonistaDAO.recuperar(rs.getInt("plantonista_id_plantonista"));
+                Presidente presidente = PresidenteDAO.recuperar(rs.getInt("presidente_id_presidente"));
+                Plantao p = new Plantao(rs.getInt("id_plantao"), rs.getTime("hora"), rs.getDate("Data"), plantonista, presidente);
+                return p;
+            }
+            return null;
+        } catch (SQLException ex) {
+            return null;
+        } finally {
+            Conexao.closeConnection(c, stmt);
+        }
+    }
+
     public static List<Plantao> recuperar(Date data) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
@@ -86,8 +114,8 @@ public class PlantaoDAO {
             while (rs.next()) {
                 Plantonista plantonista = PlantonistaDAO.recuperar(rs.getInt("plantonista_id_plantonista"));
                 Presidente presidente = PresidenteDAO.recuperar(rs.getInt("presidente_id_presidente"));
-                Plantao p = new Plantao(rs.getInt("id_plantao"), rs.getTime("hora"), rs.getDate("Data"),plantonista , presidente);
-                
+                Plantao p = new Plantao(rs.getInt("id_plantao"), rs.getTime("hora"), rs.getDate("Data"), plantonista, presidente);
+
                 plantoes.add(p);
             }
             return plantoes;
@@ -97,7 +125,7 @@ public class PlantaoDAO {
             Conexao.closeConnection(c, stmt);
         }
     }
-    
+
     public static void atualizar(Plantao plantao) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
@@ -139,5 +167,4 @@ public class PlantaoDAO {
         }
     }
 
-    
 }

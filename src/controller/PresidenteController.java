@@ -54,7 +54,7 @@ public class PresidenteController implements Initializable {
 
     private List<Presidente> presidentes;
     private ObservableList<Presidente> obPresidentes;
-    boolean cadastrar;
+    private boolean cadastrar;
 
     /**
      * Initializes the controller class.

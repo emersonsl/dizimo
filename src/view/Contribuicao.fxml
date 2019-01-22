@@ -4,7 +4,6 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -21,7 +20,7 @@
    <children>
       <SplitPane dividerPositions="0.57" layoutX="120.0" layoutY="53.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane fx:id="anchorPaneDireito" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <AnchorPane fx:id="apEsquerdo" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <SplitPane dividerPositions="0.15, 0.93" layoutX="48.0" layoutY="29.0" orientation="VERTICAL" prefHeight="398.0" prefWidth="256.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
@@ -44,10 +43,10 @@
                                     <Label text="Horário" GridPane.rowIndex="1" />
                                     <Label prefHeight="17.0" prefWidth="56.0" text="Lançador" GridPane.columnIndex="2" />
                                     <Label text="Presidente" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                    <DatePicker prefHeight="25.0" prefWidth="106.0" GridPane.columnIndex="1" />
-                                    <TextField maxWidth="55.0" prefHeight="25.0" prefWidth="55.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <TextField GridPane.columnIndex="3" />
-                                    <TextField GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                    <TextField fx:id="tfHrPlantao" editable="false" maxWidth="55.0" prefHeight="25.0" prefWidth="55.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <TextField fx:id="tfLancadorPlantao" editable="false" GridPane.columnIndex="3" />
+                                    <TextField fx:id="tfPresidentePlantao" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                    <TextField fx:id="tfDtPlantao" maxHeight="25.0" maxWidth="80.0" prefHeight="25.0" prefWidth="40.0" GridPane.columnIndex="1" />
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -57,13 +56,13 @@
                         </AnchorPane>
                       <AnchorPane prefHeight="323.0" prefWidth="501.0">
                            <children>
-                              <TableView layoutX="-14.0" layoutY="-14.0" prefHeight="413.0" prefWidth="450.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="tableViewContribuicoes" layoutX="-14.0" layoutY="-14.0" prefHeight="413.0" prefWidth="450.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columns>
-                                  <TableColumn prefWidth="59.0" text="Número" />
-                                  <TableColumn prefWidth="90.0" text="Valor" />
-                                    <TableColumn prefWidth="117.0" text="Mês" />
-                                    <TableColumn prefWidth="45.0" text="Ano" />
-                                    <TableColumn minWidth="3.0" prefWidth="138.0" text="Plantonista" />
+                                  <TableColumn fx:id="tbDizimista" prefWidth="59.0" text="Número" />
+                                  <TableColumn fx:id="tbValor" prefWidth="90.0" text="Valor" />
+                                    <TableColumn fx:id="tbMes" prefWidth="117.0" text="Mês" />
+                                    <TableColumn fx:id="tbAno" prefWidth="45.0" text="Ano" />
+                                    <TableColumn fx:id="tbPlantonista" minWidth="3.0" prefWidth="138.0" text="Plantonista" />
                                 </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -89,14 +88,14 @@
                                                 <Font name="System Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <TextField alignment="CENTER_RIGHT" editable="false" layoutX="42.0" prefHeight="30.0" prefWidth="79.0" promptText="0.00">
+                                          <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" editable="false" layoutX="42.0" prefHeight="30.0" prefWidth="79.0" promptText="0.00">
                                              <font>
                                                 <Font size="15.0" />
                                              </font>
                                           </TextField>
                                        </children>
                                     </Group>
-                                    <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="106.0" text="Encerrar Plantão" textFill="#e80000" GridPane.columnIndex="1" />
+                                    <Button fx:id="btEncerrarPlantao" mnemonicParsing="false" onAction="#encerrarPlantao" prefHeight="25.0" prefWidth="106.0" text="Encerrar Plantão" textFill="#e80000" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children></AnchorPane>
@@ -134,12 +133,12 @@
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                          <TextField disable="true" editable="false" GridPane.columnIndex="1" />
-                                          <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                          <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                          <TextField maxWidth="65.0" minWidth="65.0" prefWidth="65.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                          <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <ComboBox fx:id="cbIdDizimista" editable="true" onAction="#buscarDizimista" onDragExited="#buscarDizimista" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <TextField fx:id="tfNomeDizimista" disable="true" editable="false" GridPane.columnIndex="1" />
+                                          <ComboBox fx:id="cbMes" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <ComboBox fx:id="cbAno" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <TextField fx:id="tfValor" maxWidth="65.0" minWidth="65.0" prefWidth="65.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <ComboBox fx:id="cbPlantonista" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                           <Label text="Número" GridPane.rowIndex="1" />
                                           <Label text="Nome" />
                                           <Label text="Mês" GridPane.rowIndex="2" />
@@ -167,8 +166,8 @@
                                  </rowConstraints>
                                  <children>
                                     <Button fx:id="buttonCadastrarSalvar" mnemonicParsing="false" onAction="#cadastrarSalvar" text="Cadastrar" />
-                                    <Button fx:id="buttonEditarCancelar" mnemonicParsing="false" text="Editar" GridPane.columnIndex="1" />
-                                    <Button fx:id="buttonApagar" mnemonicParsing="false" text="Apagar" textFill="RED" GridPane.columnIndex="2" />
+                                    <Button fx:id="buttonEditarCancelar" mnemonicParsing="false" onAction="#editarCancelar" text="Editar" GridPane.columnIndex="1" />
+                                    <Button fx:id="buttonApagar" mnemonicParsing="false" onAction="#apagar" text="Apagar" textFill="RED" GridPane.columnIndex="2" />
                                  </children>
                               </GridPane>
                            </children>

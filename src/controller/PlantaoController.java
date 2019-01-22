@@ -8,6 +8,7 @@ package controller;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,6 +32,7 @@ import model.DAO.PresidenteDAO;
 import model.bean.Plantao;
 import model.bean.Plantonista;
 import model.bean.Presidente;
+import util.Denominacao;
 import view.Alertas;
 
 /**
@@ -76,7 +78,9 @@ public class PlantaoController implements Initializable {
     private final DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("hh:mm");
     private List<Plantao> plantoes;
     private ObservableList<Plantao> obPlantoes;
-
+    private static Plantao plantao = new Plantao(1, Time.valueOf(LocalTime.now()), Date.valueOf(LocalDate.now()), new Plantonista("EMERSON", true), new Presidente("CARLOS", Denominacao.DIAC));;
+    
+    
     /**
      * Initializes the controller class.
      */
@@ -84,7 +88,6 @@ public class PlantaoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         carregarTodos();
         tableViewPlantoes.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> selecionarItemTabelaDizimistar(newValue));
-        
     }
     
     public void carregarTodos() {
@@ -211,8 +214,8 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
     }
 
     public void editarCancelar() {
-        Plantao plantao = tableViewPlantoes.getSelectionModel().getSelectedItem();
-        if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(plantao, "Plantão")) {
+        Plantao p = tableViewPlantoes.getSelectionModel().getSelectedItem();
+        if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(p, "Plantão")) {
             selectMode(3);
             cadastrar = false;
         } else {
@@ -222,14 +225,20 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
     }
 
     public void verContribuicoes() {
-
+        Plantao p = tableViewPlantoes.getSelectionModel().getSelectedItem();
+        if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(plantao, "Plantão")) {
+            plantao = p;
+            //abrir tela contribuições
+        }else{
+            selectMode(1);
+        }
     }
 
     public void apagar() {
-        Plantao plantao = tableViewPlantoes.getSelectionModel().getSelectedItem();
-        if (Alertas.validarSelecaoEntidade(plantao, "Plantão")) {
+        Plantao p = tableViewPlantoes.getSelectionModel().getSelectedItem();
+        if (Alertas.validarSelecaoEntidade(p, "Plantão")) {
             if (Alertas.confirmarApagar("Plantão")) {
-                PlantaoDAO.apagar(plantao.getId());
+                PlantaoDAO.apagar(p.getId());
                 Alertas.apagadoSucesso("Plantão");
                 carregarTodos();
             }
@@ -254,6 +263,7 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
         PlantaoDAO.salvar(p);
         Alertas.cadastradoSucesso("Plantão");
         selectMode(1);
+        plantao = p;
     }
 
     private void atualizar() {
@@ -303,5 +313,7 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
         }
     }
 
-    
+    public static Plantao getPlantao(){
+        return plantao;
+    }
 }

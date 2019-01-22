@@ -5,7 +5,8 @@
  */
 package main;
 
-import java.time.LocalDate;
+import model.DAO.ContribuicaoDAO;
+import model.bean.Contribuicao;
 
 /**
  *
@@ -19,6 +20,8 @@ public class Dizimo {
     public static void main(String[] args) {
         String s = "";
         System.out.println(s.matches("6\\d"));
+        Contribuicao c = ContribuicaoDAO.recuperar().get(0);
+        System.out.println("Ano: "+c.getAno());
     }
     
 }
