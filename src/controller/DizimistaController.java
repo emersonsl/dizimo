@@ -365,7 +365,7 @@ public class DizimistaController implements Initializable {
     }
 
     private boolean validarCampos() {
-        if (cadastrar &&!ckId.isSelected() && !Alertas.validarIdDizimista(id.getText())) {
+        if (cadastrar &&!ckId.isSelected() && !Alertas.validarCadastroIdDizimista(id.getText())) {
             return false;
         }
 
@@ -373,7 +373,7 @@ public class DizimistaController implements Initializable {
             return false;
         }
 
-        if (!Alertas.validarTexto(rua.getText(), "Rua") || !Alertas.validarNumero(numero.getText()) || !Alertas.validarTexto(bairro.getText(), "Bairro")) {
+        if (!Alertas.validarTexto(rua.getText(), "Rua") || !Alertas.validarNumeroEndereco(numero.getText()) || !Alertas.validarTexto(bairro.getText(), "Bairro")) {
             return false;
         }
 

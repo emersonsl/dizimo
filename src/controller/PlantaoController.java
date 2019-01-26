@@ -78,7 +78,7 @@ public class PlantaoController implements Initializable {
     private final DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("hh:mm");
     private List<Plantao> plantoes;
     private ObservableList<Plantao> obPlantoes;
-    private static Plantao plantao = new Plantao(1, Time.valueOf(LocalTime.now()), Date.valueOf(LocalDate.now()), new Plantonista("EMERSON", true), new Presidente("CARLOS", Denominacao.DIAC));;
+    private static Plantao plantao = new Plantao(3, Time.valueOf(LocalTime.now()), Date.valueOf(LocalDate.now()), new Plantonista("EMERSON", true), new Presidente("CARLOS", Denominacao.DIAC));;
     
     
     /**
