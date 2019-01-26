@@ -20,12 +20,12 @@ public class JavaFX extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/Contribuicao.FXML"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/TelaPrincipal.FXML"));
         
         Scene scene = new Scene(root);
         
         stage.setScene(scene);
-        stage.setTitle("Cadastro dizimistas");
+        stage.setTitle("Sistema Dizimo");
         stage.setResizable(false);
         stage.show();
         

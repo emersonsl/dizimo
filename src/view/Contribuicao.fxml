@@ -29,8 +29,8 @@
                               <GridPane hgap="5.0" layoutX="37.0" layoutY="13.0" prefHeight="83.0" prefWidth="450.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="119.0" minWidth="10.0" prefWidth="81.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="117.0" />
-                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="122.0" minWidth="10.0" prefWidth="67.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="99.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="122.0" minWidth="10.0" prefWidth="77.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="168.0" minWidth="10.0" prefWidth="165.0" />
                                  </columnConstraints>
                                  <rowConstraints>
@@ -39,14 +39,42 @@
                                  </rowConstraints>
                                  <children>
                                     <Group GridPane.columnIndex="2" />
-                                    <Label text="Data" />
-                                    <Label text="Horário" GridPane.rowIndex="1" />
-                                    <Label prefHeight="17.0" prefWidth="56.0" text="Lançador" GridPane.columnIndex="2" />
-                                    <Label text="Presidente" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                    <TextField fx:id="tfHrPlantao" editable="false" maxWidth="55.0" prefHeight="25.0" prefWidth="55.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <TextField fx:id="tfLancadorPlantao" editable="false" GridPane.columnIndex="3" />
-                                    <TextField fx:id="tfPresidentePlantao" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                    <TextField fx:id="tfDtPlantao" maxHeight="25.0" maxWidth="80.0" prefHeight="25.0" prefWidth="40.0" GridPane.columnIndex="1" />
+                                    <Label text="Data">
+                                       <font>
+                                          <Font name="Roboto Black" size="13.0" />
+                                       </font></Label>
+                                    <Label text="Horário" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font name="Roboto Black" size="13.0" />
+                                       </font></Label>
+                                    <Label prefHeight="17.0" prefWidth="56.0" text="Lançador" GridPane.columnIndex="2">
+                                       <font>
+                                          <Font name="Roboto Black" size="13.0" />
+                                       </font></Label>
+                                    <Label prefHeight="15.0" prefWidth="70.0" text="Presidente" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font name="Roboto Black" size="13.0" />
+                                       </font></Label>
+                                    <Label fx:id="lbDtPlantao" prefHeight="12.0" prefWidth="122.0" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font name="Roboto Medium" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lbHrPlantao" prefHeight="17.0" prefWidth="116.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font name="Roboto Medium" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lbLancadorPlantao" prefHeight="17.0" prefWidth="177.0" GridPane.columnIndex="3">
+                                       <font>
+                                          <Font name="Roboto Medium" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lbPresidentePlantao" prefHeight="17.0" prefWidth="211.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font name="Roboto Medium" size="12.0" />
+                                       </font>
+                                    </Label>
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -88,7 +116,7 @@
                                                 <Font name="System Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" editable="false" layoutX="42.0" prefHeight="30.0" prefWidth="79.0" promptText="0.00">
+                                          <TextField fx:id="tfValorTotal" alignment="CENTER_RIGHT" editable="false" layoutX="42.0" prefHeight="30.0" prefWidth="79.0" promptText="0.00">
                                              <font>
                                                 <Font size="15.0" />
                                              </font>
@@ -133,18 +161,18 @@
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <ComboBox fx:id="cbIdDizimista" editable="true" onAction="#buscarDizimista" onDragExited="#buscarDizimista" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                          <TextField fx:id="tfNomeDizimista" disable="true" editable="false" GridPane.columnIndex="1" />
-                                          <ComboBox fx:id="cbMes" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                          <ComboBox fx:id="cbAno" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                          <TextField fx:id="tfValor" maxWidth="65.0" minWidth="65.0" prefWidth="65.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                          <ComboBox fx:id="cbPlantonista" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                          <TextField fx:id="tfIdDizimista" editable="false" maxHeight="85.0" maxWidth="45.0" onAction="#buscarDizimista" onDragDropped="#buscarDizimista" onKeyReleased="#buscarDizimista" promptText="6001" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <ComboBox fx:id="cbMes" prefWidth="150.0" promptText="selecione o valor" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <ComboBox fx:id="cbAno" prefWidth="150.0" promptText="selecione o ano" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <TextField fx:id="tfValor" maxWidth="65.0" minWidth="65.0" prefWidth="65.0" promptText="0,00" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <ComboBox fx:id="cbPlantonista" prefHeight="25.0" prefWidth="195.0" promptText="selecione o plantonista" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                           <Label text="Número" GridPane.rowIndex="1" />
                                           <Label text="Nome" />
                                           <Label text="Mês" GridPane.rowIndex="2" />
                                           <Label text="Ano" GridPane.rowIndex="3" />
                                           <Label text="Valor" GridPane.rowIndex="4" />
                                           <Label text="Plantonista" GridPane.rowIndex="5" />
+                                          <Label fx:id="lbNomeDizimista" prefHeight="24.0" prefWidth="192.0" style="-fx-background-color: white; -fx-border-radius: 50; -fx-padding: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);" GridPane.columnIndex="1" />
                                        </children>
                                        <padding>
                                           <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -165,9 +193,9 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Button fx:id="buttonCadastrarSalvar" mnemonicParsing="false" onAction="#cadastrarSalvar" text="Cadastrar" />
-                                    <Button fx:id="buttonEditarCancelar" mnemonicParsing="false" onAction="#editarCancelar" text="Editar" GridPane.columnIndex="1" />
-                                    <Button fx:id="buttonApagar" mnemonicParsing="false" onAction="#apagar" text="Apagar" textFill="RED" GridPane.columnIndex="2" />
+                                    <Button fx:id="btCadastrarSalvar" mnemonicParsing="false" onAction="#cadastrarSalvar" text="Cadastrar" />
+                                    <Button fx:id="btEditarCancelar" mnemonicParsing="false" onAction="#editarCancelar" text="Editar" GridPane.columnIndex="1" />
+                                    <Button fx:id="btApagar" mnemonicParsing="false" onAction="#apagar" text="Apagar" textFill="RED" GridPane.columnIndex="2" />
                                  </children>
                               </GridPane>
                            </children>

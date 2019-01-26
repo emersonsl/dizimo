@@ -5,17 +5,19 @@
  */
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -32,7 +34,6 @@ import model.DAO.PresidenteDAO;
 import model.bean.Plantao;
 import model.bean.Plantonista;
 import model.bean.Presidente;
-import util.Denominacao;
 import view.Alertas;
 
 /**
@@ -72,14 +73,16 @@ public class PlantaoController implements Initializable {
     private TableColumn<Plantao, Plantonista> tbLancador;
     @FXML
     private TableColumn<Plantao, Presidente> tbPresidente;
+    @FXML
+    private AnchorPane apPrincipal;
+    
     
     private boolean cadastrar;
     
     private final DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("hh:mm");
     private List<Plantao> plantoes;
     private ObservableList<Plantao> obPlantoes;
-    private static Plantao plantao = new Plantao(3, Time.valueOf(LocalTime.now()), Date.valueOf(LocalDate.now()), new Plantonista("EMERSON", true), new Presidente("CARLOS", Denominacao.DIAC));;
-    
+    private static Plantao plantao;
     
     /**
      * Initializes the controller class.
@@ -226,9 +229,10 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
 
     public void verContribuicoes() {
         Plantao p = tableViewPlantoes.getSelectionModel().getSelectedItem();
-        if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(plantao, "Plantão")) {
+        if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(p, "Plantão")) {
             plantao = p;
             //abrir tela contribuições
+            chamarTelaContribuicoes();
         }else{
             selectMode(1);
         }
@@ -264,6 +268,7 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
         Alertas.cadastradoSucesso("Plantão");
         selectMode(1);
         plantao = p;
+        chamarTelaContribuicoes();
     }
 
     private void atualizar() {
@@ -281,6 +286,16 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
         PlantaoDAO.atualizar(p);
         Alertas.atualizadoSucesso("Plantão");
         selectMode(1);
+    }
+    
+    private void chamarTelaContribuicoes(){
+        try {
+            AnchorPane aContribuicoes = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Contribuicao.FXML"));
+            apPrincipal.getChildren().setAll(aContribuicoes);
+        } catch (IOException ex) {
+            Logger.getLogger(PlantaoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     private boolean validarCampos() {

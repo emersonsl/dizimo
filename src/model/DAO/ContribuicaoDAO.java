@@ -78,4 +78,68 @@ public class ContribuicaoDAO {
             Conexao.closeConnection(c, stmt);
         }
     }
+    
+    public static Double recuperarValorTotal(Plantao plantao) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            stmt = c.prepareStatement("SELECT SUM(valor) FROM contribuicao WHERE plantao_id_plantao=?");
+            stmt.setInt(1, plantao.getId());
+            rs = stmt.executeQuery();
+
+            Double valorTotal = null;
+            if (rs.next()) {
+                valorTotal = rs.getDouble(1);
+            }
+            return valorTotal;
+        } catch (SQLException ex) {
+            return null;
+        } finally {
+            Conexao.closeConnection(c, stmt);
+        }
+    }
+    
+    public static void atualizar(Contribuicao contribuicao) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = c.prepareStatement("UPDATE contribuicao SET dizimista_id_dizimista = ?, plantonista_id_plantonista = ?, plantao_id_plantao = ?, valor = ?, mes = ?, ano = '" + contribuicao.getAno() + "' WHERE id_contribuicao = ?");
+
+            stmt.setInt(1, contribuicao.getDizimista().getId());
+            stmt.setInt(2, contribuicao.getPlantonista().getId());
+            stmt.setInt(3, contribuicao.getPlantao().getId());
+            stmt.setDouble(4, contribuicao.getValor());
+            stmt.setString(5, contribuicao.getMes().name());
+            stmt.setInt(6, contribuicao.getId());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Conexao.closeConnection(c, stmt);
+        }
+    }
+    
+    public static void apagar(int id) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = c.prepareStatement("DELETE FROM contribuicao WHERE id_contribuicao = ?");
+
+            stmt.setInt(1, id);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Conexao.closeConnection(c, stmt);
+        }
+    }
 }

@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import model.DAO.DizimistaDAO;
 import model.bean.Dizimista;
+import util.Mes;
 
 /**
  *
@@ -45,6 +46,17 @@ public abstract class Alertas {
             return false;
         }
         return true;
+    }
+    public static boolean validarSelecaoComboBox(Object o, String tipo) {
+        if (o == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(tipo + " não selecionado (a)");
+            alert.setContentText(tipo + " não foi selecionado(a), clique na caixa referente ao "+tipo+" para selecionar");
+            alert.show();
+            return false;
+        }
+        return true;
+    
     }
 
     public static boolean validarTexto(String valor, String tipo) {
@@ -103,7 +115,7 @@ public abstract class Alertas {
         return true;
     }
 
-    public static boolean validarIdDizimista(String id) {
+    public static boolean validarCadastroIdDizimista(String id) {
         if (id == null || !id.matches("6\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Número do carnê invalido");
@@ -120,8 +132,26 @@ public abstract class Alertas {
         }
         return true;
     }
+    public static boolean validarBuscaIdDizimista(String id) {
+        if (id == null || !id.matches("6\\d{3}")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Número do carnê invalido");
+            alert.setContentText("Número do dizimista invalido, verifique se o valor está entre 6001 e 6999");
+            alert.show();
+            return false;
+        }
+        if (DizimistaDAO.recuperar(Integer.parseInt(id)) == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Número do carnê invalido");
+            alert.setContentText("Número do dizimista não encontrado, verifique se já está cadastrado com esse número");
+            alert.show();
+            return false;
+        }
+        return true;
+    }
+    
 
-    public static boolean validarNumero(String numero) {
+    public static boolean validarNumeroEndereco(String numero) {
         if (numero == null || !numero.matches("\\d{1,6}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Número do endereço invalido");
@@ -153,4 +183,17 @@ public abstract class Alertas {
         }
         return true;
     }
+
+    public static boolean validarValor(String valor) {
+        if (valor == null || !valor.matches("\\d+((.|,)\\d+)?")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Valor invalido");
+            alert.setContentText("Valor invalido, verifique se está preenchido corretamente Ex.: 10,00");
+            alert.show();
+            return false;
+        }
+        return true;
+    }
+
+    
 }
