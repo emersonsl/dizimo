@@ -16,8 +16,10 @@ public class Dizimista {
     private String bairro;
     private String numero;
     private String complemento;
+    private boolean ativo;
 
-    public Dizimista(String nome, String email, String telefone, Date dataNascimento, String grupoMovimentoPastoral, Date dataInscricao, Conjuge conjuge, String rua, String bairro, String numero, String complemento) {
+
+    public Dizimista(String nome, String email, String telefone, Date dataNascimento, String grupoMovimentoPastoral, Date dataInscricao, Conjuge conjuge, String rua, String bairro, String numero, String complemento, boolean ativo) {
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
@@ -29,9 +31,10 @@ public class Dizimista {
         this.bairro = bairro;
         this.numero = numero;
         this.complemento = complemento;
+        this.ativo = ativo;
     }
 
-    public Dizimista(Integer id, String nome, String email, String telefone, Date dataNascimento, String grupoMovimentoPastoral, Date dataInscricao, Conjuge conjuge, String rua, String bairro, String numero, String complemento) {
+    public Dizimista(Integer id, String nome, String email, String telefone, Date dataNascimento, String grupoMovimentoPastoral, Date dataInscricao, Conjuge conjuge, String rua, String bairro, String numero, String complemento, boolean ativo) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -44,6 +47,7 @@ public class Dizimista {
         this.bairro = bairro;
         this.numero = numero;
         this.complemento = complemento;
+        this.ativo = ativo;
     }
 
     public Dizimista() {
@@ -149,6 +153,15 @@ public class Dizimista {
     @Override
     public String toString(){
         return id+" - "+nome;
+    }
+    
+    
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 
 }

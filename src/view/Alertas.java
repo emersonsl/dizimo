@@ -6,6 +6,7 @@
 package view;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -47,16 +48,17 @@ public abstract class Alertas {
         }
         return true;
     }
+
     public static boolean validarSelecaoComboBox(Object o, String tipo) {
         if (o == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(tipo + " não selecionado (a)");
-            alert.setContentText(tipo + " não foi selecionado(a), clique na caixa referente ao "+tipo+" para selecionar");
+            alert.setContentText(tipo + " não foi selecionado(a), clique na caixa referente ao " + tipo + " para selecionar");
             alert.show();
             return false;
         }
         return true;
-    
+
     }
 
     public static boolean validarTexto(String valor, String tipo) {
@@ -81,6 +83,20 @@ public abstract class Alertas {
             return true;
         }
         return false;
+    }
+    
+    public static boolean verificarRestricao(Object o, String tipo){
+        if(o!=null){
+            if(o instanceof List&&((List) o).isEmpty()){
+                return true;
+            }
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(tipo + " não pode ser apago");
+            alert.setContentText(tipo + " não pode ser apagado, já está associado há alguma contribuição");
+            alert.show();
+            return false;
+        }
+        return true;
     }
 
     public static void apagadoSucesso(String tipo) {
@@ -132,6 +148,7 @@ public abstract class Alertas {
         }
         return true;
     }
+
     public static boolean validarBuscaIdDizimista(String id) {
         if (id == null || !id.matches("6\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -149,10 +166,9 @@ public abstract class Alertas {
         }
         return true;
     }
-    
 
     public static boolean validarNumeroEndereco(String numero) {
-        if (numero == null || !numero.matches("\\d{1,6}")) {
+        if (numero == null || !numero.matches("\\w{1,6}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Número do endereço invalido");
             alert.setContentText("Número do endereço invalido");
@@ -195,5 +211,33 @@ public abstract class Alertas {
         return true;
     }
 
-    
+    public static boolean confirmarSetStatus(boolean ativo, String tipo) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        if (ativo) {
+            alert.setTitle("Desativar " + tipo + "?");
+            alert.setContentText("Tem certeza que deseja desativar " + tipo);
+        } else {
+            alert.setTitle("Ativar" + tipo + "?");
+            alert.setContentText("Tem certeza que deseja ativar " + tipo);
+        }
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void ativadoDesativadorSucesso(boolean ativo, String tipo) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        if (ativo) {
+            alert.setTitle(tipo + " ativado");
+            alert.setContentText(tipo + " foi ativado(a) com sucesso");
+        } else {
+            alert.setTitle(tipo + " desativado");
+            alert.setContentText(tipo + " foi desativado(a) com sucesso");
+        }
+        alert.show();
+    }
+
 }

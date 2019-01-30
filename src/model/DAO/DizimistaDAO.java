@@ -31,7 +31,7 @@ public class DizimistaDAO {
 
         try {
             stmt = c.prepareStatement("INSERT INTO dizimista (id_dizimista,nome,data_nascimento,telefone,email,rua,numero,bairro,"
-                    + "complemento,grupo_movimento_pastoral,data_inscricao) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+                    + "complemento,grupo_movimento_pastoral,data_inscricao, ativo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
             if (dizimista.getId() != null) {
                 stmt.setInt(1, dizimista.getId());
             } else {
@@ -47,16 +47,21 @@ public class DizimistaDAO {
             stmt.setString(9, dizimista.getComplemento());
             stmt.setString(10, dizimista.getGrupoMovimentoPastoral());
             stmt.setDate(11, dizimista.getDataInscricao());
+            stmt.setBoolean(12, dizimista.isAtivo());
 
             stmt.executeUpdate();
 
             Conjuge conjuge = dizimista.getConjuge();
             if (conjuge != null) {
-                rs = stmt.executeQuery("SELECT LAST_INSERT_ID()");
-                if (rs.next()) {
-                    conjuge.setId(rs.getInt(1));
-                    ConjugeDAO.salvar(conjuge);
+                if (dizimista.getId() == null) {
+                    rs = stmt.executeQuery("SELECT LAST_INSERT_ID()");
+                    if (rs.next()) {
+                        conjuge.setId(rs.getInt(1));
+                    }
+                }else{
+                    conjuge.setId(dizimista.getId());
                 }
+                ConjugeDAO.salvar(conjuge);
             }
 
         } catch (SQLException ex) {
@@ -82,7 +87,7 @@ public class DizimistaDAO {
                 Dizimista d = new Dizimista(rs.getInt("id_dizimista"), rs.getString("nome"),
                         rs.getString("email"), rs.getString("telefone"), rs.getDate("data_nascimento"),
                         rs.getString("grupo_movimento_pastoral"), rs.getDate("data_inscricao"), con, rs.getString("rua"),
-                        rs.getString("bairro"), rs.getString("numero"), rs.getString("complemento"));
+                        rs.getString("bairro"), rs.getString("numero"), rs.getString("complemento"), rs.getBoolean("ativo"));
 
                 dizimistas.add(d);
             }
@@ -112,7 +117,7 @@ public class DizimistaDAO {
                 Dizimista d = new Dizimista(rs.getInt("id_dizimista"), rs.getString("nome"),
                         rs.getString("email"), rs.getString("telefone"), rs.getDate("data_nascimento"),
                         rs.getString("grupo_movimento_pastoral"), rs.getDate("data_inscricao"), con, rs.getString("rua"),
-                        rs.getString("bairro"), rs.getString("numero"), rs.getString("complemento"));
+                        rs.getString("bairro"), rs.getString("numero"), rs.getString("complemento"), rs.getBoolean("ativo"));
 
                 dizimistas.add(d);
             }
@@ -140,7 +145,7 @@ public class DizimistaDAO {
             Dizimista d = new Dizimista(rs.getInt("id_dizimista"), rs.getString("nome"),
                     rs.getString("email"), rs.getString("telefone"), rs.getDate("data_nascimento"),
                     rs.getString("grupo_movimento_pastoral"), rs.getDate("data_inscricao"), con, rs.getString("rua"),
-                    rs.getString("bairro"), rs.getString("numero"), rs.getString("complemento"));
+                    rs.getString("bairro"), rs.getString("numero"), rs.getString("complemento"), rs.getBoolean("ativo"));
             return d;
         } catch (SQLException ex) {
             return null;
@@ -155,7 +160,7 @@ public class DizimistaDAO {
 
         try {
             stmt = c.prepareStatement("UPDATE dizimista SET nome = ?, data_nascimento = ?, telefone = ?, email = ?, rua = ?, numero = ?, bairro = ?"
-                    + ",complemento = ?, grupo_movimento_pastoral = ?, data_inscricao = ? WHERE id_dizimista = ?");
+                    + ",complemento = ?, grupo_movimento_pastoral = ?, data_inscricao = ?, ativo = ? WHERE id_dizimista = ?");
 
             stmt.setString(1, dizimista.getNome());
             stmt.setDate(2, dizimista.getDataNascimento());
@@ -167,7 +172,8 @@ public class DizimistaDAO {
             stmt.setString(8, dizimista.getComplemento());
             stmt.setString(9, dizimista.getGrupoMovimentoPastoral());
             stmt.setDate(10, dizimista.getDataInscricao());
-            stmt.setInt(11, dizimista.getId());
+            stmt.setBoolean(11, dizimista.isAtivo());
+            stmt.setInt(12, dizimista.getId());
 
             Conjuge conjuge = dizimista.getConjuge();
             if (conjuge != null) {

@@ -15,7 +15,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -24,7 +23,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import model.DAO.ContribuicaoDAO;
 import model.DAO.DizimistaDAO;
 import model.DAO.PlantonistaDAO;
@@ -55,7 +53,7 @@ public class ContribuicaoController implements Initializable {
     @FXML
     private TextField tfValor, tfIdDizimista;
     @FXML
-    private Label lbNomeDizimista;
+    private Label lbNomeDizimista, lb1NomeDizimista;
     @FXML
     private ComboBox<Mes> cbMes;
     @FXML
@@ -82,6 +80,7 @@ public class ContribuicaoController implements Initializable {
     @FXML
     private AnchorPane apEsquerdo;
 
+    private Plantao plantao;
     private List<Contribuicao> contribuicoes;
     private ObservableList<Contribuicao> obContribuicoes;
     private boolean cadastrar;
@@ -95,20 +94,20 @@ public class ContribuicaoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        plantao = PlantaoController.getPlantao();
         carregarDadosPlantao();
         carregarTodos();
         tableViewContribuicoes.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> selecionarItemTabelaContribuicao(newValue));
     }
 
     private void carregarDadosPlantao() {
-        DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("hh:mm");
+        DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
         DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        Plantao p = PlantaoController.getPlantao();
-        lbDtPlantao.setText(formatoData.format(p.getData().toLocalDate()));
-        lbHrPlantao.setText(formatoHora.format(p.getHora().toLocalTime()));
-        lbLancadorPlantao.setText(p.getLancador().getNome());
-        lbPresidentePlantao.setText(p.getPresidente().toString());
+        lbDtPlantao.setText(formatoData.format(plantao.getData().toLocalDate()));
+        lbHrPlantao.setText(formatoHora.format(plantao.getHora().toLocalTime()));
+        lbLancadorPlantao.setText(plantao.getLancador().getNome());
+        lbPresidentePlantao.setText(plantao.getPresidente().toString());
     }
 
     public void carregarTodos() {
@@ -118,15 +117,23 @@ public class ContribuicaoController implements Initializable {
         tbAno.setCellValueFactory(new PropertyValueFactory<>("ano"));
         tbPlantonista.setCellValueFactory(new PropertyValueFactory<>("plantonista"));
 
-        contribuicoes = ContribuicaoDAO.recuperar();
+        contribuicoes = ContribuicaoDAO.recuperar(plantao);
 
         obContribuicoes = FXCollections.observableArrayList(contribuicoes);
         tableViewContribuicoes.setItems(obContribuicoes);
-        tfValorTotal.setText(String.valueOf(ContribuicaoDAO.recuperarValorTotal(PlantaoController.getPlantao())));
+        tfValorTotal.setText(String.valueOf(calcularValorTotal()));
+    }
+
+    private Double calcularValorTotal() {
+        Double total = 0.0;
+        total = contribuicoes.stream().map((c) -> c.getValor()).reduce(total, (accumulator, _item) -> accumulator + _item);
+        return total;
     }
 
     private void selecionarItemTabelaContribuicao(Contribuicao c) {
         if (c != null) {
+            lb1NomeDizimista.setVisible(true);
+            lbNomeDizimista.setVisible(true);
             Dizimista d = c.getDizimista();
             if (d != null) {
                 lbNomeDizimista.setText(d.getNome());
@@ -160,6 +167,7 @@ public class ContribuicaoController implements Initializable {
             case 2:
                 //cadastrar
                 clear();
+                cadastrar=true;
                 carregarComboBox();
                 tfIdDizimista.setEditable(true);
                 tfValor.setEditable(true);
@@ -171,6 +179,7 @@ public class ContribuicaoController implements Initializable {
             case 3:
                 //editar
                 carregarComboBox();
+                cadastrar = false;
                 tfIdDizimista.setEditable(true);
                 tfValor.setEditable(true);
                 btCadastrarSalvar.setText("Salvar");
@@ -183,6 +192,18 @@ public class ContribuicaoController implements Initializable {
         }
     }
 
+    public void editarMode() {
+        Contribuicao c = tableViewContribuicoes.getSelectionModel().getSelectedItem();
+        if (btEditarCancelar.getText().equals("Editar")) {
+            if (c != null) {
+                selectMode(3);
+            } else {
+                selectMode(2);
+            }
+        }
+
+    }
+
     private void carregarComboBox() {
         cbMes.getItems().addAll(Arrays.asList(Mes.values()));
         Year a = Year.parse(String.valueOf(Year.now().getValue() - 1));
@@ -192,6 +213,8 @@ public class ContribuicaoController implements Initializable {
     }
 
     private void clear() {
+        lbNomeDizimista.setVisible(false);
+        lb1NomeDizimista.setVisible(false);
         lbNomeDizimista.setText("");
         tfIdDizimista.setText("");
         cbMes.setValue(null);
@@ -221,7 +244,7 @@ public class ContribuicaoController implements Initializable {
         if (validarCampos()) {
             Dizimista d = DizimistaDAO.recuperar(Integer.parseInt(tfIdDizimista.getText()));
             Plantonista p = cbPlantonista.getValue();
-            Contribuicao c = new Contribuicao(Double.parseDouble(tfValor.getText()), cbMes.getValue(), cbAno.getValue(), d, p, PlantaoController.getPlantao());
+            Contribuicao c = new Contribuicao(Double.parseDouble(tfValor.getText()), cbMes.getValue(), cbAno.getValue(), d, p, plantao);
             ContribuicaoDAO.salvar(c);
             Alertas.cadastradoSucesso("Contribuição");
             selectMode(1);
@@ -264,7 +287,7 @@ public class ContribuicaoController implements Initializable {
     }
 
     public void encerrarPlantao() {
-        
+
     }
 
     private boolean validarCampos() {
@@ -291,13 +314,18 @@ public class ContribuicaoController implements Initializable {
     }
 
     public void buscarDizimista() {
-        if (tfIdDizimista.getText().length() == 4 && Alertas.validarBuscaIdDizimista(tfIdDizimista.getText())) {
-            Dizimista d = DizimistaDAO.recuperar(Integer.parseInt(tfIdDizimista.getText()));
-            if (d != null) {
-                lbNomeDizimista.setText(d.getNome());
+        if (tfIdDizimista.getText().length() == 4) {
+            if (Alertas.validarBuscaIdDizimista(tfIdDizimista.getText())) {
+                Dizimista d = DizimistaDAO.recuperar(Integer.parseInt(tfIdDizimista.getText()));
+                if (d != null) {
+                    lb1NomeDizimista.setVisible(true);
+                    lbNomeDizimista.setVisible(true);
+                    lbNomeDizimista.setText(d.getNome());
+                }
             } else {
-                lbNomeDizimista.setText("Dizimista não encontrado");
-                tfIdDizimista.setText("");
+                lbNomeDizimista.setText("");
+                lb1NomeDizimista.setVisible(false);
+                lbNomeDizimista.setVisible(false);
             }
         }
     }

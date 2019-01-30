@@ -29,7 +29,7 @@ import view.Alertas;
  * @author Emerson
  */
 public class PlantonistaController implements Initializable {
-    
+
     @FXML
     private TableView<Plantonista> tableViewPlantonistas;
     @FXML
@@ -50,7 +50,7 @@ public class PlantonistaController implements Initializable {
     private Button btApagar;
     @FXML
     private AnchorPane apEsquerdo;
-    
+
     private List<Plantonista> plantonistas;
     private ObservableList<Plantonista> obPlantonistas;
     boolean cadastrar;
@@ -73,7 +73,7 @@ public class PlantonistaController implements Initializable {
         obPlantonistas = FXCollections.observableArrayList(plantonistas);
         tableViewPlantonistas.setItems(obPlantonistas);
     }
-    
+
     private void selecionarItemTabelaPlantonista(Plantonista p) {
         if (p != null) {
             tfNome.setText(p.getNome());
@@ -119,7 +119,7 @@ public class PlantonistaController implements Initializable {
         }
 
     }
-    
+
     public void editarCancelar() {
         Plantonista plantonista = tableViewPlantonistas.getSelectionModel().getSelectedItem();
         if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(plantonista, "Plantonista")) {
@@ -128,7 +128,7 @@ public class PlantonistaController implements Initializable {
             selectMode(1);
         }
     }
-    
+
     public void apagar() {
         Plantonista plantonista = tableViewPlantonistas.getSelectionModel().getSelectedItem();
         if (Alertas.validarSelecaoEntidade(plantonista, "Plantonista")) {
@@ -139,7 +139,7 @@ public class PlantonistaController implements Initializable {
             }
         }
     }
-    
+
     public void procurar() {
         if (!barraBusca.getText().equals("")) {
             plantonistas = PlantonistaDAO.recuperar(barraBusca.getText());
@@ -149,7 +149,19 @@ public class PlantonistaController implements Initializable {
             carregarTodos();
         }
     }
-    
+
+    public void editarMode() {
+        Plantonista plantonista = tableViewPlantonistas.getSelectionModel().getSelectedItem();
+        if (btEditarCancelar.getText().equals("Editar")) {
+            if (plantonista != null) {
+                cadastrar = false;
+            }else{
+                cadastrar=true;
+            }
+            selectMode(2);
+        }
+    }
+
     private void selectMode(int mode) {
         if (mode == 1) {
             apEsquerdo.setDisable(false);
@@ -168,5 +180,5 @@ public class PlantonistaController implements Initializable {
             tfNome.setEditable(true);
         }
     }
-    
+
 }

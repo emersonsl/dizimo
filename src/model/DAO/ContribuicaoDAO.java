@@ -79,22 +79,57 @@ public class ContribuicaoDAO {
         }
     }
     
-    public static Double recuperarValorTotal(Plantao plantao) {
+    public static List<Contribuicao> recuperar(Plantao plantao) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
         try {
 
-            stmt = c.prepareStatement("SELECT SUM(valor) FROM contribuicao WHERE plantao_id_plantao=?");
+            stmt = c.prepareStatement("Select * From contribuicao WHERE plantao_id_plantao=?");
             stmt.setInt(1, plantao.getId());
             rs = stmt.executeQuery();
 
-            Double valorTotal = null;
-            if (rs.next()) {
-                valorTotal = rs.getDouble(1);
+            List<Contribuicao> contribuicoes = new ArrayList<>();
+            while (rs.next()) {
+                Dizimista d = DizimistaDAO.recuperar(rs.getInt("dizimista_id_dizimista"));
+                Plantonista plantonista = PlantonistaDAO.recuperar(rs.getInt("plantonista_id_plantonista"));
+                Plantao p = PlantaoDAO.recuperar(rs.getInt("plantao_id_plantao"));
+                Year ano = Year.parse(rs.getString("ano").substring(0, 4));
+
+                Contribuicao contribuicao = new Contribuicao(rs.getInt("id_contribuicao"), rs.getDouble("valor"), Mes.valueOf(rs.getString("mes")), ano, d, plantonista, p);
+                contribuicoes.add(contribuicao);
             }
-            return valorTotal;
+            return contribuicoes;
+        } catch (SQLException ex) {
+            return null;
+        } finally {
+            Conexao.closeConnection(c, stmt);
+        }
+    }
+    
+    public static List<Contribuicao> recuperar(Dizimista dizimista) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            stmt = c.prepareStatement("Select * From contribuicao WHERE dizimista_id_dizimista = ?");
+            stmt.setInt(1, dizimista.getId());
+            rs = stmt.executeQuery();
+
+            List<Contribuicao> contribuicoes = new ArrayList<>();
+            while (rs.next()) {
+                Dizimista d = DizimistaDAO.recuperar(rs.getInt("dizimista_id_dizimista"));
+                Plantonista plantonista = PlantonistaDAO.recuperar(rs.getInt("plantonista_id_plantonista"));
+                Plantao p = PlantaoDAO.recuperar(rs.getInt("plantao_id_plantao"));
+                Year ano = Year.parse(rs.getString("ano").substring(0, 4));
+
+                Contribuicao contribuicao = new Contribuicao(rs.getInt("id_contribuicao"), rs.getDouble("valor"), Mes.valueOf(rs.getString("mes")), ano, d, plantonista, p);
+                contribuicoes.add(contribuicao);
+            }
+            return contribuicoes;
         } catch (SQLException ex) {
             return null;
         } finally {

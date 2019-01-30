@@ -156,6 +156,17 @@ public class PresidenteController implements Initializable {
         }
     }
 
+    public void editarMode() {
+        Presidente presidente = tableViewPresidentes.getSelectionModel().getSelectedItem();
+        if (btEditarCancelar.getText().equals("Editar")) {
+            if (presidente == null) {
+                cadastrar = true;
+            }
+            cbDenominacao.getItems().addAll(Denominacao.PE, Denominacao.DIAC, Denominacao.MINIS);
+            selectMode(2);
+        }
+    }
+
     private void selectMode(int mode) {
         if (mode == 1) {
             apEsquerdo.setDisable(false);
@@ -165,6 +176,7 @@ public class PresidenteController implements Initializable {
             tfNome.setEditable(false);
             tfNome.setText("");
             cbDenominacao.getItems().clear();
+            cbDenominacao.setValue(null);
             carregarTodos();
         } else if (mode == 2) {
             apEsquerdo.setDisable(true);

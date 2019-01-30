@@ -40,7 +40,8 @@ public class PlantaoDAO {
             stmt.executeUpdate();
 
             rs = stmt.executeQuery("SELECT LAST_INSERT_ID()");
-            plantao.setId(rs.getInt(1));
+            if(rs.next())
+                plantao.setId(rs.getInt(1));
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

@@ -4,27 +4,27 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaPrincipalController">
-  <tabs>
-    <Tab fx:id="tabPlantao" text="Plantão">
-      <content>
-        <AnchorPane maxHeight="578.0" maxWidth="800.0" minHeight="0.0" minWidth="0.0" prefHeight="578.0" prefWidth="800.0" />
-      </content>
-    </Tab>
-    <Tab fx:id="tabDizimista" text="Dizimista">
-      <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-      </content>
-    </Tab>
-      <Tab fx:id="tabPresidente" text="Presidente">
-         <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-         </content>
-      </Tab>
-      <Tab fx:id="tabPlantonista" text="Plantonista">
-         <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-         </content>
-      </Tab>
-  </tabs>
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TelaPrincipalController">
+    <tabs>
+        <Tab fx:id="tabPlantao" text="Plantão">
+            <content>
+                <AnchorPane maxHeight="578.0" maxWidth="800.0" minHeight="0.0" minWidth="0.0" prefHeight="578.0" prefWidth="800.0" />
+            </content>
+        </Tab>
+        <Tab fx:id="tabDizimista" text="Dizimista">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+        </Tab>
+        <Tab fx:id="tabPresidente" text="Presidente">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+        </Tab>
+        <Tab fx:id="tabPlantonista" text="Plantonista">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+        </Tab>
+    </tabs>
 </TabPane>

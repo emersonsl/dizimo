@@ -26,6 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import model.DAO.ConjugeDAO;
+import model.DAO.ContribuicaoDAO;
 import model.DAO.DizimistaDAO;
 import model.bean.Conjuge;
 import model.bean.Dizimista;
@@ -47,7 +48,7 @@ public class DizimistaController implements Initializable {
     @FXML
     private DatePicker dtNasc, dtInsc, dtNascConj, dtCasa;
     @FXML
-    private Button btCadastrarSalvar, btEditarCancelar, btVerCont, btApagar;
+    private Button btCadastrarSalvar, btEditarCancelar, btVerCont, btApagar, btAtivarDesativar;
     @FXML
     private TableView<Dizimista> tableViewDizimistas;
     @FXML
@@ -60,6 +61,8 @@ public class DizimistaController implements Initializable {
     private TextField barraBusca;
     @FXML
     private AnchorPane apEsquerdo;
+    @FXML
+    private AnchorPane apDados;
 
     private List<Dizimista> dizimistas;
     private ObservableList<Dizimista> obDizimistas;
@@ -85,12 +88,14 @@ public class DizimistaController implements Initializable {
 
         obDizimistas = FXCollections.observableArrayList(dizimistas);
         tableViewDizimistas.setItems(obDizimistas);
-        totalDizimistas.setText(dizimistas.size() + " dizimistas cadastrados");
+        totalDizimistas.setText(dizimistas.size() + " dizimistas cadastrado(s)");
     }
 
     private void selecionarItemTabelaDizimistar(Dizimista d) {
         clear();
         if (d != null) {
+            btAtivarDesativar.setVisible(true);
+            apDados.setDisable(false);
             id.setText(d.getId().toString());
             nome.setText(d.getNome());
             dtNasc.setValue(d.getDataNascimento().toLocalDate());
@@ -113,8 +118,26 @@ public class DizimistaController implements Initializable {
                 ckCasaReli.setSelected(false);
                 gpConj.setVisible(false);
             }
+            if(!d.isAtivo()){
+                apDados.setDisable(true);
+                btAtivarDesativar.setText("Ativar");
+            }else{
+                btAtivarDesativar.setText("Desativar");
+            }
         } else {
             selectMode(1);
+            btAtivarDesativar.setVisible(false);
+        }
+    }
+    
+    public void editarMode(){
+        Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
+        if (btEditarCancelar.getText().equals("Editar")) {
+            if(d!=null){
+                selectMode(3);
+            }else{
+                selectMode(2);
+            }
         }
     }
 
@@ -139,12 +162,17 @@ public class DizimistaController implements Initializable {
     }
 
     private void clear() {
+        apDados.setDisable(false);
         textFields.forEach((t) -> {
             t.setText("");
         });
         datePickers.forEach((d) -> {
             d.setValue(null);
         });
+        ckCasaReli.setSelected(false);
+        ckDataInsc.setSelected(false);
+        ckId.setSelected(false);
+        dtInsc.setDisable(false);
     }
 
     private void setEditables(boolean b) {
@@ -177,6 +205,7 @@ public class DizimistaController implements Initializable {
             case 2:
                 //cadastrar
                 clear();
+                cadastrar = true;
                 ckId.setVisible(true);
                 ckDataInsc.setVisible(true);
                 ckCasaReli.setVisible(true);
@@ -187,10 +216,13 @@ public class DizimistaController implements Initializable {
                 btEditarCancelar.setText("Cancelar");
                 btVerCont.setVisible(false);
                 btApagar.setVisible(false);
+                btAtivarDesativar.setVisible(false);
                 apEsquerdo.setDisable(true);
+                apDados.setDisable(false);
                 break;
             case 3:
                 //editar
+                cadastrar = false;
                 id.setDisable(true);
                 ckDataInsc.setVisible(true);
                 ckCasaReli.setVisible(true);
@@ -199,7 +231,9 @@ public class DizimistaController implements Initializable {
                 btEditarCancelar.setText("Cancelar");
                 btVerCont.setVisible(false);
                 btApagar.setVisible(false);
+                btAtivarDesativar.setVisible(false);
                 apEsquerdo.setDisable(true);
+                apDados.setDisable(false);
                 break;
             default:
                 break;
@@ -287,7 +321,7 @@ public class DizimistaController implements Initializable {
     public void apagar() {
         Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
         if (Alertas.validarSelecaoEntidade(d, "Dizimista")) {
-            if (Alertas.confirmarApagar("Dizimista")) {
+            if (Alertas.confirmarApagar("Dizimista")&& Alertas.verificarRestricao(ContribuicaoDAO.recuperar(d), "Dizimista")) {
                 DizimistaDAO.apagar(d.getId());
                 Alertas.apagadoSucesso("Dizimista");
                 carregarTodos();
@@ -318,9 +352,9 @@ public class DizimistaController implements Initializable {
         }
         Dizimista d;
         if (ckId.isSelected()) {
-            d = new Dizimista(nome.getText().toUpperCase(), email.getText().toUpperCase(), telefone.getText(), Date.valueOf(dtNasc.getValue()), grupos.getText().toUpperCase(), Date.valueOf(dtInsc.getValue()), c, rua.getText().toUpperCase(), bairro.getText().toUpperCase(), numero.getText(), complemento.getText().toUpperCase());
+            d = new Dizimista(nome.getText().toUpperCase(), email.getText().toUpperCase(), telefone.getText(), Date.valueOf(dtNasc.getValue()), grupos.getText().toUpperCase(), Date.valueOf(dtInsc.getValue()), c, rua.getText().toUpperCase(), bairro.getText().toUpperCase(), numero.getText().toUpperCase(), complemento.getText().toUpperCase(), true);
         } else {
-            d = new Dizimista(Integer.parseInt(id.getText()), nome.getText().toUpperCase(), email.getText().toUpperCase(), telefone.getText(), Date.valueOf(dtNasc.getValue()), grupos.getText().toUpperCase(), Date.valueOf(dtInsc.getValue()), c, rua.getText().toUpperCase(), bairro.getText().toUpperCase(), numero.getText(), complemento.getText().toUpperCase());
+            d = new Dizimista(Integer.parseInt(id.getText()), nome.getText().toUpperCase(), email.getText().toUpperCase(), telefone.getText(), Date.valueOf(dtNasc.getValue()), grupos.getText().toUpperCase(), Date.valueOf(dtInsc.getValue()), c, rua.getText().toUpperCase(), bairro.getText().toUpperCase(), numero.getText().toUpperCase(), complemento.getText().toUpperCase(), true);
         }
         DizimistaDAO.salvar(d);
         Alertas.cadastradoSucesso("Dizimista");
@@ -332,26 +366,26 @@ public class DizimistaController implements Initializable {
             return;
         }
         Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
-        d.setNome(nome.getText());
+        d.setNome(nome.getText().toUpperCase());
         d.setDataNascimento(Date.valueOf(dtNasc.getValue()));
         d.setTelefone(telefone.getText());
-        d.setEmail(email.getText());
+        d.setEmail(email.getText().toUpperCase());
         d.setDataInscricao(Date.valueOf(dtInsc.getValue()));
-        d.setGrupoMovimentoPastoral(grupos.getText());
-        d.setRua(rua.getText());
-        d.setNumero(numero.getText());
-        d.setBairro(bairro.getText());
-        d.setComplemento(complemento.getText());
+        d.setGrupoMovimentoPastoral(grupos.getText().toUpperCase());
+        d.setRua(rua.getText().toUpperCase());
+        d.setNumero(numero.getText().toUpperCase());
+        d.setBairro(bairro.getText().toUpperCase());
+        d.setComplemento(complemento.getText().toUpperCase());
 
         if (d.getConjuge() == null && ckCasaReli.isSelected()) {
-            Conjuge c = new Conjuge(nomeConj.getText(), Date.valueOf(dtNascConj.getValue()), Date.valueOf(dtCasa.getValue()));
+            Conjuge c = new Conjuge(nomeConj.getText().toUpperCase(), Date.valueOf(dtNascConj.getValue()), Date.valueOf(dtCasa.getValue()));
             c.setId(d.getId());
             ConjugeDAO.salvar(c);
             d.setConjuge(c);
         } else if (d.getConjuge() != null) {
             Conjuge c = d.getConjuge();
             if (ckCasaReli.isSelected()) {
-                c.setNome(nomeConj.getText());
+                c.setNome(nomeConj.getText().toUpperCase());
                 c.setDataNascimento(Date.valueOf(dtNascConj.getValue()));
                 c.setDataCasamento(Date.valueOf(dtCasa.getValue()));
             } else {
@@ -359,9 +393,21 @@ public class DizimistaController implements Initializable {
                 d.setConjuge(null);
             }
         }
-        selectMode(1);
         DizimistaDAO.atualizar(d);
         Alertas.atualizadoSucesso("Dizimista");
+        selectMode(1);
+    }
+    
+    public void ativarDesativar(){
+        Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
+        if (Alertas.validarSelecaoEntidade(d, "Dizimista")) {
+            if (Alertas.confirmarSetStatus(d.isAtivo(),"Dizimista")) {
+                d.setAtivo(!d.isAtivo());
+                DizimistaDAO.atualizar(d);
+                Alertas.ativadoDesativadorSucesso(d.isAtivo(), "Dizimista");
+                selectMode(1);
+            }
+        }
     }
 
     private boolean validarCampos() {

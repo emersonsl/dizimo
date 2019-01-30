@@ -34,13 +34,13 @@ public class TelaPrincipalController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            AnchorPane aPlantao = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Plantao.FXML"));
+            AnchorPane aPlantao = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Plantao.fxml"));
             tabPlantao.setContent(aPlantao);
-            AnchorPane aDizimista = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Dizimista.FXML"));
+            AnchorPane aDizimista = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Dizimista.fxml"));
             tabDizimista.setContent(aDizimista);
-            AnchorPane aPresidente = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Presidente.FXML"));
+            AnchorPane aPresidente = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Presidente.fxml"));
             tabPresidente.setContent(aPresidente);
-            AnchorPane aPlantonista = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Plantonista.FXML"));
+            AnchorPane aPlantonista = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Plantonista.fxml"));
             tabPlantonista.setContent(aPlantonista);
         } catch (IOException ex) {
             Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);

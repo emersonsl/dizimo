@@ -76,14 +76,13 @@ public class PlantaoController implements Initializable {
     @FXML
     private AnchorPane apPrincipal;
     
-    
     private boolean cadastrar;
     
-    private final DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("hh:mm");
+    private final DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
     private List<Plantao> plantoes;
     private ObservableList<Plantao> obPlantoes;
     private static Plantao plantao;
-    
+
     /**
      * Initializes the controller class.
      */
@@ -99,15 +98,15 @@ public class PlantaoController implements Initializable {
         tbLancador.setCellValueFactory(new PropertyValueFactory<>("lancador"));
         tbPresidente.setCellValueFactory(new PropertyValueFactory<>("presidente"));
         
-        tbHorario.setCellFactory(coluna ->{
-            return new TableCell<Plantao, Time>(){
+        tbHorario.setCellFactory(coluna -> {
+            return new TableCell<Plantao, Time>() {
                 @Override
-                protected void updateItem(Time time, boolean empty){
+                protected void updateItem(Time time, boolean empty) {
                     super.updateItem(time, empty);
                     
-                    if(time==null|| empty){
+                    if (time == null || empty) {
                         setText(null);
-                    }else{
+                    } else {
                         setText(formatoHora.format(time.toLocalTime()));
                     }
                 }
@@ -128,15 +127,15 @@ public class PlantaoController implements Initializable {
                 }
             };
         });
-
-        plantoes  = PlantaoDAO.recuperar();
+        
+        plantoes = PlantaoDAO.recuperar();
+        
+        obPlantoes = FXCollections.observableArrayList(plantoes);
+        
+        tableViewPlantoes.setItems(obPlantoes);
+    }
     
-    obPlantoes  = FXCollections.observableArrayList(plantoes);
-
-    tableViewPlantoes.setItems (obPlantoes);
-}
-
-private void selecionarItemTabelaDizimistar(Plantao p) {
+    private void selecionarItemTabelaDizimistar(Plantao p) {
         clear();
         if (p != null) {
             dtData.setValue(p.getData().toLocalDate());
@@ -148,16 +147,27 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
             selectMode(1);
         }
     }
-
+    
     private void carregarComboBox() {
         List<Plantonista> plantonistas = PlantonistaDAO.recuperar();
         List<Presidente> presidentes = PresidenteDAO.recuperar();
-
+        
         cbLancador.getItems().addAll(plantonistas);
         cbPresidente.getItems().addAll(presidentes);
-
+        
     }
-
+    
+    public void editarMode() {
+        Plantao p = tableViewPlantoes.getSelectionModel().getSelectedItem();
+        if (btEditarCancelar.getText().equals("Editar")) {
+            if (p != null) {
+                selectMode(3);
+            } else {
+                selectMode(2);
+            }
+        }        
+    }
+    
     private void selectMode(int i) {
         switch (i) {
             case 1:
@@ -188,6 +198,7 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
                 break;
             case 3:
                 //editar
+                cadastrar = false;
                 carregarComboBox();
                 btCadastrarSalvar.setText("Salvar");
                 btEditarCancelar.setText("Cancelar");
@@ -201,21 +212,21 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
                 break;
         }
     }
-
+    
     public void cadastrarSalvar() {
         if (btCadastrarSalvar.getText().equals("Cadastrar")) {
             selectMode(2);
             cadastrar = true;
-        }else{
-            if(cadastrar){
+        } else {
+            if (cadastrar) {
                 salvar();
-            }else{
+            } else {
                 atualizar();
             }
         }
-
+        
     }
-
+    
     public void editarCancelar() {
         Plantao p = tableViewPlantoes.getSelectionModel().getSelectedItem();
         if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(p, "Plantão")) {
@@ -224,20 +235,20 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
         } else {
             selectMode(1);
         }
-
+        
     }
-
+    
     public void verContribuicoes() {
         Plantao p = tableViewPlantoes.getSelectionModel().getSelectedItem();
         if (btEditarCancelar.getText().equals("Editar") && Alertas.validarSelecaoEntidade(p, "Plantão")) {
             plantao = p;
             //abrir tela contribuições
             chamarTelaContribuicoes();
-        }else{
+        } else {
             selectMode(1);
         }
     }
-
+    
     public void apagar() {
         Plantao p = tableViewPlantoes.getSelectionModel().getSelectedItem();
         if (Alertas.validarSelecaoEntidade(p, "Plantão")) {
@@ -247,18 +258,20 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
                 carregarTodos();
             }
         }
-
+        
     }
-
+    
     private void clear() {
         tfHorario.setText("");
         dtData.setValue(null);
         cbLancador.getItems().clear();
         cbPresidente.getItems().clear();
+        cbLancador.setValue(null);
+        cbPresidente.setValue(null);
     }
-
+    
     private void salvar() {
-        if(!validarCampos()){
+        if (!validarCampos()) {
             return;
         }
         
@@ -270,9 +283,9 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
         plantao = p;
         chamarTelaContribuicoes();
     }
-
+    
     private void atualizar() {
-        if(!validarCampos()){
+        if (!validarCampos()) {
             return;
         }
         
@@ -288,38 +301,38 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
         selectMode(1);
     }
     
-    private void chamarTelaContribuicoes(){
+    private void chamarTelaContribuicoes() {
         try {
-            AnchorPane aContribuicoes = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Contribuicao.FXML"));
+            AnchorPane aContribuicoes = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Contribuicao.fxml"));
             apPrincipal.getChildren().setAll(aContribuicoes);
         } catch (IOException ex) {
             Logger.getLogger(PlantaoController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
-
+    
     private boolean validarCampos() {
-        if(!Alertas.validarData(dtData.getValue(), "Plantão")){
+        if (!Alertas.validarData(dtData.getValue(), "Plantão")) {
             return false;
         }
         
-        if(!Alertas.validarHora(tfHorario.getText())){
+        if (!Alertas.validarHora(tfHorario.getText())) {
             return false;
         }
         
-        if(!Alertas.validarSelecaoEntidade(cbPresidente.getValue(), "Presidente")){
+        if (!Alertas.validarSelecaoEntidade(cbPresidente.getValue(), "Presidente")) {
             return false;
         }
         
-        if(!Alertas.validarSelecaoEntidade(cbLancador.getValue(), "Lançador")){
+        if (!Alertas.validarSelecaoEntidade(cbLancador.getValue(), "Lançador")) {
             return false;
         }
         
         return true;
     }
-
+    
     public void procurar() {
-        if (barraBusca.getValue()!=null) {
+        if (barraBusca.getValue() != null){
             plantoes = PlantaoDAO.recuperar(Date.valueOf(barraBusca.getValue()));
             obPlantoes = FXCollections.observableArrayList(plantoes);
             tableViewPlantoes.setItems(obPlantoes);
@@ -327,8 +340,8 @@ private void selecionarItemTabelaDizimistar(Plantao p) {
             carregarTodos();
         }
     }
-
-    public static Plantao getPlantao(){
+    
+    public static Plantao getPlantao() {
         return plantao;
     }
 }
