@@ -92,7 +92,7 @@ public abstract class Alertas {
             }
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(tipo + " não pode ser apago");
-            alert.setContentText(tipo + " não pode ser apagado, já está associado há alguma contribuição");
+            alert.setContentText(tipo + " não pode ser apagado, já está associado há alguma contribuição ou plantão");
             alert.show();
             return false;
         }

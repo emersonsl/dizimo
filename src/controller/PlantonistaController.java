@@ -134,7 +134,9 @@ public class PlantonistaController implements Initializable {
         if (Alertas.validarSelecaoEntidade(plantonista, "Plantonista")) {
             if (Alertas.confirmarApagar("Plantonista")) {
                 PlantonistaDAO.apagar(plantonista.getId());
-                Alertas.apagadoSucesso("Plantonista");
+                if (Alertas.verificarRestricao(PlantonistaDAO.recuperar(plantonista.getId()), "Plantonista")) {
+                    Alertas.apagadoSucesso("Plantonista");
+                }
                 carregarTodos();
             }
         }
@@ -155,8 +157,8 @@ public class PlantonistaController implements Initializable {
         if (btEditarCancelar.getText().equals("Editar")) {
             if (plantonista != null) {
                 cadastrar = false;
-            }else{
-                cadastrar=true;
+            } else {
+                cadastrar = true;
             }
             selectMode(2);
         }

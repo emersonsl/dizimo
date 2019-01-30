@@ -140,7 +140,9 @@ public class PresidenteController implements Initializable {
         if (Alertas.validarSelecaoEntidade(presidente, "Presidente")) {
             if (Alertas.confirmarApagar("Presidente")) {
                 PresidenteDAO.apagar(presidente.getId());
-                Alertas.apagadoSucesso("Presidente");
+                if(Alertas.verificarRestricao(PresidenteDAO.recuperar(presidente.getId()), "Presidente")){
+                    Alertas.apagadoSucesso("Presidente");
+                }
                 carregarTodos();
             }
         }
