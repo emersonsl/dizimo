@@ -7,6 +7,7 @@ package model.DAO;
 
 import conexao.Conexao;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -129,6 +130,39 @@ public class DizimistaDAO {
         }
     }
 
+        public static List<Dizimista> recuperar(Date dataInicio, Date dataFinal) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            stmt = c.prepareStatement("SELECT * FROM dizimista WHERE Dayofyear(data_nascimento) BETWEEN ? and ? ORDER BY(nome)" );
+            stmt.setInt(1, dataInicio.toLocalDate().getDayOfYear());
+            stmt.setInt(2, dataFinal.toLocalDate().getDayOfYear());
+            
+            rs = stmt.executeQuery();
+
+            List<Dizimista> dizimistas = new ArrayList<>();
+            while (rs.next()) {
+                Conjuge con = ConjugeDAO.recuperar(rs.getInt("id_dizimista"));
+
+                Dizimista d = new Dizimista(rs.getInt("id_dizimista"), rs.getString("nome"),
+                        rs.getString("email"), rs.getString("telefone"), rs.getDate("data_nascimento"),
+                        rs.getString("grupo_movimento_pastoral"), rs.getDate("data_inscricao"), con, rs.getString("rua"),
+                        rs.getString("bairro"), rs.getString("numero"), rs.getString("complemento"), rs.getBoolean("ativo"));
+
+                dizimistas.add(d);
+            }
+            return dizimistas;
+        } catch (SQLException ex) {
+            System.err.println("Ex.:"+ex);
+            return null;
+        } finally {
+            Conexao.closeConnection(c, stmt);
+        }
+    }
+    
     public static Dizimista recuperar(int id) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
