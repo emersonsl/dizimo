@@ -8,6 +8,7 @@ package main;
 import java.sql.Date;
 import model.DAO.ConjugeDAO;
 import model.DAO.DizimistaDAO;
+import model.bean.Dizimista;
 import tools.ExportarPDF;
 
 /**
@@ -17,8 +18,20 @@ import tools.ExportarPDF;
 public class Test {
 
     public static void main(String[] args) {
-        Date d1 = new Date(119, 6, 10);
-        Date d2 = new Date(119, 7, 22);
+        contribuicoes();
+        aniversarios();
+    }
+    
+    private static void contribuicoes(){
+        
+        Dizimista d = DizimistaDAO.recuperar(6011);
+        System.out.println("id: "+d.getId()+" nome: "+d.getNome());
+        ExportarPDF.ContribuicoesDosDizimistas(d);
+    }
+    
+    private static void aniversarios(){
+        Date d1 = new Date(119, 4, 26);
+        Date d2 = new Date(119, 5, 2);
         System.out.println("DATAS Entre" + d1 + " e " + d2);
         System.out.println("Aniversario dos dizimistas");
         System.out.println(DizimistaDAO.recuperar(d1, d2));
