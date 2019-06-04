@@ -26,7 +26,7 @@ import javafx.scene.layout.AnchorPane;
 public class TelaPrincipalController implements Initializable {
 
     @FXML
-    private Tab tabPlantao, tabDizimista, tabPresidente, tabPlantonista;
+    private Tab tabPlantao, tabDizimista, tabPresidente, tabPlantonista, tabRelatorios;
 
     /**
      * Initializes the controller class.
@@ -42,6 +42,8 @@ public class TelaPrincipalController implements Initializable {
             tabPresidente.setContent(aPresidente);
             AnchorPane aPlantonista = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Plantonista.fxml"));
             tabPlantonista.setContent(aPlantonista);
+            AnchorPane aRelatorios = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Relatorios.fxml"));
+            tabRelatorios.setContent(aRelatorios);
         } catch (IOException ex) {
             Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -7,6 +7,7 @@ package model.DAO;
 
 import conexao.Conexao;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,8 +47,6 @@ public class ContribuicaoDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 
@@ -74,9 +73,7 @@ public class ContribuicaoDAO {
             return contribuicoes;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
     
     public static List<Contribuicao> recuperar(Plantao plantao) {
@@ -103,8 +100,6 @@ public class ContribuicaoDAO {
             return contribuicoes;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
     
@@ -132,9 +127,37 @@ public class ContribuicaoDAO {
             return contribuicoes;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
+    }
+    
+    public static List<Contribuicao> recuperar(Date dataInicial, Date dataFinal) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            stmt = c.prepareStatement("SELECT contribuicao.* FROM contribuicao JOIN plantao ON plantao.id_plantao = contribuicao.plantao_id_plantao WHERE plantao.data BETWEEN ? AND ?");
+            stmt.setDate(1, dataInicial);
+            stmt.setDate(2, dataFinal);
+            rs = stmt.executeQuery();
+
+            List<Contribuicao> contribuicoes = new ArrayList<>();
+            while (rs.next()) {
+                Dizimista d = DizimistaDAO.recuperar(rs.getInt("dizimista_id_dizimista"));
+                Plantonista plantonista = PlantonistaDAO.recuperar(rs.getInt("plantonista_id_plantonista"));
+                Plantao p = PlantaoDAO.recuperar(rs.getInt("plantao_id_plantao"));
+                Year ano = Year.parse(rs.getString("ano").substring(0, 4));
+
+                Contribuicao contribuicao = new Contribuicao(rs.getInt("id_contribuicao"), rs.getDouble("valor"), Mes.valueOf(rs.getString("mes")), ano, d, plantonista, p);
+                contribuicoes.add(contribuicao);
+                System.out.println("tá aqui");
+            }
+            return contribuicoes;
+        } catch (SQLException ex) {
+            System.err.println("Excessão: "+ex);
+            return null;
+        } 
     }
     
     public static void atualizar(Contribuicao contribuicao) {
@@ -155,9 +178,7 @@ public class ContribuicaoDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
     
     public static void apagar(int id) {
@@ -173,8 +194,6 @@ public class ContribuicaoDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 }

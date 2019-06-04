@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx" fx:controller="controller.RelatoriosController">
+   <children>
+      <AnchorPane layoutX="3.0" prefHeight="578.0" prefWidth="800.0">
+         <children>
+            <Label alignment="CENTER" layoutY="25.0" prefHeight="25.0" prefWidth="786.0" text="Relatórios">
+               <font>
+                  <Font name="System Bold Italic" size="29.0" />
+               </font>
+            </Label>
+            <AnchorPane layoutX="180.0" layoutY="85.0" prefHeight="164.0" prefWidth="427.0">
+               <children>
+                  <Label layoutX="51.0" layoutY="21.0" text="Tipo">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Group layoutX="93.0" layoutY="23.0">
+                     <children>
+                        <RadioButton fx:id="aniversarios" mnemonicParsing="false" text="Aniversários" />
+                        <RadioButton fx:id="contribuicoes" layoutX="140.0" mnemonicParsing="false" text="Contribuições" />
+                     </children>
+                  </Group>
+                  <Label layoutX="48.0" layoutY="53.0" text="Entre">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <DatePicker fx:id="dtInicial" layoutX="93.0" layoutY="51.0" prefHeight="25.0" prefWidth="102.0" promptText="01/01/1990" />
+                  <Label layoutX="210.0" layoutY="53.0" text="e">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <DatePicker fx:id="dtFinal" layoutX="233.0" layoutY="51.0" prefHeight="25.0" prefWidth="102.0" promptText="01/01/1990" />
+                  <Button fx:id="btGerar" layoutX="93.0" layoutY="88.0" mnemonicParsing="false" onAction="#gerar" text="Gerar" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

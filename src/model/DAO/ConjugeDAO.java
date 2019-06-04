@@ -40,9 +40,7 @@ public class ConjugeDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static Conjuge recuperar(int id) {
@@ -58,9 +56,7 @@ public class ConjugeDAO {
             return new Conjuge(rs.getInt("dizimista_id_dizimista"), rs.getString("nome"), rs.getDate("data_nascimento"), rs.getDate("data_casamento"));
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static List <Conjuge> recuperar(Date dataInicio, Date dataFinal) {
@@ -87,9 +83,7 @@ public class ConjugeDAO {
         } catch (SQLException ex) {
             System.out.println("ex:" + ex);
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     static void atualizar(Conjuge conjuge) {
@@ -108,9 +102,7 @@ public class ConjugeDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static void apagar(int id) {
@@ -126,8 +118,6 @@ public class ConjugeDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 }

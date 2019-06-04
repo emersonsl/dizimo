@@ -30,6 +30,7 @@ import model.DAO.ContribuicaoDAO;
 import model.DAO.DizimistaDAO;
 import model.bean.Conjuge;
 import model.bean.Dizimista;
+import tools.ExportarPDF;
 import view.Alertas;
 
 /**
@@ -118,10 +119,10 @@ public class DizimistaController implements Initializable {
                 ckCasaReli.setSelected(false);
                 gpConj.setVisible(false);
             }
-            if(!d.isAtivo()){
+            if (!d.isAtivo()) {
                 apDados.setDisable(true);
                 btAtivarDesativar.setText("Ativar");
-            }else{
+            } else {
                 btAtivarDesativar.setText("Desativar");
             }
         } else {
@@ -129,13 +130,13 @@ public class DizimistaController implements Initializable {
             btAtivarDesativar.setVisible(false);
         }
     }
-    
-    public void editarMode(){
+
+    public void editarMode() {
         Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
         if (btEditarCancelar.getText().equals("Editar")) {
-            if(d!=null){
+            if (d != null) {
                 selectMode(3);
-            }else{
+            } else {
                 selectMode(2);
             }
         }
@@ -312,16 +313,16 @@ public class DizimistaController implements Initializable {
     }
 
     public void verContribuicoes() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Funcionalidade não implementada");
-        alert.setContentText("Essa funcionalidade ainda não foi implementada, logo em breve estará disponivel");
-        alert.show();
+        Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
+        if (Alertas.validarSelecaoEntidade(d, "Dizimista")) {
+            ExportarPDF.ContribuicoesDoDizimista(d);
+        }
     }
 
     public void apagar() {
         Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
         if (Alertas.validarSelecaoEntidade(d, "Dizimista")) {
-            if (Alertas.confirmarApagar("Dizimista")&& Alertas.verificarRestricao(ContribuicaoDAO.recuperar(d), "Dizimista")) {
+            if (Alertas.confirmarApagar("Dizimista") && Alertas.verificarRestricao(ContribuicaoDAO.recuperar(d), "Dizimista")) {
                 DizimistaDAO.apagar(d.getId());
                 Alertas.apagadoSucesso("Dizimista");
                 carregarTodos();
@@ -397,11 +398,11 @@ public class DizimistaController implements Initializable {
         Alertas.atualizadoSucesso("Dizimista");
         selectMode(1);
     }
-    
-    public void ativarDesativar(){
+
+    public void ativarDesativar() {
         Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
         if (Alertas.validarSelecaoEntidade(d, "Dizimista")) {
-            if (Alertas.confirmarSetStatus(d.isAtivo(),"Dizimista")) {
+            if (Alertas.confirmarSetStatus(d.isAtivo(), "Dizimista")) {
                 d.setAtivo(!d.isAtivo());
                 DizimistaDAO.atualizar(d);
                 Alertas.ativadoDesativadorSucesso(d.isAtivo(), "Dizimista");
@@ -411,7 +412,7 @@ public class DizimistaController implements Initializable {
     }
 
     private boolean validarCampos() {
-        if (cadastrar &&!ckId.isSelected() && !Alertas.validarCadastroIdDizimista(id.getText())) {
+        if (cadastrar && !ckId.isSelected() && !Alertas.validarCadastroIdDizimista(id.getText())) {
             return false;
         }
 

@@ -67,8 +67,6 @@ public class DizimistaDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 
@@ -95,8 +93,6 @@ public class DizimistaDAO {
             return dizimistas;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 
@@ -125,8 +121,6 @@ public class DizimistaDAO {
             return dizimistas;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 
@@ -158,8 +152,6 @@ public class DizimistaDAO {
         } catch (SQLException ex) {
             System.err.println("Ex.:"+ex);
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
     
@@ -183,9 +175,7 @@ public class DizimistaDAO {
             return d;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static void atualizar(Dizimista dizimista) {
@@ -218,8 +208,6 @@ public class DizimistaDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 
@@ -236,8 +224,6 @@ public class DizimistaDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 }

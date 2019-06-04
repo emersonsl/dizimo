@@ -5,6 +5,7 @@
  */
 package view;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -131,6 +132,17 @@ public abstract class Alertas {
         return true;
     }
 
+    public static boolean validarIntervalo(LocalDate valor1, LocalDate valor2) {
+        if (Date.valueOf(valor1).compareTo(Date.valueOf(valor2)) == 1) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Intervalo de data invalido");
+            alert.setContentText("O intervalo entre as datas foi preenchido incorretamente");
+            alert.show();
+            return false;
+        }
+        return true;
+    }
+    
     public static boolean validarCadastroIdDizimista(String id) {
         if (id == null || !id.matches("6\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

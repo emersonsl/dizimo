@@ -44,9 +44,7 @@ public class PlantaoDAO {
                 plantao.setId(rs.getInt(1));
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static List<Plantao> recuperar() {
@@ -70,8 +68,6 @@ public class PlantaoDAO {
             return plantoes;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 
@@ -95,9 +91,7 @@ public class PlantaoDAO {
             return null;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static List<Plantao> recuperar(Date data) {
@@ -122,9 +116,7 @@ public class PlantaoDAO {
             return plantoes;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static void atualizar(Plantao plantao) {
@@ -145,8 +137,6 @@ public class PlantaoDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 
@@ -163,8 +153,6 @@ public class PlantaoDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 

@@ -37,8 +37,6 @@ public class PlantonistaDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 
@@ -60,8 +58,6 @@ public class PlantonistaDAO {
             return plantonistas;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
     
@@ -83,9 +79,7 @@ public class PlantonistaDAO {
             return null;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static List<Plantonista> recuperar(String nomeSobrenome) {
@@ -107,9 +101,7 @@ public class PlantonistaDAO {
             return plantonistas;
         } catch (SQLException ex) {
             return null;
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static void atualizar(Plantonista plantonista) {
@@ -129,9 +121,7 @@ public class PlantonistaDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
-        }
+        } 
     }
 
     public static void apagar(int id) {
@@ -147,8 +137,6 @@ public class PlantonistaDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(DizimistaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            Conexao.closeConnection(c, stmt);
         }
     }
 

@@ -9,6 +9,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Desktop;
@@ -130,13 +131,12 @@ public class ExportarPDF {
         return String.valueOf(Year.now().getValue() - data.toLocalDate().getYear());
     }
 
-    public static void ContribuicoesDosDizimistas(Dizimista dizimista) {
-        List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(dizimista);
+    public static void ContribuicoesDoDizimista(Dizimista dizimista) {
 
         Document documento = new Document();
 
         try {
-            PdfWriter.getInstance(documento, new FileOutputStream("./dizimo - contribuicoes.pdf"));
+            PdfWriter.getInstance(documento, new FileOutputStream("./dizimo - contribuicoes do dizimista.pdf"));
             documento.open();
 
             Paragraph p1 = new Paragraph();
@@ -162,7 +162,7 @@ public class ExportarPDF {
             p2.setSpacingBefore(10);
             p2.setSpacingAfter(10);
 
-            p1.add("Contribuicões do dizimista\n");
+            p1.add("Contribuições do dizimista\n");
             p1.setFont(f2);
 
             p2.add("Número: ");
@@ -173,7 +173,7 @@ public class ExportarPDF {
             p2.setFont(f3);
             p2.add(dizimista.getNome() + "\n");
 
-            PdfPTable tableContribuicoes = getContribuicoesDizimistas(dizimista);
+            PdfPTable tableContribuicoes = getContribuicoesDizimista(dizimista);
             p3.add(tableContribuicoes);
 
             documento.add(p1);
@@ -182,7 +182,7 @@ public class ExportarPDF {
 
             documento.close();
             
-            Desktop.getDesktop().open(new File("./dizimo - contribuicoes.pdf"));
+            Desktop.getDesktop().open(new File("./dizimo - contribuicoes do dizimista.pdf"));
 
         } catch (FileNotFoundException | DocumentException ex) {
             Logger.getLogger(ExportarPDF.class.getName()).log(Level.SEVERE, null, ex);
@@ -191,18 +191,19 @@ public class ExportarPDF {
         }
     }
 
-    private static PdfPTable getContribuicoesDizimistas(Dizimista dizimista) {
+    private static PdfPTable getContribuicoesDizimista(Dizimista dizimista) {
         PdfPTable table = new PdfPTable(5);
         List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(dizimista);
 
         table.setSpacingBefore(10);
         table.setSpacingAfter(10);
         
-        table.addCell("Data do Plantão");
-        table.addCell("Mês");
-        table.addCell("Ano");
-        table.addCell("Valor");
-        table.addCell("Plantonista");
+        
+        table.addCell(getCellFormatter("Plantão"));
+        table.addCell(getCellFormatter("Mês"));
+        table.addCell(getCellFormatter("Ano"));
+        table.addCell(getCellFormatter("Valor"));
+        table.addCell(getCellFormatter("Plantonista"));
 
         table.setHeaderRows(1);
 
@@ -216,4 +217,88 @@ public class ExportarPDF {
 
         return table;
     }
+    
+    public static void ContribuicoesDosDizimistas(Date dataInicio, Date dataFinal) {
+        Document documento = new Document();
+
+        try {
+            PdfWriter.getInstance(documento, new FileOutputStream("./dizimo - contribuicoes dos dizimistas.pdf"));
+            documento.open();
+
+            Paragraph p1 = new Paragraph();
+            Paragraph p2 = new Paragraph();
+
+            Font f1 = new Font();
+            Font f2 = new Font();
+
+            f1.setSize(18);
+            f1.setStyle(Font.BOLD);
+            f2.setSize(14);
+            f2.setStyle(Font.BOLD);            
+
+            p1.setSpacingAfter(10);
+            p1.setFont(f1);
+            p1.setAlignment(Paragraph.ALIGN_CENTER);
+
+            p1.add("Contribuições dos dizimista\n");
+            p1.setFont(f2);
+            p1.add("entre " + getDataFormatada(dataInicio) + " e " + getDataFormatada(dataFinal));
+
+            
+            PdfPTable tableContribuicoes = getContribuicoesDizimistas(dataInicio, dataFinal);
+            p2.add(tableContribuicoes);
+
+            documento.add(p1);
+            documento.add(p2);
+
+            documento.close();
+            
+            Desktop.getDesktop().open(new File("./dizimo - contribuicoes dos dizimistas.pdf"));
+
+        } catch (FileNotFoundException | DocumentException ex) {
+            Logger.getLogger(ExportarPDF.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ExportarPDF.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private static PdfPTable getContribuicoesDizimistas(Date dataInicio, Date dataFinal) {
+        PdfPTable table = new PdfPTable(6);
+        List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(dataInicio, dataFinal);
+
+        table.setSpacingBefore(10);
+        table.setSpacingAfter(10);
+        
+        table.addCell(getCellFormatter("Dizimista"));
+        table.addCell(getCellFormatter("Plantão"));
+        table.addCell(getCellFormatter("Mês"));
+        table.addCell(getCellFormatter("Ano"));
+        table.addCell(getCellFormatter("Valor"));
+        table.addCell(getCellFormatter("Plantonista"));
+
+        table.setHeaderRows(1);
+
+        for (Contribuicao c : contribuicoes) {
+            table.addCell(c.getDizimista().toString());
+            table.addCell(getDataFormatada(c.getPlantao().getData()));
+            table.addCell(c.getMes().name());
+            table.addCell(c.getAno().toString());
+            table.addCell(c.getValor().toString());
+            table.addCell(c.getPlantonista().getNome());
+        }
+
+        return table;
+    }
+    
+    private static PdfPCell getCellFormatter(String text){
+        PdfPCell cell = new PdfPCell();
+        Paragraph p1 = new Paragraph();
+        Font f1 = new Font();
+        f1.setStyle(Font.BOLD);
+        p1.setFont(f1);
+        p1.add(text);
+        cell.addElement(p1);
+        return cell;
+    }
+
 }
