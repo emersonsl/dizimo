@@ -143,6 +143,17 @@ public abstract class Alertas {
         return true;
     }
     
+    public static boolean validarIntervalo(Mes valor1, Mes valor2) {
+        if (valor1.getMes()>=valor2.getMes()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Intervalo de mês invalido");
+            alert.setContentText("O intervalo entre as meses foi preenchido incorretamente");
+            alert.show();
+            return false;
+        }
+        return true;
+    }
+    
     public static boolean validarCadastroIdDizimista(String id) {
         if (id == null || !id.matches("6\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

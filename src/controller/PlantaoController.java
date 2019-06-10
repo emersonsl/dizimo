@@ -186,6 +186,7 @@ public class PlantaoController implements Initializable {
                 break;
             case 2:
                 //cadastrar
+                cadastrar = true;
                 clear();
                 carregarComboBox();
                 btCadastrarSalvar.setText("Salvar");

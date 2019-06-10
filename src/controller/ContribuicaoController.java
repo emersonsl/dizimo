@@ -5,17 +5,22 @@
  */
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -57,6 +62,10 @@ public class ContribuicaoController implements Initializable {
     @FXML
     private ComboBox<Mes> cbMes;
     @FXML
+    private CheckBox ckMaisMeses;
+    @FXML
+    private ComboBox<Mes> cbMesFinal;
+    @FXML
     private ComboBox<Year> cbAno;
     @FXML
     private ComboBox<Plantonista> cbPlantonista;
@@ -79,6 +88,9 @@ public class ContribuicaoController implements Initializable {
 
     @FXML
     private AnchorPane apEsquerdo;
+
+    @FXML
+    private AnchorPane apPrincipal;
 
     private Plantao plantao;
     private List<Contribuicao> contribuicoes;
@@ -162,12 +174,14 @@ public class ContribuicaoController implements Initializable {
                 btEditarCancelar.setText("Editar");
                 btApagar.setVisible(true);
                 apEsquerdo.setDisable(false);
+                ckMaisMeses.setVisible(false);
+                cbMesFinal.setVisible(false);
                 clear();
                 break;
             case 2:
                 //cadastrar
                 clear();
-                cadastrar=true;
+                cadastrar = true;
                 carregarComboBox();
                 tfIdDizimista.setEditable(true);
                 tfValor.setEditable(true);
@@ -175,6 +189,7 @@ public class ContribuicaoController implements Initializable {
                 btEditarCancelar.setText("Cancelar");
                 btApagar.setVisible(false);
                 apEsquerdo.setDisable(true);
+                ckMaisMeses.setVisible(true);
                 break;
             case 3:
                 //editar
@@ -186,6 +201,8 @@ public class ContribuicaoController implements Initializable {
                 btEditarCancelar.setText("Cancelar");
                 btApagar.setVisible(false);
                 apEsquerdo.setDisable(true);
+                ckMaisMeses.setVisible(false);
+                cbMesFinal.setVisible(false);
                 break;
             default:
                 break;
@@ -206,6 +223,7 @@ public class ContribuicaoController implements Initializable {
 
     private void carregarComboBox() {
         cbMes.getItems().addAll(Arrays.asList(Mes.values()));
+        cbMesFinal.getItems().addAll(Arrays.asList(Mes.values()));
         Year a = Year.parse(String.valueOf(Year.now().getValue() - 1));
         Year b = Year.parse(String.valueOf(Year.now().getValue() + 1));
         cbAno.getItems().addAll(a, Year.now(), b);
@@ -218,6 +236,8 @@ public class ContribuicaoController implements Initializable {
         lbNomeDizimista.setText("");
         tfIdDizimista.setText("");
         cbMes.setValue(null);
+        cbMesFinal.setValue(null);
+        ckMaisMeses.setSelected(false);
         cbMes.getItems().clear();
         cbAno.setValue(null);
         cbAno.getItems().clear();
@@ -244,8 +264,21 @@ public class ContribuicaoController implements Initializable {
         if (validarCampos()) {
             Dizimista d = DizimistaDAO.recuperar(Integer.parseInt(tfIdDizimista.getText()));
             Plantonista p = cbPlantonista.getValue();
-            Contribuicao c = new Contribuicao(Double.parseDouble(tfValor.getText()), cbMes.getValue(), cbAno.getValue(), d, p, plantao);
-            ContribuicaoDAO.salvar(c);
+            Contribuicao c;
+
+            if (ckMaisMeses.isSelected()) {
+                Double valor = Double.parseDouble(tfValor.getText()) / (cbMesFinal.getValue().getMes() - cbMes.getValue().getMes() + 1);
+                c = new Contribuicao(valor, cbMes.getValue(), cbAno.getValue(), d, p, plantao);
+                for (Mes m : Mes.values()) {
+                    if (m.getMes() >= cbMes.getValue().getMes() && m.getMes() <= cbMesFinal.getValue().getMes()) {
+                        c.setMes(m);
+                        ContribuicaoDAO.salvar(c);
+                    }
+                }
+            } else {
+                c = new Contribuicao(Double.parseDouble(tfValor.getText()), cbMes.getValue(), cbAno.getValue(), d, p, plantao);
+                ContribuicaoDAO.salvar(c);
+            }
             Alertas.cadastradoSucesso("Contribuição");
             selectMode(1);
         }
@@ -287,7 +320,12 @@ public class ContribuicaoController implements Initializable {
     }
 
     public void encerrarPlantao() {
-
+        try {
+            AnchorPane aPlantao = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Plantao.fxml"));
+            apPrincipal.getChildren().setAll(aPlantao);
+        } catch (IOException ex) {
+            Logger.getLogger(ContribuicaoController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private boolean validarCampos() {
@@ -296,7 +334,7 @@ public class ContribuicaoController implements Initializable {
             return false;
         }
         //mes ano valor plantonista
-        if (!Alertas.validarSelecaoComboBox(cbMes.getValue(), "Mes")) {
+        if (!Alertas.validarSelecaoComboBox(cbMes.getValue(), "Mês")) {
             return false;
         }
         if (!Alertas.validarSelecaoComboBox(cbAno.getValue(), "Ano")) {
@@ -308,6 +346,12 @@ public class ContribuicaoController implements Initializable {
             tfValor.setText(tfValor.getText().replace(',', '.'));
         }
         if (!Alertas.validarSelecaoComboBox(cbPlantonista.getValue(), "Plantonista")) {
+            return false;
+        }
+        if (cadastrar && ckMaisMeses.isSelected() && !Alertas.validarSelecaoComboBox(cbMesFinal.getValue(), "Mês final")) {
+            return false;
+        }
+        if (cadastrar && ckMaisMeses.isSelected() && !Alertas.validarIntervalo(cbMes.getValue(), cbMesFinal.getValue())) {
             return false;
         }
         return true;
@@ -330,4 +374,7 @@ public class ContribuicaoController implements Initializable {
         }
     }
 
+    public void maisMeses() {
+        cbMesFinal.setVisible(ckMaisMeses.isSelected());
+    }
 }

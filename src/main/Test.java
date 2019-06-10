@@ -13,6 +13,7 @@ import model.DAO.DizimistaDAO;
 import model.bean.Contribuicao;
 import model.bean.Dizimista;
 import tools.ExportarPDF;
+import util.Mes;
 
 /**
  *
@@ -21,7 +22,7 @@ import tools.ExportarPDF;
 public class Test {
 
     public static void main(String[] args) {
-        contribuicoesData();
+        System.out.println();
     }
     
     private static void contribuicoesData(){
