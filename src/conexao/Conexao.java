@@ -17,8 +17,8 @@ public abstract class Conexao {
     
     private static final String DRIVER = "com.mysql.jdbc.Driver"; 
     private static final String URL = "jdbc:mysql://localhost:3306/dizimo_sao_joao_calabria"; 
-    private static final String USER = "emerson"; 
-    private static final String PASSWORD = "@senha";
+    private static final String USER = "root"; 
+    private static final String PASSWORD = "";
     private static Connection connection;
     
 

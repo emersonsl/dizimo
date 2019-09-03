@@ -12,7 +12,6 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import model.DAO.DizimistaDAO;
-import model.bean.Dizimista;
 import util.Mes;
 
 /**

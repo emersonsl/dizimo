@@ -64,6 +64,8 @@ public class DizimistaController implements Initializable {
     private AnchorPane apEsquerdo;
     @FXML
     private AnchorPane apDados;
+    @FXML
+    private Button verTodos;
 
     private List<Dizimista> dizimistas;
     private ObservableList<Dizimista> obDizimistas;
@@ -89,7 +91,7 @@ public class DizimistaController implements Initializable {
 
         obDizimistas = FXCollections.observableArrayList(dizimistas);
         tableViewDizimistas.setItems(obDizimistas);
-        totalDizimistas.setText(dizimistas.size() + " dizimistas cadastrado(s)");
+        totalDizimistas.setText(dizimistas.size() + " dizimista(s)");
     }
 
     private void selecionarItemTabelaDizimistar(Dizimista d) {
@@ -428,5 +430,9 @@ public class DizimistaController implements Initializable {
             return false;
         }
         return true;
+    }
+    
+    public void verTodos(){
+        ExportarPDF.listarDizimistas();
     }
 }

@@ -71,6 +71,7 @@ public class ExportarPDF {
             p2.add("Aniversário de casamento\n");
 
             p3.add(getDizimistasAniversarios(dataInicio, dataFinal));
+            p3.add(getConjugesAniversarios(dataInicio, dataFinal));
             p4.add(getDizimistasAniversariosCasamento(dataInicio, dataFinal));
 
             documento.add(p1);
@@ -79,7 +80,7 @@ public class ExportarPDF {
             documento.add(p4);
 
             documento.close();
-            
+
             Desktop.getDesktop().open(new File("./dizimo - aniversariantes.pdf"));
         } catch (FileNotFoundException | DocumentException ex) {
             Logger.getLogger(ExportarPDF.class.getName()).log(Level.SEVERE, null, ex);
@@ -108,8 +109,23 @@ public class ExportarPDF {
         return dizimistasAniversario.toString();
     }
 
+    private static String getConjugesAniversarios(Date dataInicio, Date dataFinal) {
+        List<Conjuge> conjuges = ConjugeDAO.recuperarAniversarioConjuge(dataInicio, dataFinal);
+
+        StringBuilder dizimistasAniversario = new StringBuilder();
+        for (Conjuge c : conjuges) {
+            dizimistasAniversario.append(getDataFormatada(c.getDataNascimento()));
+            dizimistasAniversario.append(" - ");
+            dizimistasAniversario.append(c.getNome());
+            dizimistasAniversario.append(" - ");
+            dizimistasAniversario.append(getIdade(c.getDataNascimento()));
+            dizimistasAniversario.append(" anos \n");
+        }
+        return dizimistasAniversario.toString();
+    }
+
     private static String getDizimistasAniversariosCasamento(Date dataInicio, Date dataFinal) {
-        List<Conjuge> conjuges = ConjugeDAO.recuperar(dataInicio, dataFinal);
+        List<Conjuge> conjuges = ConjugeDAO.recuperarAniversarioCasamento(dataInicio, dataFinal);
 
         StringBuilder dizimistasAniversarioCasamento = new StringBuilder();
 
@@ -152,7 +168,6 @@ public class ExportarPDF {
             f2.setSize(14);
             f2.setStyle(Font.BOLD);
             f3.setSize(14);
-            
 
             p1.setSpacingAfter(10);
             p1.setFont(f1);
@@ -167,7 +182,7 @@ public class ExportarPDF {
 
             p2.add("Número: ");
             p2.setFont(f3);
-            p2.add(dizimista.getId()+"\n");
+            p2.add(dizimista.getId() + "\n");
             p2.setFont(f2);
             p2.add("Nome: ");
             p2.setFont(f3);
@@ -181,7 +196,7 @@ public class ExportarPDF {
             documento.add(p3);
 
             documento.close();
-            
+
             Desktop.getDesktop().open(new File("./dizimo - contribuicoes do dizimista.pdf"));
 
         } catch (FileNotFoundException | DocumentException ex) {
@@ -197,8 +212,7 @@ public class ExportarPDF {
 
         table.setSpacingBefore(10);
         table.setSpacingAfter(10);
-        
-        
+
         table.addCell(getCellFormatter("Plantão"));
         table.addCell(getCellFormatter("Mês"));
         table.addCell(getCellFormatter("Ano"));
@@ -217,7 +231,7 @@ public class ExportarPDF {
 
         return table;
     }
-    
+
     public static void ContribuicoesDosDizimistas(Date dataInicio, Date dataFinal) {
         Document documento = new Document();
 
@@ -234,7 +248,7 @@ public class ExportarPDF {
             f1.setSize(18);
             f1.setStyle(Font.BOLD);
             f2.setSize(14);
-            f2.setStyle(Font.BOLD);            
+            f2.setStyle(Font.BOLD);
 
             p1.setSpacingAfter(10);
             p1.setFont(f1);
@@ -244,7 +258,6 @@ public class ExportarPDF {
             p1.setFont(f2);
             p1.add("entre " + getDataFormatada(dataInicio) + " e " + getDataFormatada(dataFinal));
 
-            
             PdfPTable tableContribuicoes = getContribuicoesDizimistas(dataInicio, dataFinal);
             p2.add(tableContribuicoes);
 
@@ -252,7 +265,7 @@ public class ExportarPDF {
             documento.add(p2);
 
             documento.close();
-            
+
             Desktop.getDesktop().open(new File("./dizimo - contribuicoes dos dizimistas.pdf"));
 
         } catch (FileNotFoundException | DocumentException ex) {
@@ -261,14 +274,14 @@ public class ExportarPDF {
             Logger.getLogger(ExportarPDF.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private static PdfPTable getContribuicoesDizimistas(Date dataInicio, Date dataFinal) {
         PdfPTable table = new PdfPTable(6);
         List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(dataInicio, dataFinal);
 
         table.setSpacingBefore(10);
         table.setSpacingAfter(10);
-        
+
         table.addCell(getCellFormatter("Dizimista"));
         table.addCell(getCellFormatter("Plantão"));
         table.addCell(getCellFormatter("Mês"));
@@ -289,8 +302,8 @@ public class ExportarPDF {
 
         return table;
     }
-    
-    private static PdfPCell getCellFormatter(String text){
+
+    private static PdfPCell getCellFormatter(String text) {
         PdfPCell cell = new PdfPCell();
         Paragraph p1 = new Paragraph();
         Font f1 = new Font();
@@ -299,6 +312,66 @@ public class ExportarPDF {
         p1.add(text);
         cell.addElement(p1);
         return cell;
+    }
+
+    public static void listarDizimistas() {
+        Document documento = new Document();
+
+        try {
+            PdfWriter.getInstance(documento, new FileOutputStream("./dizimo - lista.pdf"));
+            documento.open();
+
+            Paragraph p1 = new Paragraph();
+            Paragraph p2 = new Paragraph();
+
+            Font f1 = new Font();
+            Font f2 = new Font();
+
+            f1.setSize(18);
+            f1.setStyle(Font.BOLD);
+            f2.setSize(12);
+
+            p1.setSpacingAfter(10);
+            p1.setFont(f1);
+            p1.setAlignment(Paragraph.ALIGN_CENTER);
+            p2.setFont(f2);
+            p2.setAlignment(Paragraph.ALIGN_LEFT);
+            p2.setSpacingBefore(10);
+            p2.setSpacingAfter(10);
+
+            p1.add("Dizimistas Cadastrados\n");
+            p1.setFont(f2);
+
+            p2.add(getAllDizimistas());
+
+            documento.add(p1);
+            documento.add(p2);
+
+            documento.close();
+
+            Desktop.getDesktop().open(new File("./dizimo - lista.pdf"));
+        } catch (FileNotFoundException | DocumentException ex) {
+            System.out.println("deu ruim");
+            Logger.getLogger(ExportarPDF.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            System.out.println("deu ruim");
+            Logger.getLogger(ExportarPDF.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static String getAllDizimistas() {
+
+        List<Dizimista> dizimistas = DizimistaDAO.recuperar();
+
+        StringBuilder dizimistasAniversario = new StringBuilder();
+        for (Dizimista d : dizimistas) {
+            dizimistasAniversario.append(d.getId());
+            dizimistasAniversario.append(" - ");
+            dizimistasAniversario.append(d.getNome());
+            dizimistasAniversario.append("\n");
+        }
+        return dizimistasAniversario.toString();
+
     }
 
 }

@@ -58,8 +58,35 @@ public class ConjugeDAO {
             return null;
         } 
     }
+    
+    public static List <Conjuge> recuperarAniversarioConjuge(Date dataInicio, Date dataFinal) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
-    public static List <Conjuge> recuperar(Date dataInicio, Date dataFinal) {
+        try {
+            stmt = c.prepareStatement("SELECT * FROM conjuge WHERE dayofyear(data_nascimento) BETWEEN ? and ? ORDER BY(nome)");
+            stmt.setInt(1, dataInicio.toLocalDate().getDayOfYear());
+            stmt.setInt(2, dataFinal.toLocalDate().getDayOfYear());
+       
+            rs = stmt.executeQuery();
+            
+            Conjuge con;
+            List <Conjuge> conjuges = new ArrayList<>();
+            while (rs.next()) {
+                con = new Conjuge(rs.getInt("dizimista_id_dizimista"), rs.getString("nome"), rs.getDate("data_nascimento"), rs.getDate("data_casamento"));
+                conjuges.add(con);
+            }
+            
+            return conjuges;
+            
+        } catch (SQLException ex) {
+            System.out.println("ex:" + ex);
+            return null;
+        } 
+    }
+
+    public static List <Conjuge> recuperarAniversarioCasamento(Date dataInicio, Date dataFinal) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
