@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import model.bean.Plantao;
 import model.bean.Plantonista;
 import model.bean.Presidente;
+import view.Alertas;
 
 /**
  *

@@ -7,6 +7,7 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -365,11 +366,36 @@ public class ContribuicaoController implements Initializable {
                     lb1NomeDizimista.setVisible(true);
                     lbNomeDizimista.setVisible(true);
                     lbNomeDizimista.setText(d.getNome());
+                    List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(d);
+                    if (!contribuicoes.isEmpty()) {
+                        Contribuicao contribuicao = contribuicoes.get(contribuicoes.size() - 1);
+                        if (contribuicao != null) {
+                            Mes mes = contribuicao.getMes();
+                            Year year = contribuicao.getAno();
+                            if (mes.getMes() == 12) {
+                                cbMes.setValue(Mes.JAN);
+                                cbAno.setValue(year.plusYears(1));
+                            } else {
+                                boolean teste = false;
+                                Mes proxMes = mes.setMes(mes.getMes()+1);
+                                cbMes.setValue(proxMes);
+                                cbAno.setValue(year);
+                            }
+                        }
+                    }else{
+                        cbMes.setValue(Mes.JAN.setMes(LocalDate.now().getMonthValue()));
+                        cbAno.setValue(Year.of(LocalDate.now().getYear()));
+                    }
+                }else{
+                    cbMes.setValue(null);
+                    cbAno.setValue(null);
                 }
             } else {
                 lbNomeDizimista.setText("");
                 lb1NomeDizimista.setVisible(false);
                 lbNomeDizimista.setVisible(false);
+                cbMes.setValue(null);
+                cbAno.setValue(null);
             }
         }
     }

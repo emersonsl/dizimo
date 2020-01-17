@@ -22,4 +22,14 @@ public enum Mes {
         return mes;
     }
     
+    public Mes setMes(int index){
+        int i=1;
+        for(Mes m: Mes.values()){
+            if(i==index){
+                return m;
+            }
+            i++;
+        }
+        return Mes.JAN;
+    }
 }
