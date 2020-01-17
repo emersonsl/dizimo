@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,9 +74,8 @@ public class ExportarPDF {
             p2.add("Aniversário de casamento\n");
 
             p3.add(getDizimistasAniversarios(dataInicio, dataFinal));
-            p3.add(getConjugesAniversarios(dataInicio, dataFinal));
             p4.add(getDizimistasAniversariosCasamento(dataInicio, dataFinal));
-
+                    
             documento.add(p1);
             documento.add(p3);
             documento.add(p2);
@@ -96,51 +98,54 @@ public class ExportarPDF {
 
     private static String getDizimistasAniversarios(Date dataInicio, Date dataFinal) {
         List<Dizimista> dizimistas = DizimistaDAO.recuperar(dataInicio, dataFinal);
+        List<Aniversario> aniversarios = new ArrayList<>();
 
-        StringBuilder dizimistasAniversario = new StringBuilder();
+        Aniversario aniversario;
         for (Dizimista d : dizimistas) {
-            dizimistasAniversario.append(getDataFormatada(d.getDataNascimento()));
-            dizimistasAniversario.append(" - ");
-            dizimistasAniversario.append(d.getNome());
-            dizimistasAniversario.append(" - ");
-            dizimistasAniversario.append(getIdade(d.getDataNascimento()));
-            dizimistasAniversario.append(" anos \n");
+            aniversario = new Aniversario(d.getDataNascimento(), d.getNome());
+            aniversarios.add(aniversario);
         }
-        return dizimistasAniversario.toString();
-    }
 
-    private static String getConjugesAniversarios(Date dataInicio, Date dataFinal) {
         List<Conjuge> conjuges = ConjugeDAO.recuperarAniversarioConjuge(dataInicio, dataFinal);
 
-        StringBuilder dizimistasAniversario = new StringBuilder();
         for (Conjuge c : conjuges) {
-            dizimistasAniversario.append(getDataFormatada(c.getDataNascimento()));
-            dizimistasAniversario.append(" - ");
-            dizimistasAniversario.append(c.getNome());
-            dizimistasAniversario.append(" - ");
-            dizimistasAniversario.append(getIdade(c.getDataNascimento()));
-            dizimistasAniversario.append(" anos \n");
+            aniversario = new Aniversario(c.getDataNascimento(), c.getNome());
+            if (!aniversarios.contains(aniversario)) {
+                aniversarios.add(aniversario);
+            }
         }
-        return dizimistasAniversario.toString();
+        
+        Collections.sort(aniversarios);
+        
+        StringBuilder textAniversario = new StringBuilder();
+
+        for (Aniversario a : aniversarios) {
+            textAniversario.append(a);
+            textAniversario.append("\n");
+        }
+        return textAniversario.toString();
     }
 
     private static String getDizimistasAniversariosCasamento(Date dataInicio, Date dataFinal) {
         List<Conjuge> conjuges = ConjugeDAO.recuperarAniversarioCasamento(dataInicio, dataFinal);
+        List<AniversarioCasamento> aniversariosCasamento = new ArrayList<>();
 
-        StringBuilder dizimistasAniversarioCasamento = new StringBuilder();
-
-        StringBuilder dizimistasAniversario = new StringBuilder();
+        AniversarioCasamento aniversarioCasamento;
         for (Conjuge c : conjuges) {
-            dizimistasAniversarioCasamento.append(getDataFormatada(c.getDataCasamento()));
-            dizimistasAniversarioCasamento.append(" - ");
-            dizimistasAniversarioCasamento.append(c.getNome());
-            dizimistasAniversarioCasamento.append(" e ");
-            dizimistasAniversarioCasamento.append(DizimistaDAO.recuperar(c.getId()).getNome());
-            dizimistasAniversarioCasamento.append(" - ");
-            dizimistasAniversarioCasamento.append(getIdade(c.getDataCasamento()));
-            dizimistasAniversarioCasamento.append(" anos \n");
+            aniversarioCasamento = new AniversarioCasamento(c.getDataCasamento(), DizimistaDAO.recuperar(c.getId()).getNome(), c.getNome());
+            if (!aniversariosCasamento.contains(aniversarioCasamento)) {
+                aniversariosCasamento.add(aniversarioCasamento);
+            }
         }
-        return dizimistasAniversarioCasamento.toString();
+        
+        Collections.sort(aniversariosCasamento);
+        StringBuilder textAniversarioCasamento = new StringBuilder();
+
+        for (AniversarioCasamento a : aniversariosCasamento) {
+            textAniversarioCasamento.append(a);
+            textAniversarioCasamento.append("\n");
+        }
+        return textAniversarioCasamento.toString();
     }
 
     private static String getIdade(Date data) {
