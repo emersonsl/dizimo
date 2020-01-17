@@ -355,6 +355,9 @@ public class ContribuicaoController implements Initializable {
         if (cadastrar && ckMaisMeses.isSelected() && !Alertas.validarIntervalo(cbMes.getValue(), cbMesFinal.getValue())) {
             return false;
         }
+        if(!Alertas.validarContribuicoes(cbMes.getValue(), cbMesFinal.getValue(), cbAno.getValue(), tfIdDizimista.getText())){
+            return false;
+        }
         return true;
     }
 
@@ -367,26 +370,28 @@ public class ContribuicaoController implements Initializable {
                     lbNomeDizimista.setVisible(true);
                     lbNomeDizimista.setText(d.getNome());
                     List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(d);
-                    if (!contribuicoes.isEmpty()) {
-                        Contribuicao contribuicao = contribuicoes.get(contribuicoes.size() - 1);
-                        if (contribuicao != null) {
-                            Mes mes = contribuicao.getMes();
-                            Year year = contribuicao.getAno();
-                            if (mes.getMes() == 12) {
-                                cbMes.setValue(Mes.JAN);
-                                cbAno.setValue(year.plusYears(1));
-                            } else {
-                                boolean teste = false;
-                                Mes proxMes = mes.setMes(mes.getMes()+1);
-                                cbMes.setValue(proxMes);
-                                cbAno.setValue(year);
+                    if (cadastrar) {
+                        if (!contribuicoes.isEmpty()) {
+                            Contribuicao contribuicao = contribuicoes.get(contribuicoes.size() - 1);
+                            if (contribuicao != null) {
+                                Mes mes = contribuicao.getMes();
+                                Year year = contribuicao.getAno();
+                                if (mes.getMes() == 12) {
+                                    cbMes.setValue(Mes.JAN);
+                                    cbAno.setValue(year.plusYears(1));
+                                } else {
+                                    boolean teste = false;
+                                    Mes proxMes = mes.setMes(mes.getMes() + 1);
+                                    cbMes.setValue(proxMes);
+                                    cbAno.setValue(year);
+                                }
                             }
+                        } else {
+                            cbMes.setValue(Mes.JAN.setMes(LocalDate.now().getMonthValue()));
+                            cbAno.setValue(Year.of(LocalDate.now().getYear()));
                         }
-                    }else{
-                        cbMes.setValue(Mes.JAN.setMes(LocalDate.now().getMonthValue()));
-                        cbAno.setValue(Year.of(LocalDate.now().getYear()));
                     }
-                }else{
+                } else {
                     cbMes.setValue(null);
                     cbAno.setValue(null);
                 }

@@ -7,11 +7,15 @@ package view;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import model.DAO.ContribuicaoDAO;
 import model.DAO.DizimistaDAO;
+import model.bean.Contribuicao;
+import model.bean.Dizimista;
 import util.Mes;
 
 /**
@@ -84,10 +88,10 @@ public abstract class Alertas {
         }
         return false;
     }
-    
-    public static boolean verificarRestricao(Object o, String tipo){
-        if(o!=null){
-            if(o instanceof List&&((List) o).isEmpty()){
+
+    public static boolean verificarRestricao(Object o, String tipo) {
+        if (o != null) {
+            if (o instanceof List && ((List) o).isEmpty()) {
                 return true;
             }
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -141,9 +145,9 @@ public abstract class Alertas {
         }
         return true;
     }
-    
+
     public static boolean validarIntervalo(Mes valor1, Mes valor2) {
-        if (valor1.getMes()>=valor2.getMes()) {
+        if (valor1.getMes() >= valor2.getMes()) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Intervalo de mês invalido");
             alert.setContentText("O intervalo entre as meses foi preenchido incorretamente");
@@ -152,7 +156,41 @@ public abstract class Alertas {
         }
         return true;
     }
-    
+
+    public static boolean validarContribuicoes(Mes valor1, Mes valor2, Year year, String idDizimista) {
+        Dizimista dizimista = DizimistaDAO.recuperar(Integer.parseInt(idDizimista));
+        if (dizimista != null) {
+            List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(dizimista);
+            Contribuicao contribuicao = new Contribuicao();
+            contribuicao.setMes(valor1);
+            contribuicao.setAno(year);
+            if (valor2 == null) {
+                if (contribuicoes.contains(contribuicao)) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Dizimista já fez essa contribuição");
+                    alert.setContentText("Dizimista já fez essa contribuição, verifique se o mês e o ano foram digitados corretamente");
+                    alert.show();
+                    return false;
+                }
+            } else {
+                for (Mes m : Mes.values()) {
+                    if (m.getMes() >= valor1.getMes() && m.getMes() <= valor2.getMes()) {
+                        contribuicao.setMes(m);
+                        contribuicao.setAno(year);
+                        if (contribuicoes.contains(contribuicao)) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Dizimista já fez essa contribuição");
+                            alert.setContentText("Dizimista já fez essa contribuição, verifique se o mês e o ano foram digitados corretamente");
+                            alert.show();
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public static boolean validarCadastroIdDizimista(String id) {
         if (id == null || !id.matches("6\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);

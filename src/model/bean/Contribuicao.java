@@ -1,6 +1,7 @@
 package model.bean;
 
 import java.time.Year;
+import java.util.Objects;
 import util.Mes;
 
 public class Contribuicao {
@@ -12,6 +13,10 @@ public class Contribuicao {
     private Dizimista dizimista;
     private Plantonista plantonista;
     private Plantao plantao;
+    
+    public Contribuicao(){
+        
+    }
 
     public Contribuicao(int id, Double valor, Mes mes, Year ano, Dizimista dizimista, Plantonista plantonista, Plantao plantao) {
         this.id = id;
@@ -128,6 +133,22 @@ public class Contribuicao {
      */
     public void setPlantao(Plantao plantao) {
         this.plantao = plantao;
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof Contribuicao){
+            return ((Contribuicao) o).mes.getMes()==mes.getMes()&&((Contribuicao) o).ano.equals(ano);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + Objects.hashCode(this.mes);
+        hash = 29 * hash + Objects.hashCode(this.ano);
+        return hash;
     }
 
 }
