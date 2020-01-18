@@ -169,6 +169,7 @@ public class ContribuicaoController implements Initializable {
             case 1:
                 //busca
                 carregarTodos();
+                cadastrar = false;
                 tfIdDizimista.setEditable(false);
                 tfValor.setEditable(false);
                 btCadastrarSalvar.setText("Cadastrar");
@@ -211,8 +212,8 @@ public class ContribuicaoController implements Initializable {
     }
 
     public void editarMode() {
-        Contribuicao c = tableViewContribuicoes.getSelectionModel().getSelectedItem();
         if (btEditarCancelar.getText().equals("Editar")) {
+            Contribuicao c = tableViewContribuicoes.getSelectionModel().getSelectedItem();
             if (c != null) {
                 selectMode(3);
             } else {
@@ -245,6 +246,7 @@ public class ContribuicaoController implements Initializable {
         tfValor.setText("");
         cbPlantonista.setValue(null);
         cbPlantonista.getItems().clear();
+        tableViewContribuicoes.getSelectionModel().clearSelection();
     }
 
     public void cadastrarSalvar() {

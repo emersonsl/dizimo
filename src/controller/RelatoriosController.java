@@ -5,10 +5,14 @@
  */
 package controller;
 
+import com.itextpdf.text.DocumentException;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -55,10 +59,18 @@ public class RelatoriosController implements Initializable {
             Toggle selectedToggle = groupButtonRelatorios.getSelectedToggle();
             Date dataInicial = Date.valueOf(dtInicial.getValue());
             Date dataFinal = Date.valueOf(dtFinal.getValue());
-            if(selectedToggle.equals(aniversarios)){    
-                ExportarPDF.aniversarioDosDizimistas(dataInicial, dataFinal);
-            }else{
-                ExportarPDF.ContribuicoesDosDizimistas(dataInicial, dataFinal);
+            if (selectedToggle.equals(aniversarios)) {
+                try {
+                    ExportarPDF.aniversarioDosDizimistas(dataInicial, dataFinal);
+                } catch (DocumentException | IOException ex) {
+                    Alertas.erroAberturaAquivo();
+                }
+            } else {
+                try {
+                    ExportarPDF.ContribuicoesDosDizimistas(dataInicial, dataFinal);
+                } catch (DocumentException | IOException ex) {
+                    Alertas.erroAberturaAquivo();
+                }
             }
         }
     }
@@ -73,7 +85,7 @@ public class RelatoriosController implements Initializable {
         if (!Alertas.validarData(dtFinal.getValue(), "fim")) {
             return false;
         }
-        if(!Alertas.validarIntervalo(dtInicial.getValue(), dtFinal.getValue())){
+        if (!Alertas.validarIntervalo(dtInicial.getValue(), dtFinal.getValue())) {
             return false;
         }
         return true;

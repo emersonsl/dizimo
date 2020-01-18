@@ -5,12 +5,16 @@
  */
 package controller;
 
+import com.itextpdf.text.DocumentException;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -316,7 +320,11 @@ public class DizimistaController implements Initializable {
     public void verContribuicoes() {
         Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
         if (Alertas.validarSelecaoEntidade(d, "Dizimista")) {
-            ExportarPDF.ContribuicoesDoDizimista(d);
+            try {
+                ExportarPDF.ContribuicoesDoDizimista(d);
+            } catch (DocumentException | IOException ex) {
+                Alertas.erroAberturaAquivo();
+            }
         }
     }
 
@@ -432,6 +440,10 @@ public class DizimistaController implements Initializable {
     }
     
     public void verTodos(){
-        ExportarPDF.listarDizimistas();
+        try {
+            ExportarPDF.listarDizimistas();
+        } catch (DocumentException | IOException ex) {
+            Alertas.erroAberturaAquivo();
+        }
     }
 }

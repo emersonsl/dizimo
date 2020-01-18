@@ -300,4 +300,11 @@ public abstract class Alertas {
         alert.show();
     }
 
+    public static void erroAberturaAquivo() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erro na geração do arquivo");
+        alert.setContentText("Erro ao gerar o arquivo, verifique se um arquivo gerado anteriormente está aberto, feche-o e tente novamente");
+        alert.show();
+    }
+
 }
