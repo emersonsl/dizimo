@@ -7,6 +7,7 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
@@ -24,6 +25,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -130,6 +132,7 @@ public class ContribuicaoController implements Initializable {
         tbAno.setCellValueFactory(new PropertyValueFactory<>("ano"));
         tbPlantonista.setCellValueFactory(new PropertyValueFactory<>("plantonista"));
 
+        
         contribuicoes = ContribuicaoDAO.recuperar(plantao);
 
         obContribuicoes = FXCollections.observableArrayList(contribuicoes);
