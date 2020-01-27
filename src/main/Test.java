@@ -5,11 +5,10 @@
  */
 package main;
 
-import java.time.Year;
-import java.util.ArrayList;
-import java.util.List;
-import model.bean.Contribuicao;
-import util.Mes;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import tools.Configuracao;
 
 /**
  *
@@ -18,19 +17,11 @@ import util.Mes;
 public class Test {
 
     public static void main(String[] args) {
-        Contribuicao c1 =  new Contribuicao();
-        Contribuicao c2 =  new Contribuicao();
-        c1.setMes(Mes.FEV);
-        c1.setAno(Year.now());
-        c2.setAno(Year.now());
-        c2.setMes(Mes.FEV);
-        c2.setAno(Year.now());
-        List <Contribuicao> con = new ArrayList<>();
-        con.add(c1);
-        if(con.contains(c2)){
-            System.out.println("Funfou");
-        }else{
-            System.out.println("Deu ruim");
+        try { 
+            String idInicial = Configuracao.getParametro("db.idInicial");
+            System.out.println("ID inicial: "+idInicial+"PN: "+idInicial.substring(0, 1));
+        } catch (IOException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }

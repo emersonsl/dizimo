@@ -5,17 +5,21 @@
  */
 package view;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import model.DAO.ContribuicaoDAO;
 import model.DAO.DizimistaDAO;
 import model.bean.Contribuicao;
 import model.bean.Dizimista;
+import tools.Configuracao;
 import util.Mes;
 
 /**
@@ -24,6 +28,33 @@ import util.Mes;
  */
 public abstract class Alertas {
 
+    private static int prefixIDInicial;
+    private static int prefixIDFinal;
+
+    public static void carregarConfiguracao() {
+        try {
+            String idInicial = Configuracao.getParametro("db.idInicial");
+            String idFinal = Configuracao.getParametro("db.idFinal");
+            prefixIDInicial = Integer.parseUnsignedInt(idInicial.substring(0, 1));
+            prefixIDFinal = Integer.parseUnsignedInt(idFinal.substring(0, 1));
+        } catch (IOException ex) {
+            Alertas.erroArquivoConfiguracao();
+        }
+    }
+
+    private static String getRegexIntervaloID(){
+        return "["+prefixIDInicial+"-"+prefixIDFinal+"]";
+    }
+    
+    private static String getIntervaloID(){
+        try {
+            return Configuracao.getParametro("db.idInicial")+" e "+Configuracao.getParametro("db.idFinal");
+        } catch (IOException ex) {
+            Alertas.erroAberturaAquivo();
+        }
+        return null;
+    }
+    
     public static boolean validarNome(String nome) {
         if (nome == null || nome.equals("")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -192,10 +223,10 @@ public abstract class Alertas {
     }
 
     public static boolean validarCadastroIdDizimista(String id) {
-        if (id == null || !id.matches("6\\d{3}")) {
+        if (id == null || !id.matches(getRegexIntervaloID()+"\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Número do carnê invalido");
-            alert.setContentText("Número do dizimista invalido, verifique se o valor está entre 6001 e 6999");
+            alert.setContentText("Número do dizimista invalido, verifique se o valor está entre "+getIntervaloID());
             alert.show();
             return false;
         }
@@ -210,10 +241,10 @@ public abstract class Alertas {
     }
 
     public static boolean validarBuscaIdDizimista(String id) {
-        if (id == null || !id.matches("6\\d{3}")) {
+        if (id == null || !id.matches(getRegexIntervaloID()+"\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Número do carnê invalido");
-            alert.setContentText("Número do dizimista invalido, verifique se o valor está entre 6001 e 6999");
+            alert.setContentText("Número do dizimista invalido, verifique se o valor está entre "+getIntervaloID());
             alert.show();
             return false;
         }
@@ -307,4 +338,10 @@ public abstract class Alertas {
         alert.show();
     }
 
+    public static void erroArquivoConfiguracao() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erro no arquivo de configuração");
+        alert.setContentText("Erro no arquivo de configuração, verifique se o arquivo foi criado ou está corrompido");
+        alert.show();
+    }
 }
