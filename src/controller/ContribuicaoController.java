@@ -78,7 +78,7 @@ public class ContribuicaoController implements Initializable {
     @FXML
     private TableColumn<Contribuicao, Dizimista> tbDizimista;
     @FXML
-    private TableColumn<Contribuicao, Integer> tbValor;
+    private TableColumn<Contribuicao, Double> tbValor;
     @FXML
     private TableColumn<Contribuicao, Mes> tbMes;
     @FXML
@@ -99,6 +99,7 @@ public class ContribuicaoController implements Initializable {
     private List<Contribuicao> contribuicoes;
     private ObservableList<Contribuicao> obContribuicoes;
     private boolean cadastrar;
+    DecimalFormat df = new DecimalFormat("#.00");
 
     /**
      * Initializes the controller class.
@@ -132,12 +133,26 @@ public class ContribuicaoController implements Initializable {
         tbAno.setCellValueFactory(new PropertyValueFactory<>("ano"));
         tbPlantonista.setCellValueFactory(new PropertyValueFactory<>("plantonista"));
 
-        
+        tbValor.setCellFactory(coluna -> {
+            return new TableCell<Contribuicao, Double>() {
+                @Override
+                protected void updateItem(Double valor, boolean empty) {
+                    super.updateItem(valor, empty);
+
+                    if (valor == null || empty) {
+                        setText(null);
+                    } else {
+                        setText(df.format(valor));
+                    }
+                }
+            };
+        });
+
         contribuicoes = ContribuicaoDAO.recuperar(plantao);
 
         obContribuicoes = FXCollections.observableArrayList(contribuicoes);
         tableViewContribuicoes.setItems(obContribuicoes);
-        tfValorTotal.setText(String.valueOf(calcularValorTotal()));
+        tfValorTotal.setText(df.format(calcularValorTotal()));
     }
 
     private Double calcularValorTotal() {
@@ -158,7 +173,9 @@ public class ContribuicaoController implements Initializable {
                 lbNomeDizimista.setText("Dizimista Removido");
                 tfIdDizimista.setText("nulo");
             }
-            tfValor.setText(c.getValor().toString());
+
+            tfValor.setText(df.format(c.getValor()));
+
             cbMes.setValue(c.getMes());
             cbAno.setValue(c.getAno());
             cbPlantonista.setValue(c.getPlantonista());
@@ -360,7 +377,7 @@ public class ContribuicaoController implements Initializable {
         if (cadastrar && ckMaisMeses.isSelected() && !Alertas.validarIntervalo(cbMes.getValue(), cbMesFinal.getValue())) {
             return false;
         }
-        if(!Alertas.validarContribuicoes(cbMes.getValue(), cbMesFinal.getValue(), cbAno.getValue(), tfIdDizimista.getText())){
+        if (!Alertas.validarContribuicoes(cbMes.getValue(), cbMesFinal.getValue(), cbAno.getValue(), tfIdDizimista.getText())) {
             return false;
         }
         return true;

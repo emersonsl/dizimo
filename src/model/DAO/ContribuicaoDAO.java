@@ -151,7 +151,6 @@ public class ContribuicaoDAO {
 
                 Contribuicao contribuicao = new Contribuicao(rs.getInt("id_contribuicao"), rs.getDouble("valor"), Mes.valueOf(rs.getString("mes")), ano, d, plantonista, p);
                 contribuicoes.add(contribuicao);
-                System.out.println("tá aqui");
             }
             return contribuicoes;
         } catch (SQLException ex) {

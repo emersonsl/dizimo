@@ -18,14 +18,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Date;
+import java.text.DecimalFormat;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.DAO.ConjugeDAO;
 import model.DAO.ContribuicaoDAO;
 import model.DAO.DizimistaDAO;
@@ -280,11 +278,12 @@ public class ExportarPDF {
         table.setHeaderRows(1);
 
         for (Contribuicao c : contribuicoes) {
+            DecimalFormat df = new DecimalFormat("#.00");
             table.addCell(c.getDizimista().toString());
             table.addCell(getDataFormatada(c.getPlantao().getData()));
             table.addCell(c.getMes().name());
             table.addCell(c.getAno().toString());
-            table.addCell(c.getValor().toString());
+            table.addCell(df.format(c.getValor()));
             table.addCell(c.getPlantonista().getNome());
         }
 
