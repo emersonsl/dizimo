@@ -36,6 +36,7 @@ import model.bean.Dizimista;
  * @author Emerson
  */
 public class ExportarPDF {
+    private static DecimalFormat df = new DecimalFormat("#.00");
 
     public static void aniversarioDosDizimistas(Date dataInicio, Date dataFinal) throws FileNotFoundException, DocumentException, IOException {
         Document documento = new Document();
@@ -217,7 +218,7 @@ public class ExportarPDF {
             table.addCell(getDataFormatada(c.getPlantao().getData()));
             table.addCell(c.getMes().name());
             table.addCell(c.getAno().toString());
-            table.addCell(c.getValor().toString());
+            table.addCell(df.format(c.getValor()));
             table.addCell(c.getPlantonista().getNome());
         }
 
@@ -278,7 +279,6 @@ public class ExportarPDF {
         table.setHeaderRows(1);
 
         for (Contribuicao c : contribuicoes) {
-            DecimalFormat df = new DecimalFormat("#.00");
             table.addCell(c.getDizimista().toString());
             table.addCell(getDataFormatada(c.getPlantao().getData()));
             table.addCell(c.getMes().name());
