@@ -5,10 +5,12 @@
  */
 package main;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import tools.Configuracao;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import javafx.util.converter.LocalDateStringConverter;
+import javafx.util.converter.LocalDateTimeStringConverter;
+import tools.ExportarPDF;
 
 /**
  *
@@ -17,12 +19,15 @@ import tools.Configuracao;
 public class Test {
 
     public static void main(String[] args) {
-        try { 
-            String idInicial = Configuracao.getParametro("db.idInicial");
-            System.out.println("ID inicial: "+idInicial+"PN: "+idInicial.substring(0, 1));
-        } catch (IOException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Date data = new Date(Date.valueOf(LocalDate.now()).getTime());
+        System.out.println("data: "+data);
         
+        System.out.println("data: "+data);
+
+        
+    }
+    
+    public static void data(Date data){
+        data.setTime(1+data.getTime());        
     }
 }

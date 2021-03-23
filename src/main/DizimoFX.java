@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import tools.Configuracao;
+import tools.ExportarPDF;
 import view.Alertas;
 
 
@@ -40,6 +41,7 @@ public class DizimoFX extends Application {
         stage.setTitle("Sistema Dizimo");
         stage.setResizable(false);
         stage.show();
+        
     }
     
     /**

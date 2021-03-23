@@ -85,6 +85,7 @@ public class PlantaoController implements Initializable {
 
     /**
      * Initializes the controller class.
+     * @param url
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -313,6 +314,7 @@ public class PlantaoController implements Initializable {
     }
 
     private boolean validarCampos() {
+        corrigirHora();
         if (!Alertas.validarData(dtData.getValue(), "Plantão")) {
             return false;
         }
@@ -344,5 +346,32 @@ public class PlantaoController implements Initializable {
 
     public static Plantao getPlantao() {
         return plantao;
+    }
+    
+    public void autoCompletarHora(){
+        switch(tfHorario.getText().length()){
+            case 1:
+                tfHorario.setText(tfHorario.getText().concat(":"));
+                tfHorario.positionCaret(tfHorario.getText().length());
+                break;
+            case 5:
+                StringBuilder text = new StringBuilder(tfHorario.getText());
+                char a = text.charAt(2);
+                if(a != ':'){
+                    text.setCharAt(2, ':');
+                    text.setCharAt(1, a);
+                    tfHorario.setText(text.toString());
+                    tfHorario.positionCaret(tfHorario.getText().length());
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    
+    public void corrigirHora(){
+        if(tfHorario.getText().length()==4){
+            tfHorario.setText("0"+tfHorario.getText());
+        }
     }
 }

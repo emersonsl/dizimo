@@ -111,7 +111,7 @@ public abstract class Alertas {
     public static boolean confirmarApagar(String tipo) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Apagar " + tipo + "?");
-        alert.setContentText("Tem certeza que deseja apagar " + tipo);
+        alert.setContentText("Tem certeza que deseja apagar " + tipo + " e TODAS as contribuições associadas");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {

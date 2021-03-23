@@ -131,7 +131,7 @@ public class DizimistaDAO {
 
         try {
 
-            stmt = c.prepareStatement("SELECT * FROM dizimista WHERE Dayofyear(data_nascimento) BETWEEN ? and ? ORDER BY(nome)" );
+            stmt = c.prepareStatement("SELECT * FROM dizimista WHERE ativo=1 and Dayofyear(data_nascimento) BETWEEN ? and ? ORDER BY(nome)" );
             stmt.setInt(1, dataInicio.toLocalDate().getDayOfYear());
             stmt.setInt(2, dataFinal.toLocalDate().getDayOfYear());
             

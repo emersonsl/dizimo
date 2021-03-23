@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import model.bean.Dizimista;
  * @author Emerson
  */
 public class ExportarPDF {
+
     private static DecimalFormat df = new DecimalFormat("#.00");
 
     public static void aniversarioDosDizimistas(Date dataInicio, Date dataFinal) throws FileNotFoundException, DocumentException, IOException {
@@ -71,8 +73,19 @@ public class ExportarPDF {
 
         p2.add("Aniversário de casamento\n");
 
+        tratarBuscaData(dataInicio, dataFinal);
         p3.add(getDizimistasAniversarios(dataInicio, dataFinal));
         p4.add(getDizimistasAniversariosCasamento(dataInicio, dataFinal));
+
+        if (p3.isEmpty()) {
+            p3.setAlignment(Paragraph.ALIGN_CENTER);
+            p3.add("Não houveram aniversários nesse período.");
+        }
+
+        if (p4.isEmpty()) {
+            p4.setAlignment(Paragraph.ALIGN_CENTER);
+            p4.add("Não houveram aniversários de casamento nesse período.");
+        }
 
         documento.add(p1);
         documento.add(p3);
@@ -91,21 +104,26 @@ public class ExportarPDF {
     }
 
     private static String getDizimistasAniversarios(Date dataInicio, Date dataFinal) {
+        System.out.println("data: "+dataFinal);
         List<Dizimista> dizimistas = DizimistaDAO.recuperar(dataInicio, dataFinal);
         List<Aniversario> aniversarios = new ArrayList<>();
 
         Aniversario aniversario;
         for (Dizimista d : dizimistas) {
-            aniversario = new Aniversario(d.getDataNascimento(), d.getNome());
-            aniversarios.add(aniversario);
+            if (validarBuscaData(d.getDataNascimento(), dataInicio, dataFinal)) {
+                aniversario = new Aniversario(d.getDataNascimento(), d.getNome());
+                aniversarios.add(aniversario);
+            }
         }
 
         List<Conjuge> conjuges = ConjugeDAO.recuperarAniversarioConjuge(dataInicio, dataFinal);
 
         for (Conjuge c : conjuges) {
-            aniversario = new Aniversario(c.getDataNascimento(), c.getNome());
-            if (!aniversarios.contains(aniversario)) {
-                aniversarios.add(aniversario);
+            if (validarBuscaData(c.getDataNascimento(), dataInicio, dataFinal)) {
+                aniversario = new Aniversario(c.getDataNascimento(), c.getNome());
+                if (!aniversarios.contains(aniversario)) {
+                    aniversarios.add(aniversario);
+                }
             }
         }
 
@@ -117,6 +135,7 @@ public class ExportarPDF {
             textAniversario.append(a);
             textAniversario.append("\n");
         }
+
         return textAniversario.toString();
     }
 
@@ -126,9 +145,12 @@ public class ExportarPDF {
 
         AniversarioCasamento aniversarioCasamento;
         for (Conjuge c : conjuges) {
-            aniversarioCasamento = new AniversarioCasamento(c.getDataCasamento(), DizimistaDAO.recuperar(c.getId()).getNome(), c.getNome());
-            if (!aniversariosCasamento.contains(aniversarioCasamento)) {
-                aniversariosCasamento.add(aniversarioCasamento);
+            if (validarBuscaData(c.getDataCasamento(), dataInicio, dataFinal)) {
+                aniversarioCasamento = new AniversarioCasamento(c.getDataCasamento(), DizimistaDAO.recuperar(c.getId()).getNome(), c.getNome());
+
+                if (!aniversariosCasamento.contains(aniversarioCasamento)) {
+                    aniversariosCasamento.add(aniversarioCasamento);
+                }
             }
         }
 
@@ -139,11 +161,8 @@ public class ExportarPDF {
             textAniversarioCasamento.append(a);
             textAniversarioCasamento.append("\n");
         }
-        return textAniversarioCasamento.toString();
-    }
 
-    private static String getIdade(Date data) {
-        return String.valueOf(Year.now().getValue() - data.toLocalDate().getYear());
+        return textAniversarioCasamento.toString();
     }
 
     public static void ContribuicoesDoDizimista(Dizimista dizimista) throws FileNotFoundException, DocumentException, IOException {
@@ -339,7 +358,7 @@ public class ExportarPDF {
 
     }
 
-    private static String getAllDizimistas() {
+    public static String getAllDizimistas() {
 
         List<Dizimista> dizimistas = DizimistaDAO.recuperar();
 
@@ -351,7 +370,48 @@ public class ExportarPDF {
             dizimistasAniversario.append("\n");
         }
         return dizimistasAniversario.toString();
-
     }
 
+    private static void tratarBuscaData(Date dataInicio, Date dataFinal) {
+
+        LocalDate dataI = dataInicio.toLocalDate();
+        LocalDate dataF = dataFinal.toLocalDate();
+
+        if (dataI.getYear() % 4 == 0 && dataI.getDayOfYear() > 60) { //ano bisexto após fevereiro
+            dataInicio.setTime(Date.valueOf(dataI.plusDays(-1)).getTime());
+        } else if (dataI.getYear() % 4 != 0 && dataF.getDayOfYear() > 59) { //ano não bisexto após fevereiro
+            dataFinal.setTime(Date.valueOf(dataF.plusDays(1)).getTime());
+        }
+    }
+
+    private static boolean validarBuscaData(Date dataAniversario, Date dataInicio, Date dataFinal) {
+
+        LocalDate dataA = dataAniversario.toLocalDate();
+        LocalDate dataI = dataInicio.toLocalDate();
+        LocalDate dataF = dataFinal.toLocalDate();
+
+        if (dataI.getYear() % 4 == 0 && dataI.getDayOfYear() > 60) { //quando da data inicial foi alterada
+            if (dataA.getMonthValue() == dataI.getMonthValue() && dataA.getDayOfMonth() == dataI.getDayOfMonth()) {
+                return false;
+            }
+        } else if (dataF.getYear() % 4 != 0 && dataF.getDayOfYear() > 59) { //quando da data final foi alterada
+            if (dataA.getMonthValue() == dataF.getMonthValue() && dataA.getDayOfMonth() == dataF.getDayOfMonth()) {
+                return false;
+            }
+        }
+
+        if (dataA.getMonthValue() == dataI.getMonthValue() && dataA.getDayOfMonth() == dataI.getDayOfMonth() - 1) { //quando a data inicial não foi alterada
+            return false;
+        }
+        if (dataA.getMonthValue() == dataF.getMonthValue() && dataA.getDayOfMonth() == dataF.getDayOfMonth() + 1) { //quando a data final não foi alterada
+            return false;
+        }
+
+        //se for o dia primeiro do mês 
+        if (dataA.getDayOfMonth() == 1 && dataA.getMonthValue()-1 == dataF.getMonthValue() && dataA.getDayOfYear() == dataF.getDayOfYear()) {
+            return false;
+        }
+        
+        return true;
+    }
 }
