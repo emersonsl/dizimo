@@ -103,8 +103,10 @@ public class DizimistaDAO {
 
         try {
 
-            stmt = c.prepareStatement("Select * From dizimista where nome like ?");
+            stmt = c.prepareStatement("SELECT * FROM dizimista LEFT JOIN conjuge on dizimista.id_dizimista=conjuge.dizimista_id_dizimista where dizimista.nome like ? or conjuge.nome like ?");
+            
             stmt.setString(1, "%" + nomeSobrenome + "%");
+            stmt.setString(2, "%" + nomeSobrenome + "%");
             rs = stmt.executeQuery();
 
             List<Dizimista> dizimistas = new ArrayList<>();
