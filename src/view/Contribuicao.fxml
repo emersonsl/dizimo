@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apPrincipal" prefHeight="578.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ContribuicaoController">
+<AnchorPane id="AnchorPane" fx:id="apPrincipal" prefHeight="578.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ContribuicaoController">
    <children>
       <SplitPane dividerPositions="0.57" layoutX="120.0" layoutY="53.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -124,7 +124,7 @@
                                           </TextField>
                                        </children>
                                     </Group>
-                                    <Button fx:id="btEncerrarPlantao" mnemonicParsing="false" onAction="#encerrarPlantao" prefHeight="25.0" prefWidth="106.0" text="Encerrar Plantão" textFill="#e80000" GridPane.columnIndex="1" />
+                                    <Button fx:id="btEncerrarPlantao" mnemonicParsing="false" onAction="#encerrarPlantao" onKeyPressed="#keyPressed" prefHeight="25.0" prefWidth="106.0" text="Encerrar Plantão" textFill="#e80000" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children></AnchorPane>
@@ -200,9 +200,9 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Button fx:id="btCadastrarSalvar" mnemonicParsing="false" onAction="#cadastrarSalvar" text="Cadastrar" />
-                                    <Button fx:id="btEditarCancelar" mnemonicParsing="false" onAction="#editarCancelar" text="Editar" GridPane.columnIndex="1" />
-                                    <Button fx:id="btApagar" mnemonicParsing="false" onAction="#apagar" text="Apagar" textFill="RED" GridPane.columnIndex="2" />
+                                    <Button fx:id="btCadastrarSalvar" mnemonicParsing="false" onAction="#cadastrarSalvar" onKeyPressed="#keyPressed" text="Cadastrar" />
+                                    <Button fx:id="btEditarCancelar" mnemonicParsing="false" onAction="#editarCancelar" onKeyPressed="#keyPressed" text="Editar" GridPane.columnIndex="1" />
+                                    <Button fx:id="btApagar" mnemonicParsing="false" onAction="#apagar" onKeyPressed="#keyPressed" text="Apagar" textFill="RED" GridPane.columnIndex="2" />
                                  </children>
                               </GridPane>
                            </children>

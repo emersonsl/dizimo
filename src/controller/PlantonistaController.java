@@ -18,6 +18,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import model.DAO.PlantonistaDAO;
 import model.bean.Plantonista;
@@ -183,4 +185,16 @@ public class PlantonistaController implements Initializable {
         }
     }
 
+    @FXML
+    void keyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if(btApagar.isFocused()){
+                apagar();
+            }else if(btCadastrarSalvar.isFocused()){
+                cadastrarSalvar();
+            }else if(btEditarCancelar.isFocused()){
+                editarCancelar();
+            }
+        }
+    }
 }

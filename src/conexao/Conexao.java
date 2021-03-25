@@ -22,7 +22,7 @@ public abstract class Conexao {
 
     
     private static final String DRIVER = "com.mysql.jdbc.Driver";
-    private static String URL = "jdbc:mysql://localhost:3306/dizimo_nossa_senhora_das_gracas";
+    private static String URL = "jdbc:mysql://localhost:3306/dizimo_nossa_senhora_das_gracas?useSSL=true";
     private static String USER = "root";
     private static String PASSWORD = "@senha";
     private static Connection connection;

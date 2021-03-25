@@ -27,6 +27,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import model.DAO.ConjugeDAO;
 import model.DAO.ContribuicaoDAO;
@@ -53,7 +55,7 @@ public class DizimistaController implements Initializable {
     @FXML
     private DatePicker dtNasc, dtInsc, dtNascConj, dtCasa;
     @FXML
-    private Button btCadastrarSalvar, btEditarCancelar, btVerCont, btApagar, btAtivarDesativar;
+    private Button btCadastrarSalvar, btEditarCancelar, btVerCont, btApagar, btAtivarDesativar, btVerTodos;
     @FXML
     private TableView<Dizimista> tableViewDizimistas;
     @FXML
@@ -342,8 +344,15 @@ public class DizimistaController implements Initializable {
 
     public void procurar() {
         if (!barraBusca.getText().equals("")) {
-            dizimistas = DizimistaDAO.recuperar(barraBusca.getText());
-
+            if(barraBusca.getText().matches("\\d{1,4}")){
+                dizimistas.clear();
+                Dizimista d = DizimistaDAO.recuperar(Integer.parseInt(barraBusca.getText()));
+                if(d!=null){
+                    dizimistas.add(d);
+                }    
+            }else{
+                dizimistas = DizimistaDAO.recuperar(barraBusca.getText());
+            }
             obDizimistas = FXCollections.observableArrayList(dizimistas);
             tableViewDizimistas.setItems(obDizimistas);
             totalDizimistas.setText(dizimistas.size() + " dizimistas encontrado(s)");
@@ -354,6 +363,14 @@ public class DizimistaController implements Initializable {
     }
 
     private void salvar() {
+        if(id.getText()!=null && id.getText().matches("\\d{1,3}")){ //tratamento para número entre 0 e 999 com três digitos
+            StringBuilder text = new StringBuilder();
+            for(int i = id.getText().length(); i<4; i++)
+                text.append("0");
+            text.append(id.getText());
+            id.setText(text.toString());
+            System.out.println("id: "+id.getText());
+        }
         if (!validarCampos()) {
             return;
         }
@@ -461,6 +478,25 @@ public class DizimistaController implements Initializable {
             ExportarPDF.listarDizimistas();
         } catch (DocumentException | IOException ex) {
             Alertas.erroAberturaAquivo();
+        }
+    }
+    
+    @FXML
+    void keyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if(btApagar.isFocused()){
+                apagar();
+            }else if(btAtivarDesativar.isFocused()){
+                ativarDesativar();
+            }else if(btCadastrarSalvar.isFocused()){
+                cadastrarSalvar();
+            }else if(btEditarCancelar.isFocused()){
+                editarCancelar();
+            }else if(btVerCont.isFocused()){
+                verContribuicoes();
+            }else if(btVerTodos.isFocused()){
+                verTodos();
+            }
         }
     }
 }

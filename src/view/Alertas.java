@@ -222,7 +222,7 @@ public abstract class Alertas {
         return true;
     }
 
-    public static boolean validarCadastroIdDizimista(String id) {
+    public static boolean validarCadastroIdDizimista(String id) {        
         if (id == null || !id.matches(getRegexIntervaloID()+"\\d{3}")) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Número do carnê invalido");

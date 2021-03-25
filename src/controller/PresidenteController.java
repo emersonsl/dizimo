@@ -18,6 +18,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import model.DAO.PresidenteDAO;
 import model.bean.Presidente;
@@ -97,7 +99,7 @@ public class PresidenteController implements Initializable {
             if (cadastrar) {
                 Presidente presidente;
                 String nome = tfNome.getText();
-                if (!Alertas.validarNome(nome)) {
+                if (!Alertas.validarNome(nome) || !Alertas.validarSelecaoComboBox(cbDenominacao.getValue(), "Denominação")) {
                     return;
                 }
 
@@ -112,7 +114,7 @@ public class PresidenteController implements Initializable {
             } else {
                 Presidente presidente = tableViewPresidentes.getSelectionModel().getSelectedItem();
                 String nome = tfNome.getText();
-                if (!Alertas.validarNome(nome)) {
+                if (!Alertas.validarNome(nome) || !Alertas.validarSelecaoComboBox(cbDenominacao.getValue(), "Denominação")) {
                     return;
                 }
                 presidente.setDenominacao(cbDenominacao.getValue());
@@ -187,6 +189,19 @@ public class PresidenteController implements Initializable {
             btEditarCancelar.setText("Cancelar");
             btApagar.setVisible(false);
             tfNome.setEditable(true);
+        }
+    }
+    
+    @FXML
+    void keyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if(btApagar.isFocused()){
+                apagar();
+            }else if(btCadastrarSalvar.isFocused()){
+                cadastrarSalvar();
+            }else if(btEditarCancelar.isFocused()){
+                editarCancelar();
+            }
         }
     }
 

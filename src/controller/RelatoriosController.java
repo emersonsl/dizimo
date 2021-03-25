@@ -9,10 +9,7 @@ import com.itextpdf.text.DocumentException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -20,6 +17,8 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import tools.ExportarPDF;
 import view.Alertas;
 
@@ -89,6 +88,15 @@ public class RelatoriosController implements Initializable {
             return false;
         }
         return true;
+    }
+    
+    @FXML
+    void keyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if(btGerar.isFocused()){
+                gerar();
+            }
+        }
     }
 
 }

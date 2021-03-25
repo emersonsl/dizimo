@@ -30,6 +30,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import model.DAO.ContribuicaoDAO;
 import model.DAO.DizimistaDAO;
@@ -38,6 +40,7 @@ import model.bean.Contribuicao;
 import model.bean.Dizimista;
 import model.bean.Plantao;
 import model.bean.Plantonista;
+import tools.Configuracao;
 import util.Mes;
 import view.Alertas;
 
@@ -55,6 +58,8 @@ public class ContribuicaoController implements Initializable {
     private Button btEditarCancelar;
     @FXML
     private Button btApagar;
+    @FXML
+    private Button btEncerrarPlantao;
     @FXML
     private Label lbDtPlantao, lbHrPlantao, lbLancadorPlantao, lbPresidentePlantao;
     //dados da contribuição
@@ -100,6 +105,7 @@ public class ContribuicaoController implements Initializable {
     private ObservableList<Contribuicao> obContribuicoes;
     private boolean cadastrar;
     DecimalFormat df = new DecimalFormat("#.00");
+    Integer idInicial;
 
     /**
      * Initializes the controller class.
@@ -110,6 +116,11 @@ public class ContribuicaoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        try {
+            idInicial = Integer.valueOf(Configuracao.getParametro("db.idInicial"));
+        } catch (IOException ex) {
+            Alertas.erroArquivoConfiguracao();
+        }
         plantao = PlantaoController.getPlantao();
         carregarDadosPlantao();
         carregarTodos();
@@ -284,6 +295,7 @@ public class ContribuicaoController implements Initializable {
     }
 
     public void salvar() {
+        
         if (validarCampos()) {
             Dizimista d = DizimistaDAO.recuperar(Integer.parseInt(tfIdDizimista.getText()));
             Plantonista p = cbPlantonista.getValue();
@@ -352,6 +364,15 @@ public class ContribuicaoController implements Initializable {
     }
 
     private boolean validarCampos() {
+        if (tfIdDizimista.getText() != null && tfIdDizimista.getText().matches("\\d{1,3}")) { //tratamento para número entre 0 e 999 com três digitos
+            StringBuilder text = new StringBuilder();
+            for (int i = tfIdDizimista.getText().length(); i < 4; i++) {
+                text.append("0");
+            }
+            text.append(tfIdDizimista.getText());
+            tfIdDizimista.setText(text.toString());
+        }
+        
         if (!Alertas.validarBuscaIdDizimista(tfIdDizimista.getText())) {
             tfIdDizimista.setText("");
             return false;
@@ -384,40 +405,40 @@ public class ContribuicaoController implements Initializable {
     }
 
     public void buscarDizimista() {
-        if (tfIdDizimista.getText().length() == 4) {
-            if (Alertas.validarBuscaIdDizimista(tfIdDizimista.getText())) {
-                Dizimista d = DizimistaDAO.recuperar(Integer.parseInt(tfIdDizimista.getText()));
-                if (d != null) {
-                    lb1NomeDizimista.setVisible(true);
-                    lbNomeDizimista.setVisible(true);
-                    lbNomeDizimista.setText(d.getNome());
-                    List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(d);
-                    if (cadastrar) {
-                        if (!contribuicoes.isEmpty()) {
-                            Contribuicao contribuicao = contribuicoes.get(contribuicoes.size() - 1);
-                            if (contribuicao != null) {
-                                Mes mes = contribuicao.getMes();
-                                Year year = contribuicao.getAno();
-                                if (mes.getMes() == 12) {
-                                    cbMes.setValue(Mes.JAN);
-                                    cbAno.setValue(year.plusYears(1));
-                                } else {
-                                    boolean teste = false;
-                                    Mes proxMes = mes.setMes(mes.getMes() + 1);
-                                    cbMes.setValue(proxMes);
-                                    cbAno.setValue(year);
-                                }
+        if (tfIdDizimista.getText().length() == 4 || (idInicial >= 0 && idInicial < 1000)) {
+            if (!tfIdDizimista.getText().matches("\\d{1,4}")) {
+                return;
+            }
+            Dizimista d = DizimistaDAO.recuperar(Integer.parseInt(tfIdDizimista.getText()));
+            if (d != null) {
+                lb1NomeDizimista.setVisible(true);
+                lbNomeDizimista.setVisible(true);
+                lbNomeDizimista.setText(d.getNome());
+                List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(d);
+                if (cadastrar) {
+                    if (!contribuicoes.isEmpty()) {
+                        Contribuicao contribuicao = contribuicoes.get(contribuicoes.size() - 1);
+                        if (contribuicao != null) {
+                            Mes mes = contribuicao.getMes();
+                            Year year = contribuicao.getAno();
+                            if (mes.getMes() == 12) {
+                                cbMes.setValue(Mes.JAN);
+                                cbAno.setValue(year.plusYears(1));
+                            } else {
+                                boolean teste = false;
+                                Mes proxMes = mes.setMes(mes.getMes() + 1);
+                                cbMes.setValue(proxMes);
+                                cbAno.setValue(year);
                             }
-                        } else {
-                            cbMes.setValue(Mes.JAN.setMes(LocalDate.now().getMonthValue()));
-                            cbAno.setValue(Year.of(LocalDate.now().getYear()));
                         }
+                    } else {
+                        cbMes.setValue(Mes.JAN.setMes(LocalDate.now().getMonthValue()));
+                        cbAno.setValue(Year.of(LocalDate.now().getYear()));
                     }
-                } else {
-                    cbMes.setValue(null);
-                    cbAno.setValue(null);
                 }
             } else {
+                cbMes.setValue(null);
+                cbAno.setValue(null);
                 lbNomeDizimista.setText("");
                 lb1NomeDizimista.setVisible(false);
                 lbNomeDizimista.setVisible(false);
@@ -429,5 +450,20 @@ public class ContribuicaoController implements Initializable {
 
     public void maisMeses() {
         cbMesFinal.setVisible(ckMaisMeses.isSelected());
+    }
+
+    @FXML  // <== perhaps you had this missing??
+    void keyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            if (btCadastrarSalvar.isFocused()) {
+                cadastrarSalvar();
+            }else if(btEditarCancelar.isFocused()){
+                editarCancelar();
+            }else if(btApagar.isFocused()){
+                apagar();
+            }else if(btEncerrarPlantao.isFocused()){
+                encerrarPlantao();
+            }
+        }
     }
 }
