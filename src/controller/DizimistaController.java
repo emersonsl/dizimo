@@ -324,7 +324,7 @@ public class DizimistaController implements Initializable {
         Dizimista d = tableViewDizimistas.getSelectionModel().getSelectedItem();
         if (Alertas.validarSelecaoEntidade(d, "Dizimista")) {
             try {
-                ExportarPDF.ContribuicoesDoDizimista(d);
+                ExportarPDF.contribuicoesDoDizimista(d);
             } catch (DocumentException | IOException ex) {
                 Alertas.erroAberturaAquivo();
             }

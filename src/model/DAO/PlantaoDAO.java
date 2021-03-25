@@ -119,6 +119,32 @@ public class PlantaoDAO {
             return null;
         } 
     }
+    
+    public static List<Plantao> recuperar(Date dataInicial, Date dataFinal) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            stmt = c.prepareStatement("SELECT * FROM plantao where data BETWEEN ? AND ? ORDER BY data DESC");
+            stmt.setDate(1, dataInicial);
+            stmt.setDate(2, dataFinal);
+            rs = stmt.executeQuery();
+
+            List<Plantao> plantoes = new ArrayList<>();
+            while (rs.next()) {
+                Plantonista plantonista = PlantonistaDAO.recuperar(rs.getInt("plantonista_id_plantonista"));
+                Presidente presidente = PresidenteDAO.recuperar(rs.getInt("presidente_id_presidente"));
+                Plantao p = new Plantao(rs.getInt("id_plantao"), rs.getTime("hora"), rs.getDate("Data"), plantonista, presidente);
+
+                plantoes.add(p);
+            }
+            return plantoes;
+        } catch (SQLException ex) {
+            return null;
+        } 
+    }
 
     public static void atualizar(Plantao plantao) {
         Connection c = Conexao.getConnection();

@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Year;
@@ -28,9 +29,11 @@ import java.util.List;
 import model.DAO.ConjugeDAO;
 import model.DAO.ContribuicaoDAO;
 import model.DAO.DizimistaDAO;
+import model.DAO.PlantaoDAO;
 import model.bean.Conjuge;
 import model.bean.Contribuicao;
 import model.bean.Dizimista;
+import model.bean.Plantao;
 
 /**
  *
@@ -102,6 +105,11 @@ public class ExportarPDF {
         DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return formatoData.format(data.toLocalDate());
     }
+    
+    private static String getHoraFormatada(Time hora){
+        DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
+        return formatoHora.format(hora.toLocalTime());
+    }
 
     private static String getDizimistasAniversarios(Date dataInicio, Date dataFinal) {
         System.out.println("data: "+dataFinal);
@@ -165,7 +173,7 @@ public class ExportarPDF {
         return textAniversarioCasamento.toString();
     }
 
-    public static void ContribuicoesDoDizimista(Dizimista dizimista) throws FileNotFoundException, DocumentException, IOException {
+    public static void contribuicoesDoDizimista(Dizimista dizimista) throws FileNotFoundException, DocumentException, IOException {
 
         Document documento = new Document();
 
@@ -244,14 +252,13 @@ public class ExportarPDF {
         return table;
     }
 
-    public static void ContribuicoesDosDizimistas(Date dataInicio, Date dataFinal) throws FileNotFoundException, DocumentException, IOException {
+    public static void contribuicoesDosDizimistas(Date dataInicio, Date dataFinal) throws FileNotFoundException, DocumentException, IOException {
         Document documento = new Document();
 
         PdfWriter.getInstance(documento, new FileOutputStream("./dizimo - contribuicoes dos dizimistas.pdf"));
         documento.open();
 
         Paragraph p1 = new Paragraph();
-        Paragraph p2 = new Paragraph();
 
         Font f1 = new Font();
         Font f2 = new Font();
@@ -265,29 +272,77 @@ public class ExportarPDF {
         p1.setFont(f1);
         p1.setAlignment(Paragraph.ALIGN_CENTER);
 
-        p1.add("Contribuições dos dizimista\n");
-        p1.setFont(f2);
-        p1.add("entre " + getDataFormatada(dataInicio) + " e " + getDataFormatada(dataFinal));
-
-        PdfPTable tableContribuicoes = getContribuicoesDizimistas(dataInicio, dataFinal);
-        p2.add(tableContribuicoes);
-
-        documento.add(p1);
-        documento.add(p2);
+        if(dataInicio.equals(dataFinal)){
+            p1.add("Relatório do Plantão\n");
+        }else{
+            p1.add("Relatório de Plantões\n");
+            p1.setFont(f2);
+            p1.add("entre " + getDataFormatada(dataInicio) + " e " + getDataFormatada(dataFinal));
+        }
+        
+        documento.add(p1); //adicionando cabeçalho
+        
+        getPlantoes(dataInicio, dataFinal, documento); //adicionando informações dos plantões
 
         documento.close();
 
         Desktop.getDesktop().open(new File("./dizimo - contribuicoes dos dizimistas.pdf"));
 
     }
+    
+    private static void getPlantoes(Date dataInicio, Date dataFinal, Document documento) throws DocumentException{
+        List<Plantao> plantoes = PlantaoDAO.recuperar(dataInicio, dataFinal);
+        Paragraph paragraphCabecalho;
+        Paragraph paragraphTabela;
+        Font fonteNegrito = new Font();
+        Font fontePadrao = new Font();
+        
+        fontePadrao.setSize(14);
+        fonteNegrito.setSize(14);
+        fonteNegrito.setStyle(Font.BOLD);
+        
+        for(Plantao p:plantoes){
+            paragraphCabecalho = new Paragraph();
+            paragraphTabela = new Paragraph();
+            
+            paragraphCabecalho.setFont(fonteNegrito);
+            paragraphCabecalho.add("Data: ");
+            paragraphCabecalho.setFont(fontePadrao);
+            paragraphCabecalho.add(getDataFormatada(p.getData())+"\n");
+            
+            paragraphCabecalho.setFont(fonteNegrito);
+            paragraphCabecalho.add("Horário: ");
+            paragraphCabecalho.setFont(fontePadrao);
+            paragraphCabecalho.add(getHoraFormatada(p.getHora())+"\n");
+            
+            paragraphCabecalho.setFont(fonteNegrito);
+            paragraphCabecalho.add("Lançador: ");
+            paragraphCabecalho.setFont(fontePadrao);
+            paragraphCabecalho.add(p.getLancador().getNome()+"\n");
+            
+            paragraphCabecalho.setFont(fonteNegrito);
+            paragraphCabecalho.add("Presidente: ");
+            paragraphCabecalho.setFont(fontePadrao);
+            paragraphCabecalho.add(p.getPresidente().toString()+"\n\n");
+            
+            documento.add(paragraphCabecalho);
+            getContribuicoesDizimistas(p, paragraphTabela);
+            documento.add(paragraphTabela);
+        }
 
-    private static PdfPTable getContribuicoesDizimistas(Date dataInicio, Date dataFinal) {
+        
+    }
+
+    private static void getContribuicoesDizimistas(Plantao plantao, Paragraph paragraph) {
         PdfPTable table = new PdfPTable(6);
-        List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(dataInicio, dataFinal);
-
-        table.setSpacingBefore(10);
-        table.setSpacingAfter(10);
-
+        List<Contribuicao> contribuicoes = ContribuicaoDAO.recuperar(plantao);
+        Font fonteNegrito = new Font();
+        Font fontePadrao = new Font();
+        
+        fontePadrao.setSize(14);
+        fonteNegrito.setSize(14);
+        fonteNegrito.setStyle(Font.BOLD);
+        
         table.addCell(getCellFormatter("Dizimista"));
         table.addCell(getCellFormatter("Plantão"));
         table.addCell(getCellFormatter("Mês"));
@@ -297,6 +352,8 @@ public class ExportarPDF {
 
         table.setHeaderRows(1);
 
+        Double soma = 0.0;
+        
         for (Contribuicao c : contribuicoes) {
             table.addCell(c.getDizimista().toString());
             table.addCell(getDataFormatada(c.getPlantao().getData()));
@@ -304,9 +361,17 @@ public class ExportarPDF {
             table.addCell(c.getAno().toString());
             table.addCell(df.format(c.getValor()));
             table.addCell(c.getPlantonista().getNome());
+            soma+=c.getValor();
         }
 
-        return table;
+        paragraph.add(table);
+        
+        paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+        paragraph.setFont(fonteNegrito);
+        paragraph.add("\nTotal: ");
+        paragraph.setFont(fontePadrao);
+        paragraph.add(df.format(soma));
+        paragraph.add("\n\n");
     }
 
     private static PdfPCell getCellFormatter(String text) {

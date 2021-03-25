@@ -66,7 +66,7 @@ public class RelatoriosController implements Initializable {
                 }
             } else {
                 try {
-                    ExportarPDF.ContribuicoesDosDizimistas(dataInicial, dataFinal);
+                    ExportarPDF.contribuicoesDosDizimistas(dataInicial, dataFinal);
                 } catch (DocumentException | IOException ex) {
                     Alertas.erroAberturaAquivo();
                 }
