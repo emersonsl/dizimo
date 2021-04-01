@@ -301,6 +301,8 @@ public class ExportarPDF {
         fonteNegrito.setSize(14);
         fonteNegrito.setStyle(Font.BOLD);
         
+        Collections.reverse(plantoes);
+        
         for(Plantao p:plantoes){
             paragraphCabecalho = new Paragraph();
             paragraphTabela = new Paragraph();
@@ -328,6 +330,7 @@ public class ExportarPDF {
             documento.add(paragraphCabecalho);
             getContribuicoesDizimistas(p, paragraphTabela);
             documento.add(paragraphTabela);
+            documento.newPage();
         }
 
         
@@ -371,7 +374,6 @@ public class ExportarPDF {
         paragraph.add("\nTotal: ");
         paragraph.setFont(fontePadrao);
         paragraph.add(df.format(soma));
-        paragraph.add("\n\n");
     }
 
     private static PdfPCell getCellFormatter(String text) {

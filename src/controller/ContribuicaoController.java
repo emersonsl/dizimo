@@ -217,9 +217,10 @@ public class ContribuicaoController implements Initializable {
                 cadastrar = true;
                 carregarComboBox();
                 tfIdDizimista.setEditable(true);
+                tfIdDizimista.requestFocus();
                 tfValor.setEditable(true);
-                btCadastrarSalvar.setText("Salvar");
-                btEditarCancelar.setText("Cancelar");
+                btCadastrarSalvar.setText("Salvar+");
+                btEditarCancelar.setText("Fechar");
                 btApagar.setVisible(false);
                 apEsquerdo.setDisable(true);
                 ckMaisMeses.setVisible(true);
@@ -315,7 +316,7 @@ public class ContribuicaoController implements Initializable {
                 ContribuicaoDAO.salvar(c);
             }
             Alertas.cadastradoSucesso("Contribuição");
-            selectMode(1);
+            selectMode(2);
         }
     }
 
