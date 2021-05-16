@@ -317,6 +317,7 @@ public class ContribuicaoController implements Initializable {
             }
             Alertas.cadastradoSucesso("Contribuição");
             selectMode(2);
+            carregarTodos();
         }
     }
 

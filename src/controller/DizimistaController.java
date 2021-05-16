@@ -397,7 +397,6 @@ public class DizimistaController implements Initializable {
         Integer idAnterior = primeiro.getId();
         for(Dizimista d: dizimistas){
             if(d.getId()>idAnterior+1){
-                System.out.println("\n\nO ID encontrado é :"+(idAnterior+1)+"\n\n");
                 return idAnterior+1;
             }
             idAnterior = d.getId();

@@ -425,9 +425,62 @@ public class ExportarPDF {
 
     }
 
+    public static void listarSorteio(Date dataInicio, Date dataFinal) throws FileNotFoundException, DocumentException, IOException {
+        Document documento = new Document();
+
+        PdfWriter.getInstance(documento, new FileOutputStream("./dizimo - sorteio.pdf"));
+        documento.open();
+
+        Paragraph p1 = new Paragraph();
+        Paragraph p2 = new Paragraph();
+
+        Font f1 = new Font();
+        Font f2 = new Font();
+
+        f1.setSize(18);
+        f1.setStyle(Font.BOLD);
+        f2.setSize(14);
+
+        p1.setSpacingAfter(10);
+        p1.setFont(f1);
+        p1.setAlignment(Paragraph.ALIGN_CENTER);
+        p2.setFont(f2);
+        p2.setAlignment(Paragraph.ALIGN_LEFT);
+        p2.setSpacingBefore(10);
+        p2.setSpacingAfter(10);
+
+        p1.add("Sorteio\n");
+        p1.add("contribuicões entre " + getDataFormatada(dataInicio) + " e " + getDataFormatada(dataFinal));
+        p1.setFont(f2);
+
+        p2.add(getSorteio(dataInicio, dataFinal));
+
+        documento.add(p1);
+        documento.add(p2);
+
+        documento.close();
+
+        Desktop.getDesktop().open(new File("./dizimo - sorteio.pdf"));
+
+    }
+    
     public static String getAllDizimistas() {
 
         List<Dizimista> dizimistas = DizimistaDAO.recuperar();
+
+        StringBuilder dizimistasAniversario = new StringBuilder();
+        for (Dizimista d : dizimistas) {
+            dizimistasAniversario.append(d.getId());
+            dizimistasAniversario.append(" - ");
+            dizimistasAniversario.append(d.getNome());
+            dizimistasAniversario.append("\n");
+        }
+        return dizimistasAniversario.toString();
+    }
+    
+    public static String getSorteio(Date dataInicio, Date dataFinal) {
+
+        List<Dizimista> dizimistas = DizimistaDAO.recuperarSorteio(dataInicio, dataFinal);
 
         StringBuilder dizimistasAniversario = new StringBuilder();
         for (Dizimista d : dizimistas) {

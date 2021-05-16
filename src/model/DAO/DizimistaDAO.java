@@ -157,6 +157,37 @@ public class DizimistaDAO {
         }
     }
     
+    public static List<Dizimista> recuperarSorteio(Date dataInicio, Date dataFinal) {
+        Connection c = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            stmt = c.prepareStatement("SELECT * FROM dizimista INNER JOIN contribuicao ON dizimista.id_dizimista=contribuicao.dizimista_id_dizimista INNER JOIN plantao ON contribuicao.plantao_id_plantao=plantao.id_plantao WHERE plantao.data between ? and ? GROUP BY dizimista.id_dizimista" );
+            stmt.setDate(1, dataInicio);
+            stmt.setDate(2, dataFinal);
+            
+            rs = stmt.executeQuery();
+
+            List<Dizimista> dizimistas = new ArrayList<>();
+            while (rs.next()) {
+                Conjuge con = ConjugeDAO.recuperar(rs.getInt("id_dizimista"));
+                
+                Dizimista d = new Dizimista(rs.getInt("id_dizimista"), rs.getString("nome"),
+                        rs.getString("email"), rs.getString("telefone"), rs.getDate("data_nascimento"),
+                        rs.getString("grupo_movimento_pastoral"), rs.getDate("data_inscricao"), con, rs.getString("rua"),
+                        rs.getString("bairro"), rs.getString("numero"), rs.getString("complemento"), rs.getBoolean("ativo"));
+
+                dizimistas.add(d);
+            }
+            return dizimistas;
+        } catch (SQLException ex) {
+            System.err.println("Ex.:"+ex);
+            return null;
+        }
+    }    
+    
     public static Dizimista recuperar(int id) {
         Connection c = Conexao.getConnection();
         PreparedStatement stmt = null;
