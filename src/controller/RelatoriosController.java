@@ -36,6 +36,8 @@ public class RelatoriosController implements Initializable {
     @FXML
     private RadioButton contribuicoes;
     @FXML
+    private RadioButton sorteio;
+    @FXML
     private DatePicker dtInicial;
     @FXML
     private DatePicker dtFinal;
@@ -50,6 +52,7 @@ public class RelatoriosController implements Initializable {
         groupButtonRelatorios = new ToggleGroup();
         aniversarios.setToggleGroup(groupButtonRelatorios);
         contribuicoes.setToggleGroup(groupButtonRelatorios);
+        sorteio.setToggleGroup(groupButtonRelatorios);
     }
 
     public void gerar() {
@@ -64,9 +67,15 @@ public class RelatoriosController implements Initializable {
                 } catch (DocumentException | IOException ex) {
                     Alertas.erroAberturaAquivo();
                 }
-            } else {
+            } else if (selectedToggle.equals(contribuicoes)) {
                 try {
                     ExportarPDF.contribuicoesDosDizimistas(dataInicial, dataFinal);
+                } catch (DocumentException | IOException ex) {
+                    Alertas.erroAberturaAquivo();
+                }
+            }else{
+                try {
+                    ExportarPDF.listarSorteio(dataInicial, dataFinal);
                 } catch (DocumentException | IOException ex) {
                     Alertas.erroAberturaAquivo();
                 }

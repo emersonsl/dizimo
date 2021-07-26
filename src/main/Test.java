@@ -47,8 +47,8 @@ public class Test {
             System.err.println("Deu merda: "+ex.getMessage());
         }*/
         
-        Date dataI = new Date(121, 0, 1);
-        Date dataF = new Date(121, 4, 16);
+        Date dataI = new Date(121, 5, 1);
+        Date dataF = new Date(121, 6, 16);
         try {
             ExportarPDF.listarSorteio(dataI, dataF);
         } catch (DocumentException ex) {

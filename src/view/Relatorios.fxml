@@ -27,7 +27,8 @@
                   <Group layoutX="93.0" layoutY="23.0">
                      <children>
                         <RadioButton fx:id="aniversarios" mnemonicParsing="false" text="Aniversários" />
-                        <RadioButton fx:id="contribuicoes" layoutX="140.0" mnemonicParsing="false" text="Contribuições" />
+                        <RadioButton fx:id="contribuicoes" layoutX="123.0" layoutY="1.0" mnemonicParsing="false" text="Contribuições" />
+                        <RadioButton fx:id="sorteio" layoutX="252.0" mnemonicParsing="false" text="Sorteio" />
                      </children>
                   </Group>
                   <Label layoutX="48.0" layoutY="53.0" text="Entre">

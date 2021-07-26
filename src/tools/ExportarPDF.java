@@ -439,7 +439,7 @@ public class ExportarPDF {
 
         f1.setSize(18);
         f1.setStyle(Font.BOLD);
-        f2.setSize(14);
+        f2.setSize(18);
 
         p1.setSpacingAfter(10);
         p1.setFont(f1);
@@ -487,7 +487,7 @@ public class ExportarPDF {
             dizimistasAniversario.append(d.getId());
             dizimistasAniversario.append(" - ");
             dizimistasAniversario.append(d.getNome());
-            dizimistasAniversario.append("\n");
+            dizimistasAniversario.append("\n\n");
         }
         return dizimistasAniversario.toString();
     }

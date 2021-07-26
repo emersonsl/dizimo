@@ -214,6 +214,7 @@ public class ContribuicaoController implements Initializable {
             case 2:
                 //cadastrar
                 clear();
+                cbMesFinal.setVisible(false);
                 cadastrar = true;
                 carregarComboBox();
                 tfIdDizimista.setEditable(true);
@@ -255,7 +256,15 @@ public class ContribuicaoController implements Initializable {
 
     }
 
+    private void clearComboBox(){
+        cbMes.getItems().clear();
+        cbMesFinal.getItems().clear();
+        cbAno.getItems().clear();
+        cbPlantonista.getItems().clear();
+    }
+    
     private void carregarComboBox() {
+        clearComboBox();
         cbMes.getItems().addAll(Arrays.asList(Mes.values()));
         cbMesFinal.getItems().addAll(Arrays.asList(Mes.values()));
         Year a = Year.parse(String.valueOf(Year.now().getValue() - 1));
@@ -265,6 +274,7 @@ public class ContribuicaoController implements Initializable {
     }
 
     private void clear() {
+        clearComboBox();
         lbNomeDizimista.setVisible(false);
         lb1NomeDizimista.setVisible(false);
         lbNomeDizimista.setText("");
