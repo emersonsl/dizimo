@@ -31,12 +31,17 @@ public class Configuracao {
 
         Properties prop = getProp("./config/configuracao.properties");
 
+        //configurações de banco de dados
         config.put("db.local", prop.getProperty("db.local"));
         config.put("db.nome", prop.getProperty("db.nome"));
         config.put("db.idInicial", prop.getProperty("db.idInicial"));
         config.put("db.idFinal", prop.getProperty("db.idFinal"));
         config.put("db.usuario", prop.getProperty("db.usuario"));
         config.put("db.senha", prop.getProperty("db.senha"));
+
+        //configurações de backup
+        config.put("dir.mysql", prop.getProperty("dir.mysql"));
+        config.put("dir.backups", prop.getProperty("dir.backups"));
 
         return config;
     }

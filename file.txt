@@ -1,0 +1,44 @@
+
+Configuraá∆o de IP do Windows
+
+
+Adaptador Ethernet Ethernet:
+
+   Estado da m°dia. . . . . . . . . . . . . .  : m°dia desconectada
+   Sufixo DNS espec°fico de conex∆o. . . . . . : 
+
+Adaptador Ethernet VirtualBox Host-Only Network:
+
+   Sufixo DNS espec°fico de conex∆o. . . . . . : 
+   Endereáo IPv6 de link local . . . . . . . . : fe80::4112:368d:5e63:ae96%9
+   Endereáo IPv4 de Configuraá∆o Autom†tica. . : 169.254.174.150
+   M†scara de Sub-rede . . . . . . . . . . . . : 255.255.0.0
+   Gateway Padr∆o. . . . . . . . . . . . . . . : 
+
+Adaptador de Rede sem Fio Conex∆o Local* 1:
+
+   Estado da m°dia. . . . . . . . . . . . . .  : m°dia desconectada
+   Sufixo DNS espec°fico de conex∆o. . . . . . : 
+
+Adaptador de Rede sem Fio Conex∆o Local* 10:
+
+   Estado da m°dia. . . . . . . . . . . . . .  : m°dia desconectada
+   Sufixo DNS espec°fico de conex∆o. . . . . . : 
+
+Adaptador de Rede sem Fio Conex∆o Local* 11:
+
+   Estado da m°dia. . . . . . . . . . . . . .  : m°dia desconectada
+   Sufixo DNS espec°fico de conex∆o. . . . . . : 
+
+Adaptador de Rede sem Fio Wi-Fi:
+
+   Sufixo DNS espec°fico de conex∆o. . . . . . : meuintelbras.local
+   Endereáo IPv6 de link local . . . . . . . . : fe80::948:5d53:75ea:f425%2
+   Endereáo IPv4. . . . . . . .  . . . . . . . : 192.168.5.95
+   M†scara de Sub-rede . . . . . . . . . . . . : 255.255.255.0
+   Gateway Padr∆o. . . . . . . . . . . . . . . : 192.168.5.1
+
+Adaptador Ethernet Conex∆o de Rede Bluetooth:
+
+   Estado da m°dia. . . . . . . . . . . . . .  : m°dia desconectada
+   Sufixo DNS espec°fico de conex∆o. . . . . . : 
