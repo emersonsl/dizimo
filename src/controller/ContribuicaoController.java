@@ -5,6 +5,7 @@
  */
 package controller;
 
+import com.itextpdf.text.DocumentException;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -40,7 +41,9 @@ import model.bean.Contribuicao;
 import model.bean.Dizimista;
 import model.bean.Plantao;
 import model.bean.Plantonista;
+import tools.Backup;
 import tools.Configuracao;
+import tools.ExportarPDF;
 import util.Mes;
 import view.Alertas;
 
@@ -221,7 +224,7 @@ public class ContribuicaoController implements Initializable {
                 tfIdDizimista.requestFocus();
                 tfValor.setEditable(true);
                 btCadastrarSalvar.setText("Salvar+");
-                btEditarCancelar.setText("Fechar");
+                btEditarCancelar.setText("Concluir");
                 btApagar.setVisible(false);
                 apEsquerdo.setDisable(true);
                 ckMaisMeses.setVisible(true);
@@ -325,7 +328,7 @@ public class ContribuicaoController implements Initializable {
                 c = new Contribuicao(Double.parseDouble(tfValor.getText()), cbMes.getValue(), cbAno.getValue(), d, p, plantao);
                 ContribuicaoDAO.salvar(c);
             }
-            Alertas.cadastradoSucesso("Contribuição");
+            //Alertas.cadastradoSucesso("Contribuição");
             selectMode(2);
             carregarTodos();
         }
@@ -370,6 +373,7 @@ public class ContribuicaoController implements Initializable {
         try {
             AnchorPane aPlantao = (AnchorPane) FXMLLoader.load(getClass().getResource("/view/Plantao.fxml"));
             apPrincipal.getChildren().setAll(aPlantao);
+            Backup.executar();
         } catch (IOException ex) {
             Logger.getLogger(ContribuicaoController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -462,6 +466,14 @@ public class ContribuicaoController implements Initializable {
 
     public void maisMeses() {
         cbMesFinal.setVisible(ckMaisMeses.isSelected());
+    }
+    
+    public void imprimir(){
+        try {
+            ExportarPDF.contribuicoesDosDizimistas(plantao.getData(), plantao.getData());
+        } catch (DocumentException | IOException ex) {
+            Alertas.erroAberturaAquivo();
+        }
     }
 
     @FXML  // <== perhaps you had this missing??

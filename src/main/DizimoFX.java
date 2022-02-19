@@ -15,37 +15,34 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import view.Alertas;
 
-
-
 /**
  *
  * @author Emerson
  */
 public class DizimoFX extends Application {
-    
+
     @Override
     public void start(Stage stage) throws IOException {
-        
+
         Parent root = FXMLLoader.load(getClass().getResource("/view/TelaPrincipal.fxml"));
-    
-        System.out.println("root: "+root);
-        
+
         Scene scene = new Scene(root);
-        
+
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/icone.png")));
         stage.setScene(scene);
         stage.setTitle("Sistema Dizimo");
         stage.setResizable(false);
         stage.show();
-        
+
     }
-    
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Alertas.carregarConfiguracao();
-        launch(args);
+        if (Alertas.carregarConfiguracao()) {
+            launch(args);
+        }
     }
-    
+
 }

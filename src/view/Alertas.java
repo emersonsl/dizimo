@@ -31,15 +31,17 @@ public abstract class Alertas {
     private static int prefixIDInicial;
     private static int prefixIDFinal;
 
-    public static void carregarConfiguracao() {
+    public static boolean carregarConfiguracao() {
         try {
             String idInicial = Configuracao.getParametro("db.idInicial");
             String idFinal = Configuracao.getParametro("db.idFinal");
             prefixIDInicial = Integer.parseUnsignedInt(idInicial.substring(0, 1));
             prefixIDFinal = Integer.parseUnsignedInt(idFinal.substring(0, 1));
+            return true;
         } catch (IOException ex) {
             Alertas.erroArquivoConfiguracao();
         }
+        return false;
     }
 
     private static String getRegexIntervaloID(){

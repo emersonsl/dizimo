@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -29,6 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import model.DAO.PlantaoDAO;
 import model.DAO.PlantonistaDAO;
@@ -93,6 +95,15 @@ public class PlantaoController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         carregarTodos();
         tableViewPlantoes.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> selecionarItemTabelaDizimistar(newValue));
+        tableViewPlantoes.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            
+            @Override
+            public void handle(MouseEvent click){
+                if(click.getClickCount()==2){
+                    verContribuicoes();
+                }
+            }
+        });
     }
 
     public void carregarTodos() {
@@ -203,6 +214,7 @@ public class PlantaoController implements Initializable {
             case 3:
                 //editar
                 cadastrar = false;
+                clear();
                 carregarComboBox();
                 btCadastrarSalvar.setText("Salvar");
                 btEditarCancelar.setText("Cancelar");
@@ -391,4 +403,6 @@ public class PlantaoController implements Initializable {
             }
         }
     }
+    
+    
 }

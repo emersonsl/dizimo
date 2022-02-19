@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import tools.Backup;
 import tools.Configuracao;
 import view.Alertas;
 
@@ -39,6 +40,7 @@ public abstract class Conexao {
                 carregarConfiguracao();
                 Class.forName(DRIVER);
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                Backup.executar();
             } catch (ClassNotFoundException | SQLException ex1) {
                 Alertas.erroConexaoBD();
                 throw new RuntimeException("Erro na conexão com o banco de dados!" + "\n" + ex1.getLocalizedMessage());

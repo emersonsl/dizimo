@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apPrincipal" prefHeight="578.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ContribuicaoController">
+<AnchorPane id="AnchorPane" fx:id="apPrincipal" prefHeight="578.0" prefWidth="800.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ContribuicaoController">
    <children>
       <SplitPane dividerPositions="0.57" layoutX="120.0" layoutY="53.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -42,38 +42,38 @@
                                     <Group GridPane.columnIndex="2" />
                                     <Label text="Data">
                                        <font>
-                                          <Font name="Roboto Black" size="13.0" />
+                                          <Font size="15.0" />
                                        </font></Label>
                                     <Label text="Horário" GridPane.rowIndex="1">
                                        <font>
-                                          <Font name="Roboto Black" size="13.0" />
+                                          <Font size="15.0" />
                                        </font></Label>
-                                    <Label prefHeight="17.0" prefWidth="56.0" text="Lançador" GridPane.columnIndex="2">
+                                    <Label prefHeight="21.0" prefWidth="62.0" text="Lançador" GridPane.columnIndex="2">
                                        <font>
-                                          <Font name="Roboto Black" size="13.0" />
+                                          <Font size="15.0" />
                                        </font></Label>
                                     <Label prefHeight="15.0" prefWidth="70.0" text="Presidente" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                        <font>
-                                          <Font name="Roboto Black" size="13.0" />
+                                          <Font size="15.0" />
                                        </font></Label>
                                     <Label fx:id="lbDtPlantao" prefHeight="12.0" prefWidth="122.0" GridPane.columnIndex="1">
                                        <font>
-                                          <Font name="Roboto Medium" size="12.0" />
+                                          <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
                                     <Label fx:id="lbHrPlantao" prefHeight="17.0" prefWidth="116.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <font>
-                                          <Font name="Roboto Medium" size="12.0" />
+                                          <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
                                     <Label fx:id="lbLancadorPlantao" prefHeight="17.0" prefWidth="177.0" GridPane.columnIndex="3">
                                        <font>
-                                          <Font name="Roboto Medium" size="12.0" />
+                                          <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
                                     <Label fx:id="lbPresidentePlantao" prefHeight="17.0" prefWidth="211.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                        <font>
-                                          <Font name="Roboto Medium" size="12.0" />
+                                          <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
                                  </children>
@@ -87,9 +87,9 @@
                            <children>
                               <TableView fx:id="tableViewContribuicoes" layoutX="-14.0" layoutY="-14.0" prefHeight="413.0" prefWidth="450.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columns>
-                                  <TableColumn fx:id="tbDizimista" prefWidth="59.0" text="Número" />
-                                  <TableColumn fx:id="tbValor" prefWidth="90.0" style="-fx-alignment: CENTER-RIGHT;" text="Valor" />
-                                    <TableColumn fx:id="tbMes" prefWidth="117.0" text="Mês" />
+                                  <TableColumn fx:id="tbDizimista" prefWidth="159.0" text="Dizimista" />
+                                  <TableColumn fx:id="tbValor" prefWidth="63.0" style="-fx-alignment: CENTER-RIGHT;" text="Valor" />
+                                    <TableColumn fx:id="tbMes" prefWidth="44.0" text="Mês" />
                                     <TableColumn fx:id="tbAno" prefWidth="45.0" text="Ano" />
                                     <TableColumn fx:id="tbPlantonista" minWidth="3.0" prefWidth="138.0" text="Plantonista" />
                                 </columns>
@@ -101,10 +101,11 @@
                         </AnchorPane>
                         <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="145.0" prefWidth="501.0" SplitPane.resizableWithParent="false">
                            <children>
-                              <GridPane layoutX="6.0" layoutY="4.0" prefHeight="37.0" prefWidth="450.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <GridPane fx:id="imprimir" layoutX="6.0" layoutY="4.0" prefHeight="37.0" prefWidth="450.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="232.0" minWidth="10.0" prefWidth="179.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="136.0" minWidth="10.0" prefWidth="113.0" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="158.0" minWidth="10.0" prefWidth="158.0" />
                                  </columnConstraints>
                                  <rowConstraints>
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
@@ -117,14 +118,15 @@
                                                 <Font name="System Bold" size="15.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="tfValorTotal" alignment="CENTER_RIGHT" editable="false" layoutX="42.0" prefHeight="30.0" prefWidth="79.0" promptText="0.00">
+                                          <TextField fx:id="tfValorTotal" alignment="CENTER_RIGHT" editable="false" layoutX="42.0" prefHeight="31.0" prefWidth="113.0" promptText="0.00">
                                              <font>
                                                 <Font size="15.0" />
                                              </font>
                                           </TextField>
                                        </children>
                                     </Group>
-                                    <Button fx:id="btEncerrarPlantao" mnemonicParsing="false" onAction="#encerrarPlantao" onKeyPressed="#keyPressed" prefHeight="25.0" prefWidth="106.0" text="Encerrar Plantão" textFill="#e80000" GridPane.columnIndex="1" />
+                                    <Button fx:id="btEncerrarPlantao" mnemonicParsing="false" onAction="#encerrarPlantao" onKeyPressed="#keyPressed" prefHeight="25.0" prefWidth="148.0" text="Encerrar" textFill="#e80000" GridPane.columnIndex="2" />
+                                    <Button fx:id="btImprimir" mnemonicParsing="false" onAction="#imprimir" prefHeight="25.0" prefWidth="103.0" text="Imprimir" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children></AnchorPane>

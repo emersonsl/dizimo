@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -29,6 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import model.DAO.ConjugeDAO;
 import model.DAO.ContribuicaoDAO;
@@ -87,6 +89,15 @@ public class DizimistaController implements Initializable {
         addEditables();
         carregarTodos();
         tableViewDizimistas.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> selecionarItemTabelaDizimistar(newValue));
+        tableViewDizimistas.setOnMouseClicked(new EventHandler<MouseEvent>(){
+            
+            @Override
+            public void handle(MouseEvent click){
+                if(click.getClickCount()==2){
+                    verContribuicoes();
+                }
+            }
+        });
     }
 
     public void carregarTodos() {
@@ -385,7 +396,7 @@ public class DizimistaController implements Initializable {
             d = new Dizimista(Integer.parseInt(id.getText()), nome.getText().toUpperCase(), email.getText().toUpperCase(), telefone.getText(), Date.valueOf(dtNasc.getValue()), grupos.getText().toUpperCase(), Date.valueOf(dtInsc.getValue()), c, rua.getText().toUpperCase(), bairro.getText().toUpperCase(), numero.getText().toUpperCase(), complemento.getText().toUpperCase(), true);
         }
         DizimistaDAO.salvar(d);
-        Alertas.cadastradoSucesso("Dizimista");
+        Alertas.cadastradoSucesso("Dizimista "+d);
         selectMode(1);
     }
     
@@ -437,7 +448,7 @@ public class DizimistaController implements Initializable {
             }
         }
         DizimistaDAO.atualizar(d);
-        Alertas.atualizadoSucesso("Dizimista");
+        Alertas.atualizadoSucesso("Dizimista "+d);
         selectMode(1);
     }
 

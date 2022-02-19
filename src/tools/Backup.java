@@ -7,7 +7,9 @@ package tools;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -28,8 +30,8 @@ public class Backup {
     public static void executar() throws IOException{
         carregarParametros();
         
-        String dataAtual = getDataFormatada(Date.valueOf(LocalDate.now()));
-        String nomeArquivo = "backup - "+nomeDB+" - "+dataAtual+".sql";
+        String dataHoraAtual = getDataHoraFormatada(LocalDateTime.now());
+        String nomeArquivo = "backup - "+nomeDB+" - "+dataHoraAtual+".sql";
         
         ProcessBuilder pb = new ProcessBuilder(
                 origem+"\\mysqldump.exe",
@@ -41,8 +43,8 @@ public class Backup {
         pb.start();
     }
     
-    private static String getDataFormatada(Date data) {
-        DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        return formatoData.format(data.toLocalDate());
+    private static String getDataHoraFormatada(LocalDateTime dataHora) {
+        DateTimeFormatter formatoDataHora = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return dataHora.format(formatoDataHora).replace(":", "h");
     }
 }
