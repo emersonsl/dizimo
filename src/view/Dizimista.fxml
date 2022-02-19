@@ -94,21 +94,21 @@
                                     <Font name="System Bold Italic" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="88.0" layoutY="37.0" text="Número" />
-                              <Label layoutX="100.0" layoutY="67.0" text="Nome" />
-                              <Label layoutX="59.0" layoutY="96.0" text="Data de Nasc." />
+                              <Label layoutX="86.0" layoutY="37.0" text="Número*" />
+                              <Label layoutX="96.0" layoutY="67.0" text="Nome*" />
+                              <Label layoutX="57.0" layoutY="96.0" text="Data de Nasc.*" />
                               <Label layoutX="287.0" layoutY="96.0" text="Telefone" />
                               <Label layoutX="95.0" layoutY="126.0" text="E-mail" />
-                              <Label layoutX="66.0" layoutY="154.0" text="Data de Insc." />
+                              <Label layoutX="63.0" layoutY="154.0" text="Data de Insc.*" />
                               <Label layoutX="38.0" layoutY="184.0" text="Grupo/Mov./Past." />
                               <Label layoutX="33.0" layoutY="210.0" text="Endereço">
                                  <font>
                                     <Font name="System Bold Italic" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="84.0" layoutY="230.0" text="Rua" />
-                              <Label layoutX="176.0" layoutY="260.0" text="Bairro" />
-                              <Label layoutX="62.0" layoutY="254.0" text="Número" />
+                              <Label layoutX="78.0" layoutY="230.0" text="Rua*" />
+                              <Label layoutX="174.0" layoutY="260.0" text="Bairro*" />
+                              <Label layoutX="56.0" layoutY="254.0" text="Número*" />
                               <Label layoutX="29.0" layoutY="291.0" text="Complemento" />
                               <TextField fx:id="id" editable="false" layoutX="139.0" layoutY="34.0" onMouseClicked="#editarMode" prefHeight="25.0" prefWidth="44.0" promptText="6001" />
                               <CheckBox fx:id="ckId" layoutX="192.0" layoutY="37.0" mnemonicParsing="false" onAction="#setIdAuto" onMouseClicked="#editarMode" text="Automático" visible="false" />
@@ -131,9 +131,9 @@
                                           <Font name="System Bold Italic" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="lbNomeConj" layoutX="63.0" layoutY="30.0" text="Nome" />
-                                    <Label fx:id="lbDataNascConj" layoutX="23.0" layoutY="65.0" text="Data de Nasc." />
-                                    <Label fx:id="lbDataCasa" layoutX="26.0" layoutY="100.0" text="Data de Casa." />
+                                    <Label fx:id="lbNomeConj" layoutX="60.0" layoutY="30.0" text="Nome*" />
+                                    <Label fx:id="lbDataNascConj" layoutX="20.0" layoutY="65.0" text="Data de Nasc.*" />
+                                    <Label fx:id="lbDataCasa" layoutX="22.0" layoutY="100.0" text="Data de Casa.*" />
                                     <TextField fx:id="nomeConj" editable="false" layoutX="101.0" layoutY="26.0" onMouseClicked="#editarMode" prefHeight="25.0" prefWidth="308.0" promptText="Digite o nome do Esposo(a) do dizimista" />
                                     <DatePicker fx:id="dtNascConj" editable="false" layoutX="102.0" layoutY="61.0" onMouseClicked="#editarMode" prefHeight="25.0" prefWidth="104.0" promptText="01/01/1990" />
                                     <DatePicker fx:id="dtCasa" editable="false" layoutX="102.0" layoutY="94.0" onMouseClicked="#editarMode" prefHeight="25.0" prefWidth="104.0" promptText="01/01/1990" />
