@@ -333,17 +333,17 @@ public class ContribuicaoController implements Initializable {
                 
                 int qtdMes = 0;
                 
-                for(int i = dtInicial.getYear(); i <=dtFinal.getYear(); i++){
+                for(int i = dtInicial.getYear(); i <=dtFinal.getYear(); i++){ //Anos
                     Year year = Year.parse(""+i);
                     int j = 1;
                     int k = 12;
-                    if(i==dtInicial.getYear()){
+                    if(i==dtInicial.getYear()){ //primeiro mês do primeiro ano
                         j=dtInicial.getMonthValue();
                     }
-                    if(i==dtFinal.getYear()){
+                    if(i==dtFinal.getYear()){ //ultimo mês do ultimo ano
                         k=dtFinal.getMonthValue();
                     }
-                    for(; j<=k; j++){
+                    for(; j<=k; j++){ //meses
                         c = new Contribuicao(0.0, Mes.JAN.setMes(j), year, d, p, plantao);
                         contribuicoes.add(c);
                         qtdMes++;
@@ -413,6 +413,7 @@ public class ContribuicaoController implements Initializable {
     }
 
     private boolean validarCampos() {
+        Contribuicao c = tableViewContribuicoes.getSelectionModel().getSelectedItem();
         if (tfIdDizimista.getText() != null && tfIdDizimista.getText().matches("\\d{1,3}")) { //tratamento para número entre 0 e 999 com três digitos
             StringBuilder text = new StringBuilder();
             for (int i = tfIdDizimista.getText().length(); i < 4; i++) {
@@ -444,13 +445,22 @@ public class ContribuicaoController implements Initializable {
         if (cadastrar && ckMaisMeses.isSelected() && !Alertas.validarSelecaoComboBox(cbMesFinal.getValue(), "Mês final")) {
             return false;
         }
+        
         LocalDate dtInicial = LocalDate.of(cbAnoInicial.getValue().getValue(), cbMesInicial.getValue().getMes(), 1);
-        LocalDate dtFinal = LocalDate.of(cbAnoFinal.getValue().getValue(), cbMesFinal.getValue().getMes(), 1);
+        LocalDate dtFinal;
+        if(ckMaisMeses.isSelected()){
+             dtFinal = LocalDate.of(cbAnoFinal.getValue().getValue(), cbMesFinal.getValue().getMes(), 1);
+        }else{
+            dtFinal = dtInicial;
+        }
         
         if (cadastrar && ckMaisMeses.isSelected() && !Alertas.validarIntervalo(dtInicial, dtFinal)) {
             return false;
         }
-        if (!Alertas.validarContribuicoes(cbMesInicial.getValue(), cbMesFinal.getValue(), cbAnoInicial.getValue(), tfIdDizimista.getText())) {
+        if (cadastrar && !Alertas.validarContribuicoes(dtInicial, dtFinal, tfIdDizimista.getText())) {
+            return false;
+        }
+        if (!cadastrar && cbMesInicial.getValue()!=c.getMes() && !Alertas.validarContribuicoes(dtInicial, dtFinal, tfIdDizimista.getText())){
             return false;
         }
         return true;
