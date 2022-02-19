@@ -442,6 +442,7 @@ public class ExportarPDF {
 
         Paragraph p1 = new Paragraph();
         Paragraph p2 = new Paragraph();
+        Paragraph p3 = new Paragraph();
 
         Font f1 = new Font();
         Font f2 = new Font();
@@ -463,9 +464,17 @@ public class ExportarPDF {
         p1.setFont(f2);
 
         p2.add(getSorteio(dataInicio, dataFinal));
-
+        
+        p3.setAlignment(Paragraph.ALIGN_CENTER);
+        p3.setFont(f1);
+        p3.add("Total: ");
+        p3.setFont(f2);
+        p3.add(""+DizimistaDAO.recuperarSorteio(dataInicio, dataFinal).size());
+        p3.add(" dizimistas");
+        
         documento.add(p1);
         documento.add(p2);
+        documento.add(p3);
 
         documento.close();
 

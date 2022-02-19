@@ -8,10 +8,13 @@ package controller;
 import com.itextpdf.text.DocumentException;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -71,13 +74,15 @@ public class ContribuicaoController implements Initializable {
     @FXML
     private Label lbNomeDizimista, lb1NomeDizimista;
     @FXML
-    private ComboBox<Mes> cbMes;
+    private ComboBox<Mes> cbMesInicial;
     @FXML
     private CheckBox ckMaisMeses;
     @FXML
     private ComboBox<Mes> cbMesFinal;
     @FXML
-    private ComboBox<Year> cbAno;
+    private ComboBox<Year> cbAnoInicial;
+    @FXML
+    private ComboBox<Year> cbAnoFinal;
     @FXML
     private ComboBox<Plantonista> cbPlantonista;
     //dados da table View
@@ -190,8 +195,8 @@ public class ContribuicaoController implements Initializable {
 
             tfValor.setText(df.format(c.getValor()));
 
-            cbMes.setValue(c.getMes());
-            cbAno.setValue(c.getAno());
+            cbMesInicial.setValue(c.getMes());
+            cbAnoInicial.setValue(c.getAno());
             cbPlantonista.setValue(c.getPlantonista());
         } else {
             clear();
@@ -212,12 +217,14 @@ public class ContribuicaoController implements Initializable {
                 apEsquerdo.setDisable(false);
                 ckMaisMeses.setVisible(false);
                 cbMesFinal.setVisible(false);
+                cbAnoFinal.setVisible(false);
                 clear();
                 break;
             case 2:
                 //cadastrar
                 clear();
                 cbMesFinal.setVisible(false);
+                cbAnoFinal.setVisible(false);
                 cadastrar = true;
                 carregarComboBox();
                 tfIdDizimista.setEditable(true);
@@ -241,6 +248,7 @@ public class ContribuicaoController implements Initializable {
                 apEsquerdo.setDisable(true);
                 ckMaisMeses.setVisible(false);
                 cbMesFinal.setVisible(false);
+                cbAnoFinal.setVisible(false);
                 break;
             default:
                 break;
@@ -260,19 +268,20 @@ public class ContribuicaoController implements Initializable {
     }
 
     private void clearComboBox(){
-        cbMes.getItems().clear();
+        cbMesInicial.getItems().clear();
         cbMesFinal.getItems().clear();
-        cbAno.getItems().clear();
+        cbAnoInicial.getItems().clear();
         cbPlantonista.getItems().clear();
     }
     
     private void carregarComboBox() {
         clearComboBox();
-        cbMes.getItems().addAll(Arrays.asList(Mes.values()));
+        cbMesInicial.getItems().addAll(Arrays.asList(Mes.values()));
         cbMesFinal.getItems().addAll(Arrays.asList(Mes.values()));
         Year a = Year.parse(String.valueOf(Year.now().getValue() - 1));
         Year b = Year.parse(String.valueOf(Year.now().getValue() + 1));
-        cbAno.getItems().addAll(a, Year.now(), b);
+        cbAnoInicial.getItems().addAll(a, Year.now(), b);
+        cbAnoFinal.getItems().addAll(a, Year.now(), b);
         cbPlantonista.getItems().addAll(PlantonistaDAO.recuperar());
     }
 
@@ -282,12 +291,14 @@ public class ContribuicaoController implements Initializable {
         lb1NomeDizimista.setVisible(false);
         lbNomeDizimista.setText("");
         tfIdDizimista.setText("");
-        cbMes.setValue(null);
+        cbMesInicial.setValue(null);
         cbMesFinal.setValue(null);
         ckMaisMeses.setSelected(false);
-        cbMes.getItems().clear();
-        cbAno.setValue(null);
-        cbAno.getItems().clear();
+        cbMesInicial.getItems().clear();
+        cbAnoInicial.setValue(null);
+        cbAnoInicial.getItems().clear();
+        cbAnoFinal.setValue(null);
+        cbAnoFinal.getItems().clear();
         tfValor.setText("");
         cbPlantonista.setValue(null);
         cbPlantonista.getItems().clear();
@@ -316,16 +327,38 @@ public class ContribuicaoController implements Initializable {
             Contribuicao c;
 
             if (ckMaisMeses.isSelected()) {
-                Double valor = Double.parseDouble(tfValor.getText()) / (cbMesFinal.getValue().getMes() - cbMes.getValue().getMes() + 1);
-                c = new Contribuicao(valor, cbMes.getValue(), cbAno.getValue(), d, p, plantao);
-                for (Mes m : Mes.values()) {
-                    if (m.getMes() >= cbMes.getValue().getMes() && m.getMes() <= cbMesFinal.getValue().getMes()) {
-                        c.setMes(m);
-                        ContribuicaoDAO.salvar(c);
+                LocalDate dtInicial = LocalDate.of(cbAnoInicial.getValue().getValue(), cbMesInicial.getValue().getMes(), 1);
+                LocalDate dtFinal = LocalDate.of(cbAnoFinal.getValue().getValue(), cbMesFinal.getValue().getMes(), 1);
+                List <Contribuicao> contribuicoes = new ArrayList<>();
+                
+                int qtdMes = 0;
+                
+                for(int i = dtInicial.getYear(); i <=dtFinal.getYear(); i++){
+                    Year year = Year.parse(""+i);
+                    int j = 1;
+                    int k = 12;
+                    if(i==dtInicial.getYear()){
+                        j=dtInicial.getMonthValue();
                     }
+                    if(i==dtFinal.getYear()){
+                        k=dtFinal.getMonthValue();
+                    }
+                    for(; j<=k; j++){
+                        c = new Contribuicao(0.0, Mes.JAN.setMes(j), year, d, p, plantao);
+                        contribuicoes.add(c);
+                        qtdMes++;
+                    }
+                    
+                }
+                
+                Double valor = Double.parseDouble(tfValor.getText()) / qtdMes;
+                
+                for(Contribuicao con: contribuicoes){
+                    con.setValor(valor);
+                    ContribuicaoDAO.salvar(con);
                 }
             } else {
-                c = new Contribuicao(Double.parseDouble(tfValor.getText()), cbMes.getValue(), cbAno.getValue(), d, p, plantao);
+                c = new Contribuicao(Double.parseDouble(tfValor.getText()), cbMesInicial.getValue(), cbAnoInicial.getValue(), d, p, plantao);
                 ContribuicaoDAO.salvar(c);
             }
             //Alertas.cadastradoSucesso("Contribuição");
@@ -340,8 +373,8 @@ public class ContribuicaoController implements Initializable {
             Contribuicao c = tableViewContribuicoes.getSelectionModel().getSelectedItem();
             c.setDizimista(d);
             c.setPlantonista(cbPlantonista.getValue());
-            c.setMes(cbMes.getValue());
-            c.setAno(cbAno.getValue());
+            c.setMes(cbMesInicial.getValue());
+            c.setAno(cbAnoInicial.getValue());
             c.setValor(Double.parseDouble(tfValor.getText()));
             ContribuicaoDAO.atualizar(c);
             Alertas.atualizadoSucesso("Contribuição");
@@ -394,10 +427,10 @@ public class ContribuicaoController implements Initializable {
             return false;
         }
         //mes ano valor plantonista
-        if (!Alertas.validarSelecaoComboBox(cbMes.getValue(), "Mês")) {
+        if (!Alertas.validarSelecaoComboBox(cbMesInicial.getValue(), "Mês")) {
             return false;
         }
-        if (!Alertas.validarSelecaoComboBox(cbAno.getValue(), "Ano")) {
+        if (!Alertas.validarSelecaoComboBox(cbAnoInicial.getValue(), "Ano")) {
             return false;
         }
         if (!Alertas.validarValor(tfValor.getText())) {
@@ -411,10 +444,13 @@ public class ContribuicaoController implements Initializable {
         if (cadastrar && ckMaisMeses.isSelected() && !Alertas.validarSelecaoComboBox(cbMesFinal.getValue(), "Mês final")) {
             return false;
         }
-        if (cadastrar && ckMaisMeses.isSelected() && !Alertas.validarIntervalo(cbMes.getValue(), cbMesFinal.getValue())) {
+        LocalDate dtInicial = LocalDate.of(cbAnoInicial.getValue().getValue(), cbMesInicial.getValue().getMes(), 1);
+        LocalDate dtFinal = LocalDate.of(cbAnoFinal.getValue().getValue(), cbMesFinal.getValue().getMes(), 1);
+        
+        if (cadastrar && ckMaisMeses.isSelected() && !Alertas.validarIntervalo(dtInicial, dtFinal)) {
             return false;
         }
-        if (!Alertas.validarContribuicoes(cbMes.getValue(), cbMesFinal.getValue(), cbAno.getValue(), tfIdDizimista.getText())) {
+        if (!Alertas.validarContribuicoes(cbMesInicial.getValue(), cbMesFinal.getValue(), cbAnoInicial.getValue(), tfIdDizimista.getText())) {
             return false;
         }
         return true;
@@ -438,34 +474,35 @@ public class ContribuicaoController implements Initializable {
                             Mes mes = contribuicao.getMes();
                             Year year = contribuicao.getAno();
                             if (mes.getMes() == 12) {
-                                cbMes.setValue(Mes.JAN);
-                                cbAno.setValue(year.plusYears(1));
+                                cbMesInicial.setValue(Mes.JAN);
+                                cbAnoInicial.setValue(year.plusYears(1));
                             } else {
                                 boolean teste = false;
                                 Mes proxMes = mes.setMes(mes.getMes() + 1);
-                                cbMes.setValue(proxMes);
-                                cbAno.setValue(year);
+                                cbMesInicial.setValue(proxMes);
+                                cbAnoInicial.setValue(year);
                             }
                         }
                     } else {
-                        cbMes.setValue(Mes.JAN.setMes(LocalDate.now().getMonthValue()));
-                        cbAno.setValue(Year.of(LocalDate.now().getYear()));
+                        cbMesInicial.setValue(Mes.JAN.setMes(LocalDate.now().getMonthValue()));
+                        cbAnoInicial.setValue(Year.of(LocalDate.now().getYear()));
                     }
                 }
             } else {
-                cbMes.setValue(null);
-                cbAno.setValue(null);
+                cbMesInicial.setValue(null);
+                cbAnoInicial.setValue(null);
                 lbNomeDizimista.setText("");
                 lb1NomeDizimista.setVisible(false);
                 lbNomeDizimista.setVisible(false);
-                cbMes.setValue(null);
-                cbAno.setValue(null);
+                cbMesInicial.setValue(null);
+                cbAnoInicial.setValue(null);
             }
         }
     }
 
     public void maisMeses() {
         cbMesFinal.setVisible(ckMaisMeses.isSelected());
+        cbAnoFinal.setVisible(ckMaisMeses.isSelected());
     }
     
     public void imprimir(){
