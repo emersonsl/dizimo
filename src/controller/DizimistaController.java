@@ -391,28 +391,13 @@ public class DizimistaController implements Initializable {
         }
         Dizimista d;
         if (ckId.isSelected()) {
-            d = new Dizimista(buscarMenorId(),nome.getText().toUpperCase(), email.getText().toUpperCase(), telefone.getText(), Date.valueOf(dtNasc.getValue()), grupos.getText().toUpperCase(), Date.valueOf(dtInsc.getValue()), c, rua.getText().toUpperCase(), bairro.getText().toUpperCase(), numero.getText().toUpperCase(), complemento.getText().toUpperCase(), true);
+            d = new Dizimista(null, nome.getText().toUpperCase(), email.getText().toUpperCase(), telefone.getText(), Date.valueOf(dtNasc.getValue()), grupos.getText().toUpperCase(), Date.valueOf(dtInsc.getValue()), c, rua.getText().toUpperCase(), bairro.getText().toUpperCase(), numero.getText().toUpperCase(), complemento.getText().toUpperCase(), true);
         } else {
             d = new Dizimista(Integer.parseInt(id.getText()), nome.getText().toUpperCase(), email.getText().toUpperCase(), telefone.getText(), Date.valueOf(dtNasc.getValue()), grupos.getText().toUpperCase(), Date.valueOf(dtInsc.getValue()), c, rua.getText().toUpperCase(), bairro.getText().toUpperCase(), numero.getText().toUpperCase(), complemento.getText().toUpperCase(), true);
         }
         DizimistaDAO.salvar(d);
         Alertas.cadastradoSucesso("Dizimista "+d);
         selectMode(1);
-    }
-    
-    private Integer buscarMenorId(){
-        Dizimista primeiro = dizimistas.get(0);
-        if(primeiro==null){
-            return 0;
-        }
-        Integer idAnterior = primeiro.getId();
-        for(Dizimista d: dizimistas){
-            if(d.getId()>idAnterior+1){
-                return idAnterior+1;
-            }
-            idAnterior = d.getId();
-        }
-        return 0;
     }
 
     private void atualizar() {
